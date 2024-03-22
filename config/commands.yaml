@@ -1,0 +1,99 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+  _instanceof:
+    Symfony\Component\Console\Command\Command:
+      tags: ['command']
+
+  Atoolo\EventsCalendar\Console\:
+    resource: '../src/Console'
+
+  Atoolo\EventsCalendar\Console\Application:
+    public: true
+    arguments:
+      - !tagged command
+
+  Atoolo\Search\Console\Command\Io\IndexerProgressBarFactory:
+    ~
+
+  atoolo.resource.resourceBaseLocator:
+    class: Atoolo\Resource\Loader\ServerVarResourceBaseLocator
+    arguments:
+      - 'RESOURCE_ROOT'
+
+  atoolo.resource.resourceLoader:
+    class: Atoolo\Resource\Loader\SiteKitLoader
+    arguments:
+      - '@atoolo.resource.resourceBaseLocator'
+
+  atoolo.resource.cachedResourceLoader:
+    class: Atoolo\Resource\Loader\CachedResourceLoader
+    arguments:
+      - '@atoolo.resource.resourceLoader'
+
+  atoolo.resource.categoryHierarchyLoader:
+    class: Atoolo\Resource\Loader\SiteKitResourceHierarchyLoader
+    arguments:
+      - "@atoolo.resource.cachedResourceLoader"
+      - "category"
+
+  Atoolo\EventsCalendar\Service\Indexer\SiteKit\DefaultSchema2xRceEventDocumentEnricher:
+    arguments:
+      - '@atoolo.resource.navigationHierarchyLoader'
+      - '@atoolo.search.indexer.contentCollector.sitekit'
+    tags:
+      - { name: 'atoolo.eventsCalendar.indexer.rceEventDocumentEnricher.schema2x', priority: 100 }
+
+  atoolo.eventsCalendar.indexer.rceEventAborter:
+    class: Atoolo\Search\Service\Indexer\IndexingAborter
+    arguments:
+      - '%kernel.project_dir%/var/cache/'
+      - 'rce-event'
+
+  atoolo.resource.resourceChannelFactory:
+    class: Atoolo\Resource\SiteKitResourceChannelFactory
+    arguments:
+      - '@atoolo.resource.resourceBaseLocator'
+
+  atoolo.search.solrCoreName:
+    class: Atoolo\Search\Service\ResourceChannelBasedCoreName
+    arguments:
+      - '@atoolo.resource.resourceChannelFactory'
+
+  atoolo.search.solrClientFactory:
+    class: Atoolo\Search\Service\ServerVarSolrClientFactory
+    arguments:
+      - '@atoolo.search.solrCoreName'
+
+  atoolo.search.indexer.solrIndexService:
+    class: Atoolo\Search\Service\Indexer\SolrIndexService
+    arguments:
+      - '@atoolo.search.solrClientFactory'
+
+  Atoolo\EventsCalendar\Service\RceEvent\RceEventListHttpClient: ~
+
+  Atoolo\EventsCalendar\Service\RceEvent\RceEventListItemFactory: ~
+
+  atoolo.search.indexer.console.progressBar:
+      class: Atoolo\Search\Console\Command\Io\IndexerProgressBar
+
+  Atoolo\EventsCalendar\Service\RceEvent\RceEventListReader:
+    arguments:
+      - '%kernel.project_dir%/var/cache/'
+      - '@Atoolo\EventsCalendar\Service\RceEvent\RceEventListHttpClient'
+      - '@Atoolo\EventsCalendar\Service\RceEvent\RceEventListItemFactory'
+
+
+  Atoolo\EventsCalendar\Service\Indexer\RceEventIndexer:
+    arguments:
+      - !tagged_iterator { tag: 'atoolo.eventsCalendar.indexer.rceEventDocumentEnricher.schema2x' }
+      - '@atoolo.search.indexer.console.progressBar'
+      - '@atoolo.eventsCalendar.indexer.rceEventAborter'
+      - '@Atoolo\EventsCalendar\Service\RceEvent\RceEventListReader'
+      - '@atoolo.search.indexer.solrIndexService'
+
+  Atoolo\EventsCalendar\Console\Command\RceEventIndexerCommand:
+    arguments:
+      - '@atoolo.search.indexer.console.progressBar'
+      - '@Atoolo\EventsCalendar\Service\Indexer\RceEventIndexer'

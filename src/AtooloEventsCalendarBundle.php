@@ -30,5 +30,6 @@ class AtooloEventsCalendarBundle extends Bundle
         );
 
         $loader->load('services.yaml');
+        $loader->load('commands.yaml');
     }
 }
