@@ -6,7 +6,7 @@ namespace Atoolo\EventsCalendar\Service\RceEvent;
 
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventAddress;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventAddresses;
-use Atoolo\EventsCalendar\Dto\RceEvent\RceEventCategory;
+use Atoolo\EventsCalendar\Dto\RceEvent\RceEventTheme;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventDate;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventListItem;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventSource;
@@ -170,23 +170,23 @@ class RceEventListItemFactory
         return (string)($event->TICKETLINK ?? '');
     }
 
-    private function createTheme(SimpleXMLElement $event): ?RceEventCategory
+    private function createTheme(SimpleXMLElement $event): ?RceEventTheme
     {
         if (empty($event->THEME)) {
             return null;
         }
-        return new RceEventCategory(
+        return new RceEventTheme(
             (string)($event->THEME['id'] ?? ''),
             (string)($event->THEME ?? '')
         );
     }
 
-    private function createSubTheme(SimpleXMLElement $event): ?RceEventCategory
+    private function createSubTheme(SimpleXMLElement $event): ?RceEventTheme
     {
         if (empty($event->SUBTHEME)) {
             return null;
         }
-        return new RceEventCategory(
+        return new RceEventTheme(
             (string)($event->SUBTHEME['id'] ?? ''),
             (string)($event->SUBTHEME ?? '')
         );

@@ -6,9 +6,19 @@ namespace Atoolo\EventsCalendar\Dto\Indexer;
 
 class RceEventIndexerParameter
 {
+    /**
+     * @param int[] $groupPath
+     * @param string[] $categoryRootResourceLocations
+     */
     public function __construct(
-        public readonly string $rceEventListZip,
-        public readonly int $cleanupThreshold = 0,
+        public readonly string $id,
+        public readonly string $source,
+        public readonly string $detailPageUrl,
+        public readonly int $group,
+        public readonly array $groupPath,
+        public readonly array $categoryRootResourceLocations,
+        public readonly int $cleanupThreshold,
+        public readonly string $exportUrl
     ) {
     }
 }

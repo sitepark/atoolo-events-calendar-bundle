@@ -17,16 +17,6 @@ services:
   Atoolo\Search\Console\Command\Io\IndexerProgressBarFactory:
     ~
 
-  atoolo.resource.resourceBaseLocator:
-    class: Atoolo\Resource\Loader\ServerVarResourceBaseLocator
-    arguments:
-      - 'RESOURCE_ROOT'
-
-  atoolo.resource.resourceLoader:
-    class: Atoolo\Resource\Loader\SiteKitLoader
-    arguments:
-      - '@atoolo.resource.resourceBaseLocator'
-
   atoolo.resource.cachedResourceLoader:
     class: Atoolo\Resource\Loader\CachedResourceLoader
     arguments:
@@ -40,7 +30,7 @@ services:
 
   Atoolo\EventsCalendar\Service\Indexer\SiteKit\DefaultSchema2xRceEventDocumentEnricher:
     arguments:
-      - '@atoolo.resource.navigationHierarchyLoader'
+      - '@atoolo.resource.categoryHierarchyLoader'
       - '@atoolo.search.indexer.contentCollector.sitekit'
     tags:
       - { name: 'atoolo.eventsCalendar.indexer.rceEventDocumentEnricher.schema2x', priority: 100 }
@@ -51,32 +41,9 @@ services:
       - '%kernel.project_dir%/var/cache/'
       - 'rce-event'
 
-  atoolo.resource.resourceChannelFactory:
-    class: Atoolo\Resource\SiteKitResourceChannelFactory
-    arguments:
-      - '@atoolo.resource.resourceBaseLocator'
-
-  atoolo.search.solrCoreName:
-    class: Atoolo\Search\Service\ResourceChannelBasedCoreName
-    arguments:
-      - '@atoolo.resource.resourceChannelFactory'
-
-  atoolo.search.solrClientFactory:
-    class: Atoolo\Search\Service\ServerVarSolrClientFactory
-    arguments:
-      - '@atoolo.search.solrCoreName'
-
-  atoolo.search.indexer.solrIndexService:
-    class: Atoolo\Search\Service\Indexer\SolrIndexService
-    arguments:
-      - '@atoolo.search.solrClientFactory'
-
   Atoolo\EventsCalendar\Service\RceEvent\RceEventListHttpClient: ~
 
   Atoolo\EventsCalendar\Service\RceEvent\RceEventListItemFactory: ~
-
-  atoolo.search.indexer.console.progressBar:
-      class: Atoolo\Search\Console\Command\Io\IndexerProgressBar
 
   Atoolo\EventsCalendar\Service\RceEvent\RceEventListReader:
     arguments:
@@ -84,14 +51,33 @@ services:
       - '@Atoolo\EventsCalendar\Service\RceEvent\RceEventListHttpClient'
       - '@Atoolo\EventsCalendar\Service\RceEvent\RceEventListItemFactory'
 
+  atoolo.eventsCalendar.indexer.progressState:
+    class: Atoolo\Search\Service\Indexer\IndexerProgressState
+    arguments:
+      - '@atoolo.search.indexName'
+      - '@atoolo.search.indexer.statusStore'
+      - 'rce-event'
 
   Atoolo\EventsCalendar\Service\Indexer\RceEventIndexer:
     arguments:
       - !tagged_iterator { tag: 'atoolo.eventsCalendar.indexer.rceEventDocumentEnricher.schema2x' }
-      - '@atoolo.search.indexer.console.progressBar'
+      - '@atoolo.eventsCalendar.indexer.progressState'
       - '@atoolo.eventsCalendar.indexer.rceEventAborter'
       - '@Atoolo\EventsCalendar\Service\RceEvent\RceEventListReader'
       - '@atoolo.search.indexer.solrIndexService'
+      - '@atoolo.search.indexName'
+      - '@atoolo.search.indexer.configurationLoader'
+      - 'rce-event'
+    tags:
+      - { name: 'atoolo.search.indexer', priority: 10 }
+
+  Atoolo\EventsCalendar\Service\Indexer\RceEventIndexerScheduler:
+    arguments:
+      - '0 6-20/2 * * *' # cron expression, every 2 hours from 6am to 8pm
+
+  Atoolo\EventsCalendar\Service\Indexer\StopWorkerOnRedeployListener:
+    arguments:
+      - '%kernel.cache_dir%'
 
   Atoolo\EventsCalendar\Console\Command\RceEventIndexerCommand:
     arguments:

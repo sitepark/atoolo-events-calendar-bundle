@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Atoolo\EventsCalendar\Service\Indexer\SiteKit;
 
-use Atoolo\EventsCalendar\Dto\Indexer\RceEventIndexerPreset;
-use Atoolo\EventsCalendar\Dto\RceEvent\RceEventCategory;
+use Atoolo\EventsCalendar\Dto\Indexer\RceEventIndexerParameter;
+use Atoolo\EventsCalendar\Dto\RceEvent\RceEventTheme;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventDate;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventListItem;
 use Atoolo\EventsCalendar\Service\Indexer\RceEventDocumentEnricher;
@@ -49,19 +49,19 @@ class DefaultSchema2xRceEventDocumentEnricher implements
      * @return IndexSchema2xDocument
      */
     public function enrichDocument(
-        RceEventIndexerPreset $preset,
+        RceEventIndexerParameter $parameter,
         RceEventListItem $event,
         RceEventDate $eventDate,
         IndexDocument $doc,
         string $processId
     ): IndexDocument {
 
-        $url = $preset->detailPageUrl . '?id=' . $eventDate->hashId;
+        $url = $parameter->detailPageUrl . '?id=' . $eventDate->hashId;
 
         $doc->id = $url;
         $doc->url = $url;
-        $doc->sp_id = $preset->id;
-        $doc->sp_source = [$preset->source];
+        $doc->sp_id = $parameter->id;
+        $doc->sp_source = [$parameter->source];
         $doc->title = $event->name;
         $doc->sp_name = $event->name;
         $doc->sp_title = $event->name;
@@ -70,9 +70,9 @@ class DefaultSchema2xRceEventDocumentEnricher implements
 
         $doc->crawl_process_id = $processId;
 
-        $doc->sp_group = $preset->group;
-        if (!empty($preset->groupPath)) {
-            $doc->sp_group_path = $preset->groupPath;
+        $doc->sp_group = $parameter->group;
+        if (!empty($parameter->groupPath)) {
+            $doc->sp_group_path = $parameter->groupPath;
         }
 
         if ($event->onsite) {
@@ -157,12 +157,12 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         ];
         $doc->sp_contenttype = $spContentTypes;
 
-        if ($event->theme != null) {
+        if ($event->theme !== null) {
             $doc->setMetaString('kicker', $event->theme->name);
         }
 
         $doc = $this->enrichCategories(
-            $preset,
+            $parameter,
             $event,
             $doc
         );
@@ -171,7 +171,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
     }
 
     public function enrichCategories(
-        RceEventIndexerPreset $preset,
+        RceEventIndexerParameter $parameter,
         RceEventListItem $event,
         IndexDocument $doc
     ): IndexDocument {
@@ -182,13 +182,13 @@ class DefaultSchema2xRceEventDocumentEnricher implements
 
         if ($event->subTheme === null) {
             $doc = $this->enrichTheme(
-                $preset,
+                $parameter,
                 $event->theme,
                 $doc
             );
         } else {
             $doc = $this->enrichSubTheme(
-                $preset,
+                $parameter,
                 $event->theme,
                 $event->subTheme,
                 $doc
@@ -198,7 +198,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         if ($event->highlight) {
             $doc = $this->enrichCategoryByAnchor(
                 $doc,
-                $preset,
+                $parameter,
                 'rce.type.highlight'
             );
         }
@@ -206,7 +206,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         if ($event->source !== null) {
             $doc = $this->enrichCategoryByAnchor(
                 $doc,
-                $preset,
+                $parameter,
                 'rce.source.' . $event->source->userId
             );
         }
@@ -217,7 +217,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         ) {
             $doc = $this->enrichCategoryByAnchor(
                 $doc,
-                $preset,
+                $parameter,
                 'rce.gemkey.' . $event->addresses->location->gemkey
             );
         }
@@ -228,7 +228,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         ) {
             $doc = $this->enrichCategoryByAnchor(
                 $doc,
-                $preset,
+                $parameter,
                 'rce.gemkey.' . $event->addresses->organizer->gemkey
             );
         }
@@ -237,14 +237,14 @@ class DefaultSchema2xRceEventDocumentEnricher implements
     }
 
     private function enrichTheme(
-        RceEventIndexerPreset $preset,
-        RceEventCategory $theme,
+        RceEventIndexerParameter $preset,
+        RceEventTheme $theme,
         IndexDocument $doc
     ): IndexDocument {
 
         $resource = $this->findCategoryByAnchor(
             $preset->categoryRootResourceLocations,
-            'rce.type.' . $theme->id
+            'rce.type.' . $theme->getKey()
         );
 
         if ($resource === null) {
@@ -269,23 +269,23 @@ class DefaultSchema2xRceEventDocumentEnricher implements
      * - The SubTheme category is at the same level as the Theme category
      *
      * If the SubTheme category is subordinate to the Theme category,
-     * the SubTheme category is indexed. Otherwise the theme category
+     * the SubTheme category is indexed, otherwise the theme category
      * is also indexed.
      */
     private function enrichSubTheme(
-        RceEventIndexerPreset $preset,
-        RceEventCategory $theme,
-        RceEventCategory $subTheme,
+        RceEventIndexerParameter $preset,
+        RceEventTheme $theme,
+        RceEventTheme $subTheme,
         IndexDocument $doc
     ): IndexDocument {
 
         $themeResource = $this->findCategoryByAnchor(
             $preset->categoryRootResourceLocations,
-            'rce.type.' . $theme->id
+            'rce.type.' . $theme->getKey()
         );
         $subThemeResource = $this->findCategoryByAnchor(
             $preset->categoryRootResourceLocations,
-            'rce.type.' . $subTheme->id
+            'rce.type.' . $subTheme->getKey()
         );
 
         if ($subThemeResource === null) {
@@ -334,11 +334,11 @@ class DefaultSchema2xRceEventDocumentEnricher implements
 
     private function enrichCategoryByAnchor(
         IndexDocument $doc,
-        RceEventIndexerPreset $preset,
+        RceEventIndexerParameter $parameter,
         string $anchor
     ): IndexDocument {
         $category = $this->findCategoryByAnchor(
-            $preset->categoryRootResourceLocations,
+            $parameter->categoryRootResourceLocations,
             $anchor
         );
 

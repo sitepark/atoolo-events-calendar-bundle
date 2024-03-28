@@ -5,87 +5,123 @@ declare(strict_types=1);
 namespace Atoolo\EventsCalendar\Service\Indexer;
 
 use Atoolo\EventsCalendar\Dto\Indexer\RceEventIndexerParameter;
-use Atoolo\EventsCalendar\Dto\Indexer\RceEventIndexerPreset;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventDate;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventListItem;
 use Atoolo\EventsCalendar\Service\RceEvent\RceEventListReader;
 use Atoolo\Search\Dto\Indexer\IndexerStatus;
+use Atoolo\Search\Service\AbstractIndexer;
+use Atoolo\Search\Service\Indexer\IndexerConfigurationLoader;
 use Atoolo\Search\Service\Indexer\IndexerProgressHandler;
 use Atoolo\Search\Service\Indexer\IndexingAborter;
 use Atoolo\Search\Service\Indexer\SolrIndexService;
 use Atoolo\Search\Service\Indexer\SolrIndexUpdater;
+use Atoolo\Search\Service\IndexName;
 use Exception;
 use Throwable;
 
-class RceEventIndexer
+class RceEventIndexer extends AbstractIndexer
 {
     public function __construct(
         private readonly iterable $documentEnricherList,
-        private readonly IndexerProgressHandler $indexerProgressHandler,
-        private readonly IndexingAborter $aborter,
+        IndexerProgressHandler $progressHandler,
+        IndexingAborter $aborter,
         private readonly RceEventlistReader $rceEventListReader,
-        private readonly SolrIndexService $indexService
+        private readonly SolrIndexService $indexService,
+        IndexName $index,
+        IndexerConfigurationLoader $configLoader,
+        string $source
     ) {
+        parent::__construct(
+            $index,
+            $progressHandler,
+            $aborter,
+            $configLoader,
+            $source
+        );
     }
 
-    public function index(
-        RceEventIndexerPreset $preset,
-        RceEventIndexerParameter $parameter
-    ): IndexerStatus {
-        $this->rceEventListReader->read($parameter->rceEventListZip);
+    public function index(): IndexerStatus
+    {
 
-        $this->indexerProgressHandler->start($this->countEventDates());
+        $parameter = $this->loadIndexerParameter();
 
-        $updater = $this->indexService->updater();
+        if (empty($parameter->exportUrl)) {
+            return $this->progressHandler->getStatus();
+        }
+
+        $this->rceEventListReader->read($parameter->exportUrl);
+
+        $this->progressHandler->start($this->countEventDates());
+
+        $updater = $this->indexService->updater('');
 
         $processId = uniqid('', true);
         $successCount = 0;
 
         foreach ($this->rceEventListReader->getItems() as $rceEvent) {
             if (
-                $this->aborter->shouldAborted($this->indexService->getIndex())
+                $this->isAbortionRequested()
             ) {
-                return $this->indexerProgressHandler->getStatus();
+                return $this->progressHandler->getStatus();
             }
             try {
                 $successCount += $this->indexEvent(
                     $updater,
-                    $preset,
+                    $parameter,
                     $rceEvent,
                     $processId
                 );
             } catch (Throwable $e) {
-                $this->indexerProgressHandler->error($e);
+                $this->progressHandler->error($e);
             }
         }
 
         $result = $updater->update();
         if ($result->getStatus() !== 0) {
-            $this->indexerProgressHandler->error(new Exception(
+            $this->progressHandler->error(new Exception(
                 $result->getResponse()->getStatusMessage()
             ));
-            $this->indexerProgressHandler->getStatus();
+            $this->progressHandler->getStatus();
         }
 
         if (
-            $parameter->cleanupThreshold > 0 &&
             $successCount >= $parameter->cleanupThreshold
         ) {
             $this->indexService->deleteExcludingProcessId(
-                null,
-                $preset->source,
+                '',
+                $this->source,
                 $processId
             );
         }
 
-        $this->indexService->commit(null);
+        $this->indexService->commit('');
 
-        return $this->indexerProgressHandler->getStatus();
+        $this->progressHandler->finish();
+        gc_collect_cycles();
+
+        return $this->progressHandler->getStatus();
+    }
+
+    private function loadIndexerParameter(): RceEventIndexerParameter
+    {
+        $config = $this->configLoader->load($this->source);
+        $data = $config->data;
+        return new RceEventIndexerParameter(
+            id: $data->getString('id'),
+            source: $this->source,
+            detailPageUrl: $data->getString('detailPageUrl'),
+            group: $data->getInt('group'),
+            groupPath: $data->getArray('groupPath'),
+            categoryRootResourceLocations:
+                $data->getArray('categoryRootResourceLocations'),
+            cleanupThreshold: $data->getInt('cleanupThreshold'),
+            exportUrl: $data->getString('exportUrl')
+        );
     }
 
     private function indexEvent(
         SolrIndexUpdater $updater,
-        RceEventIndexerPreset $preset,
+        RceEventIndexerParameter $parameter,
         RceEventListItem $event,
         string $processId
     ): int {
@@ -94,7 +130,7 @@ class RceEventIndexer
         foreach ($event->dates as $eventDate) {
             $count += $this->indexEventDate(
                 $updater,
-                $preset,
+                $parameter,
                 $event,
                 $eventDate,
                 $processId
@@ -105,27 +141,20 @@ class RceEventIndexer
 
     private function indexEventDate(
         SolrIndexUpdater $updater,
-        RceEventIndexerPreset $preset,
+        RceEventIndexerParameter $parameter,
         RceEventListItem $event,
         RceEventDate $eventDate,
         string $processId
     ): int {
 
-        $this->indexerProgressHandler->advance(1);
-
-        foreach ($this->documentEnricherList as $enricher) {
-            if (!$enricher->isIndexable($event, $eventDate)) {
-                $this->indexerProgressHandler->skip(1);
-                continue;
-            }
-        }
+        $this->progressHandler->advance(1);
 
         $count = 0;
         try {
             $doc = $updater->createDocument();
             foreach ($this->documentEnricherList as $enricher) {
                 $doc = $enricher->enrichDocument(
-                    $preset,
+                    $parameter,
                     $event,
                     $eventDate,
                     $doc,
@@ -136,7 +165,7 @@ class RceEventIndexer
             $count++;
             $updater->addDocument($doc);
         } catch (Throwable $e) {
-            $this->indexerProgressHandler->error($e);
+            $this->progressHandler->error($e);
         }
 
         return $count;
@@ -151,8 +180,7 @@ class RceEventIndexer
         return $count;
     }
 
-    public function abort(): void
+    public function remove(array $idList): void
     {
-        $this->aborter->abort($this->indexService->getIndex());
     }
 }
