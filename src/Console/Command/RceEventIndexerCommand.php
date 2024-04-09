@@ -20,10 +20,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class RceEventIndexerCommand extends Command
 {
-    /**
-     * phpcs:ignore
-     * @param iterable<RceEventDocumentEnricher<IndexDocument>> $documentEnricherList
-     */
+    private SymfonyStyle $io;
+
     public function __construct(
         private readonly IndexerProgressBar $progressBar,
         private readonly RceEventIndexer $indexer,
@@ -36,7 +34,6 @@ class RceEventIndexerCommand extends Command
         OutputInterface $output
     ): int {
 
-        $this->output = $output;
         $this->io = new SymfonyStyle($input, $output);
 
         $this->indexer->index();

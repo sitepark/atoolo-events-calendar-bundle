@@ -10,13 +10,14 @@ use Atoolo\EventsCalendar\Dto\RceEvent\RceEventDate;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventListItem;
 use Atoolo\EventsCalendar\Service\Indexer\RceEventDocumentEnricher;
 use Atoolo\Resource\Resource;
+use Atoolo\Resource\ResourceHierarchyFinder;
 use Atoolo\Resource\ResourceHierarchyLoader;
 use Atoolo\Search\Service\Indexer\DocumentEnricher;
 use Atoolo\Search\Service\Indexer\IndexDocument;
 use Atoolo\Search\Service\Indexer\IndexSchema2xDocument;
 
 /**
- * @implements DocumentEnricher<IndexSchema2xDocument>
+ * @implements RceEventDocumentEnricher<IndexSchema2xDocument>
  */
 class DefaultSchema2xRceEventDocumentEnricher implements
     RceEventDocumentEnricher
@@ -44,10 +45,6 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         return true;
     }
 
-    /**
-     * @param IndexSchema2xDocument $doc
-     * @return IndexSchema2xDocument
-     */
     public function enrichDocument(
         RceEventIndexerParameter $parameter,
         RceEventListItem $event,
@@ -170,7 +167,12 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         return $doc;
     }
 
-    public function enrichCategories(
+    /**
+     * @template E of IndexSchema2xDocument
+     * @param E $doc
+     * @return E
+     */
+    private function enrichCategories(
         RceEventIndexerParameter $parameter,
         RceEventListItem $event,
         IndexDocument $doc
@@ -236,6 +238,11 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         return $doc;
     }
 
+    /**
+     * @template E of IndexSchema2xDocument
+     * @param E $doc
+     * @return E
+     */
     private function enrichTheme(
         RceEventIndexerParameter $preset,
         RceEventTheme $theme,
@@ -271,6 +278,10 @@ class DefaultSchema2xRceEventDocumentEnricher implements
      * If the SubTheme category is subordinate to the Theme category,
      * the SubTheme category is indexed, otherwise the theme category
      * is also indexed.
+     *
+     * @template E of IndexSchema2xDocument
+     * @param E $doc
+     * @return E
      */
     private function enrichSubTheme(
         RceEventIndexerParameter $preset,
@@ -310,7 +321,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
             return $doc;
         }
 
-        $parent = $this->categoryLoader->loadParent(
+        $parent = $this->categoryLoader->loadPrimaryParent(
             $subThemeResource->getLocation()
         );
         if ($parent === null) {
@@ -332,6 +343,11 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         return $doc;
     }
 
+    /**
+     * @template E of IndexSchema2xDocument
+     * @param E $doc
+     * @return E
+     */
     private function enrichCategoryByAnchor(
         IndexDocument $doc,
         RceEventIndexerParameter $parameter,
@@ -356,11 +372,18 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         return $doc;
     }
 
+    /**
+     * @template E of IndexSchema2xDocument
+     * @param E $doc
+     * @return E
+     */
     private function enrichCategoryPath(
         IndexDocument $doc,
         Resource $category
     ): IndexDocument {
-        $path = $this->categoryLoader->loadPath($category->getLocation());
+        $path = $this->categoryLoader->loadPrimaryPath(
+            $category->getLocation()
+        );
         $categoryPath = [];
         foreach ($path as $resource) {
             $categoryPath[] = $resource->getId();
@@ -382,7 +405,8 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         string $anchor
     ): ?Resource {
         foreach ($categoryRootResourceLocations as $location) {
-            $resource = $this->categoryLoader->findRecursive(
+            $finder = new ResourceHierarchyFinder($this->categoryLoader);
+            $resource = $finder->findFirst(
                 $location,
                 function ($resource) use ($anchor) {
                     $resourceAnchor =
@@ -398,7 +422,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         return null;
     }
 
-    private function isSupportedImage($url): bool
+    private function isSupportedImage(string $url): bool
     {
         $dotPosition = strrpos($url, '.');
         if ($dotPosition === false) {

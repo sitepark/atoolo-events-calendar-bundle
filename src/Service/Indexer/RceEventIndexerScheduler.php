@@ -41,7 +41,7 @@ class RceEventIndexerScheduler implements ScheduleProviderInterface
             ));
     }
 
-    public function __invoke(RceEventIndexEvent $message)
+    public function __invoke(RceEventIndexEvent $message): void
     {
         $status = $this->indexer->index();
         $this->logger->info("indexer finish: " . $status->getStatusLine());

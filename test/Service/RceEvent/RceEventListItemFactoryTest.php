@@ -9,6 +9,7 @@ use Atoolo\EventsCalendar\Dto\RceEvent\RceEventAddresses;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventDate;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventListItem;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventSource;
+use Atoolo\EventsCalendar\Dto\RceEvent\RceEventTheme;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventUpload;
 use Atoolo\EventsCalendar\Service\RceEvent\RceEventListItemFactory;
 use DateTime;
@@ -34,14 +35,15 @@ class RceEventListItemFactoryTest extends TestCase
     {
         $event = $this->create('<EVENT></EVENT>');
         $expected = new RceEventListItem(
+            '',
             false,
             [],
             '',
             false,
             false,
             '',
-            '',
-            '',
+            null,
+            null,
             false,
             null,
             new RceEventAddresses(),
@@ -373,12 +375,12 @@ class RceEventListItemFactoryTest extends TestCase
         $event = $this->create(
             <<<EOS
             <EVENT>
-                <THEME>Test</THEME>
+                <THEME id="1">Test</THEME>
             </EVENT>
             EOS
         );
         $this->assertEquals(
-            'Test',
+            new RceEventTheme('1', 'Test'),
             $event->theme,
             'unexpected theme'
         );
@@ -389,12 +391,12 @@ class RceEventListItemFactoryTest extends TestCase
         $event = $this->create(
             <<<EOS
             <EVENT>
-                <SUBTHEME>Test</SUBTHEME>
+                <SUBTHEME id="1">Test</SUBTHEME>
             </EVENT>
             EOS
         );
         $this->assertEquals(
-            'Test',
+            new RceEventTheme('1', 'Test'),
             $event->subTheme,
             'unexpected subTheme'
         );

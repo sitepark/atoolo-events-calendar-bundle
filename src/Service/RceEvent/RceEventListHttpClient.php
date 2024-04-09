@@ -11,6 +11,10 @@ class RceEventListHttpClient
 {
     public function get(string $url): string
     {
-        return file_get_contents($url);
+        $content = file_get_contents($url);
+        if ($content === false) {
+            throw new \RuntimeException('Unable to get content from ' . $url);
+        }
+        return $content;
     }
 }

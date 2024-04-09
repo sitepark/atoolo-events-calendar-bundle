@@ -27,12 +27,6 @@ class RceEventListItemFactory
     private const EVENT_TYPE_VALUE_HYBRID = 'hybrid'; // onsite and online event
     private const YES = 'yes';
 
-    /**
-     * Event type subcategories (SUBTHEME in the xml) on the same
-     * level as the event type categories (THEME in the xml)
-     */
-    private const CATEGORIES_WITHOUT_HIERARCHY = true;
-
     public function __construct(
         private readonly LoggerInterface $logger = new NullLogger()
     ) {
@@ -70,6 +64,10 @@ class RceEventListItemFactory
         return ($isActive === self::YES);
     }
 
+    /**
+     * @param SimpleXMLElement $event
+     * @return array<RceEventDate>
+     */
     private function createDateList(SimpleXMLElement $event): array
     {
         if (!isset($event->DATELIST->DATE)) {
@@ -79,7 +77,7 @@ class RceEventListItemFactory
         $dateList = [];
         foreach ($event->DATELIST->DATE as $date) {
             $dateList[] = new RceEventDate(
-                (string)$date->attributes()['hashid'],
+                (string)$date['hashid'],
                 $this->createDateTime($date, 'STARTTIME', '00:00:00'),
                 $this->createDateTime($date, 'ENDTIME', '23:59:59'),
                 $this->isBlacklistedEventDate($date),
@@ -90,12 +88,12 @@ class RceEventListItemFactory
         return $dateList;
     }
 
-    private function createDescription(SimpleXMLElement $event)
+    private function createDescription(SimpleXMLElement $event): string
     {
         $desc = (string)$event->DESCRIPTION;
         $description = '';
         try {
-            $eventDescription = $this->htmlToText($desc, true);
+            $eventDescription = $this->htmlToText($desc);
             $eventDescription = $this->replaceLineFeeds($eventDescription);
             $eventDescription = str_replace('<br>', ' ', $eventDescription);
             $eventDescription = explode(' ', $eventDescription);
@@ -280,13 +278,6 @@ class RceEventListItemFactory
         return str_replace('http://', 'https://', $url);
     }
 
-    private function replaceLineFeeds(string $text): string
-    {
-        $text = (string)str_replace(["\r\n", "\n\r", "\r"], "\n", $text);
-        $text = preg_replace('/\n{2,}/', '<br><br>', $text);
-        return preg_replace('/\n{1,}/', '<br>', $text);
-    }
-
     private function htmlToText(string $html): string
     {
         if (empty($html)) {
@@ -296,6 +287,17 @@ class RceEventListItemFactory
         return Html2Text::convert($html, [
             'ignore_errors' => true
         ]);
+    }
+
+    private function replaceLineFeeds(string $text): string
+    {
+        $text = (string)str_replace(
+            ["\r\n", "\n\r", "\r"],
+            "\n",
+            $text
+        ) ?: $text;
+        $text = preg_replace('/\n{2,}/', '<br><br>', $text) ?: $text;
+        return preg_replace('/\n{1,}/', '<br>', $text) ?: $text;
     }
 
     private function isBlacklistedEventDate(SimpleXMLElement $date): bool

@@ -20,8 +20,8 @@ class RceEventTheme
             ['ae', 'oe', 'ue'],
             $name
         );
-        $name = preg_replace('/[^a-z0-9]/', '-', $name);
-        $name = preg_replace('/-+/', '-', $name);
+        $name = preg_replace('/[^a-z0-9]/', '-', $name) ?: $name;
+        $name = preg_replace('/-+/', '-', $name) ?: $name;
 
         return $name;
     }

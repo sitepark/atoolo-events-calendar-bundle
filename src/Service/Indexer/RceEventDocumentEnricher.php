@@ -21,9 +21,9 @@ interface RceEventDocumentEnricher
     ): bool;
 
     /**
-     * @param T $doc
-     * @return T
-     * @throws DocumentEnrichingException
+     * @template E of T
+     * @param E $doc
+     * @return E
      */
     public function enrichDocument(
         RceEventIndexerParameter $parameter,

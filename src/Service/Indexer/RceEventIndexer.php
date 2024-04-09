@@ -10,9 +10,11 @@ use Atoolo\EventsCalendar\Dto\RceEvent\RceEventListItem;
 use Atoolo\EventsCalendar\Service\RceEvent\RceEventListReader;
 use Atoolo\Search\Dto\Indexer\IndexerStatus;
 use Atoolo\Search\Service\AbstractIndexer;
+use Atoolo\Search\Service\Indexer\IndexDocument;
 use Atoolo\Search\Service\Indexer\IndexerConfigurationLoader;
 use Atoolo\Search\Service\Indexer\IndexerProgressHandler;
 use Atoolo\Search\Service\Indexer\IndexingAborter;
+use Atoolo\Search\Service\Indexer\IndexSchema2xDocument;
 use Atoolo\Search\Service\Indexer\SolrIndexService;
 use Atoolo\Search\Service\Indexer\SolrIndexUpdater;
 use Atoolo\Search\Service\IndexName;
@@ -21,6 +23,10 @@ use Throwable;
 
 class RceEventIndexer extends AbstractIndexer
 {
+    /**
+     * phpcs:ignore
+     * @param iterable<RceEventDocumentEnricher<IndexDocument>> $documentEnricherList
+     */
     public function __construct(
         private readonly iterable $documentEnricherList,
         IndexerProgressHandler $progressHandler,
@@ -106,14 +112,21 @@ class RceEventIndexer extends AbstractIndexer
     {
         $config = $this->configLoader->load($this->source);
         $data = $config->data;
+
+        /** @var array<int> $groupPath */
+        $groupPath = $data->getArray('groupPath');
+
+        /** @var array<string> $categoryRootResourceLocations */
+        $categoryRootResourceLocations =
+            $data->getArray('categoryRootResourceLocations');
+
         return new RceEventIndexerParameter(
             id: $data->getString('id'),
             source: $this->source,
             detailPageUrl: $data->getString('detailPageUrl'),
             group: $data->getInt('group'),
-            groupPath: $data->getArray('groupPath'),
-            categoryRootResourceLocations:
-                $data->getArray('categoryRootResourceLocations'),
+            groupPath: $groupPath,
+            categoryRootResourceLocations: $categoryRootResourceLocations,
             cleanupThreshold: $data->getInt('cleanupThreshold'),
             exportUrl: $data->getString('exportUrl')
         );
@@ -151,8 +164,10 @@ class RceEventIndexer extends AbstractIndexer
 
         $count = 0;
         try {
+            /** @var IndexSchema2xDocument $doc */
             $doc = $updater->createDocument();
             foreach ($this->documentEnricherList as $enricher) {
+                /** @var IndexSchema2xDocument $doc */
                 $doc = $enricher->enrichDocument(
                     $parameter,
                     $event,

@@ -36,14 +36,15 @@ class StopWorkerOnRedeployListener implements EventSubscriberInterface
         string $cacheDir,
         private readonly LoggerInterface $logger,
     ) {
-        $workerStartHashFile = realpath($cacheDir) .
-            '/worker_start_hash_' .
-            getmypid();
-        if ($workerStartHashFile === false) {
+        $dir = realpath($cacheDir);
+        if ($dir === false) {
             throw new RuntimeException(
-                'Could not create worker start hash file'
+                'Could not create worker start hash file in ' . $dir
             );
         }
+        $workerStartHashFile = realpath($dir) .
+            '/worker_start_hash_' .
+            getmypid();
         $this->workerStartHashFile = $workerStartHashFile;
     }
 
