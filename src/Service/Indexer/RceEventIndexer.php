@@ -8,6 +8,7 @@ use Atoolo\EventsCalendar\Dto\Indexer\RceEventIndexerParameter;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventDate;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventListItem;
 use Atoolo\EventsCalendar\Service\RceEvent\RceEventListReader;
+use Atoolo\Resource\ResourceLanguage;
 use Atoolo\Search\Dto\Indexer\IndexerStatus;
 use Atoolo\Search\Service\AbstractIndexer;
 use Atoolo\Search\Service\Indexer\IndexDocument;
@@ -59,7 +60,7 @@ class RceEventIndexer extends AbstractIndexer
 
         $this->progressHandler->start($this->countEventDates());
 
-        $updater = $this->indexService->updater('');
+        $updater = $this->indexService->updater(ResourceLanguage::default());
 
         $processId = uniqid('', true);
         $successCount = 0;
@@ -94,13 +95,13 @@ class RceEventIndexer extends AbstractIndexer
             $successCount >= $parameter->cleanupThreshold
         ) {
             $this->indexService->deleteExcludingProcessId(
-                '',
+                ResourceLanguage::default(),
                 $this->source,
                 $processId
             );
         }
 
-        $this->indexService->commit('');
+        $this->indexService->commit(ResourceLanguage::default());
 
         $this->progressHandler->finish();
         gc_collect_cycles();

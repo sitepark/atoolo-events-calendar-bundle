@@ -12,6 +12,7 @@ use Atoolo\EventsCalendar\Service\Indexer\RceEventDocumentEnricher;
 use Atoolo\Resource\Resource;
 use Atoolo\Resource\ResourceHierarchyFinder;
 use Atoolo\Resource\ResourceHierarchyLoader;
+use Atoolo\Resource\ResourceLocation;
 use Atoolo\Search\Service\Indexer\DocumentEnricher;
 use Atoolo\Search\Service\Indexer\IndexDocument;
 use Atoolo\Search\Service\Indexer\IndexSchema2xDocument;
@@ -260,7 +261,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
 
         $doc->sp_category = array_merge(
             $doc->sp_category ?? [],
-            [$resource->getId()]
+            [$resource->id]
         );
 
         $doc = $this->enrichCategoryPath($doc, $resource);
@@ -312,7 +313,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
 
         $doc->sp_category = array_merge(
             $doc->sp_category ?? [],
-            [$subThemeResource->getId()]
+            [$subThemeResource->id]
         );
 
         $this->enrichCategoryPath($doc, $subThemeResource);
@@ -322,7 +323,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         }
 
         $parent = $this->categoryLoader->loadPrimaryParent(
-            $subThemeResource->getLocation()
+            $subThemeResource->toLocation()
         );
         if ($parent === null) {
             return $doc;
@@ -332,10 +333,10 @@ class DefaultSchema2xRceEventDocumentEnricher implements
          * If the theme category is not the parent of the subTheme
          * category, then also index this as a category.
          */
-        if ($parent->getId() !== $themeResource->getId()) {
+        if ($parent->id !== $themeResource->id) {
             $doc->sp_category = array_merge(
                 $doc->sp_category ?? [],
-                [$themeResource->getId()]
+                [$themeResource->id]
             );
             $doc = $this->enrichCategoryPath($doc, $themeResource);
         }
@@ -364,7 +365,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
 
         $doc->sp_category = array_merge(
             $doc->sp_category ?? [],
-            [$category->getId()]
+            [$category->id]
         );
 
         $this->enrichCategoryPath($doc, $category);
@@ -382,11 +383,11 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         Resource $category
     ): IndexDocument {
         $path = $this->categoryLoader->loadPrimaryPath(
-            $category->getLocation()
+            $category->toLocation()
         );
         $categoryPath = [];
         foreach ($path as $resource) {
-            $categoryPath[] = $resource->getId();
+            $categoryPath[] = $resource->id;
         }
         $doc->sp_category_path = array_merge(
             $doc->sp_category_path ?? [],
@@ -404,13 +405,14 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         array $categoryRootResourceLocations,
         string $anchor
     ): ?Resource {
-        foreach ($categoryRootResourceLocations as $location) {
+        foreach ($categoryRootResourceLocations as $path) {
+            $location = ResourceLocation::of($path);
             $finder = new ResourceHierarchyFinder($this->categoryLoader);
             $resource = $finder->findFirst(
                 $location,
                 function ($resource) use ($anchor) {
                     $resourceAnchor =
-                        $resource->getData()->getString('init.anchor');
+                        $resource->data->getString('anchor');
                     return $resourceAnchor === $anchor;
                 }
             );

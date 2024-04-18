@@ -38,10 +38,15 @@ class RceEventListReaderTest extends TestCase
 
     private function rrmdir($dir): void
     {
+        chmod($dir, 0777);
+
         if (!is_dir($dir)) {
             return;
         }
         $objects = scandir($dir);
+        if ($objects === false) {
+            return;
+        }
         foreach ($objects as $object) {
             if ($object === "." || $object === "..") {
                 continue;
