@@ -13,7 +13,7 @@
         "php": ">=8.1 <8.4.0",
         "ext-simplexml": "*",
         "ext-zip": "*",
-        "atoolo/search": "dev-feature/core-name",
+        "atoolo/search": "dev-main",
         "dragonmantank/cron-expression": "^3.3",
         "soundasleep/html2text": "^2.1",
         "symfony/config": "^6.3 || ^7.0",
