@@ -2,36 +2,11 @@ services:
   _defaults:
     autowire: true
     autoconfigure: true
-  _instanceof:
-    Symfony\Component\Console\Command\Command:
-      tags: ['command']
-
-  Atoolo\EventsCalendar\Console\:
-    resource: '../src/Console'
-
-  Atoolo\EventsCalendar\Console\Application:
-    public: true
-    arguments:
-      - !tagged command
-
-  Atoolo\Search\Console\Command\Io\IndexerProgressBarFactory:
-    ~
-
-  atoolo.resource.cachedResourceLoader:
-    class: Atoolo\Resource\Loader\CachedResourceLoader
-    arguments:
-      - '@atoolo.resource.resourceLoader'
-
-  atoolo.resource.categoryHierarchyLoader:
-    class: Atoolo\Resource\Loader\SiteKitResourceHierarchyLoader
-    arguments:
-      - "@atoolo.resource.cachedResourceLoader"
-      - "category"
 
   Atoolo\EventsCalendar\Service\Indexer\SiteKit\DefaultSchema2xRceEventDocumentEnricher:
     arguments:
-      - '@atoolo.resource.categoryHierarchyLoader'
-      - '@atoolo.search.indexer.contentCollector.sitekit'
+      - '@atoolo_resource.category_hierarchy_loader'
+      - '@atoolo_search.indexer.content_collector.sitekit'
     tags:
       - { name: 'atoolo.eventsCalendar.indexer.rceEventDocumentEnricher.schema2x', priority: 100 }
 
@@ -54,8 +29,8 @@ services:
   atoolo.eventsCalendar.indexer.progressState:
     class: Atoolo\Search\Service\Indexer\IndexerProgressState
     arguments:
-      - '@atoolo.search.indexName'
-      - '@atoolo.search.indexer.statusStore'
+      - '@atoolo_search.index_name'
+      - '@atoolo_search.indexer.status_store'
       - 'rce-event'
 
   Atoolo\EventsCalendar\Service\Indexer\RceEventIndexer:
@@ -64,12 +39,12 @@ services:
       - '@atoolo.eventsCalendar.indexer.progressState'
       - '@atoolo.eventsCalendar.indexer.rceEventAborter'
       - '@Atoolo\EventsCalendar\Service\RceEvent\RceEventListReader'
-      - '@atoolo.search.indexer.solrIndexService'
-      - '@atoolo.search.indexName'
-      - '@atoolo.search.indexer.configurationLoader'
+      - '@atoolo_search.indexer.solr_index_service'
+      - '@atoolo_search.index_name'
+      - '@atoolo_search.indexer.configuration_loader'
       - 'rce-event'
     tags:
-      - { name: 'atoolo.search.indexer', priority: 10 }
+      - { name: 'atoolo_search.indexer', priority: 10 }
 
   Atoolo\EventsCalendar\Service\Indexer\RceEventIndexerScheduler:
     arguments:
@@ -81,5 +56,5 @@ services:
 
   Atoolo\EventsCalendar\Console\Command\RceEventIndexerCommand:
     arguments:
-      - '@atoolo.search.indexer.console.progressBar'
+      - '@atoolo_search.indexer.console.progress_bar'
       - '@Atoolo\EventsCalendar\Service\Indexer\RceEventIndexer'
