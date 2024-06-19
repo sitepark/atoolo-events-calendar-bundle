@@ -15,7 +15,7 @@ use Symfony\Component\Scheduler\RecurringMessage;
 use Symfony\Component\Scheduler\Schedule;
 use Symfony\Component\Scheduler\ScheduleProviderInterface;
 
-#[AsSchedule]
+#[AsSchedule(name: 'rce-event-indexer-scheduler')]
 #[AsMessageHandler]
 class RceEventIndexerScheduler implements ScheduleProviderInterface
 {
