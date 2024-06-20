@@ -39,6 +39,11 @@ class DefaultSchema2xRceEventDocumentEnricher implements
     ) {
     }
 
+    public function cleanup(): void
+    {
+        $this->categoryLoader->cleanup();
+    }
+
     public function isIndexable(
         RceEventListItem $event,
         RceEventDate $eventDate
