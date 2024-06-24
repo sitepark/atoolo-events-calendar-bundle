@@ -61,9 +61,12 @@ class DefaultSchema2xRceEventDocumentEnricher implements
 
         $url = $parameter->detailPageUrl . '?id=' . $eventDate->hashId;
 
-        $doc->id = $url;
+        $doc->id = $parameter->source
+            . '-'
+            . $event->id
+            . '-'
+            . $eventDate->hashId;
         $doc->url = $url;
-        $doc->sp_id = $parameter->id;
         $doc->sp_source = [$parameter->source];
         $doc->title = $event->name;
         $doc->sp_name = $event->name;

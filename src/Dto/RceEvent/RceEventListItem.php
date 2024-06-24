@@ -14,6 +14,7 @@ class RceEventListItem
      * @param array<RceEventUpload> $uploads
      */
     public function __construct(
+		public readonly string $id,
         public readonly string $name,
         public readonly bool $active,
         public readonly array $dates,

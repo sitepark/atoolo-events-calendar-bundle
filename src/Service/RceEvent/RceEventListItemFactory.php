@@ -35,6 +35,7 @@ class RceEventListItemFactory
     public function create(SimpleXMLElement $event): RceEventListItem
     {
         return new RceEventListItem(
+            $this->createId($event),
             $this->createName($event),
             $this->isActiveEvent($event),
             $this->createDateList($event),
@@ -50,6 +51,11 @@ class RceEventListItemFactory
             $this->createKeywords($event),
             $this->createUploads($event)
         );
+    }
+
+    private function createId(SimpleXMLElement $event): string
+    {
+        return ($event->DATAPOOL['id'] . '-' . $event['id']);
     }
 
     private function createName(SimpleXMLElement $event): string

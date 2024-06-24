@@ -122,7 +122,6 @@ class RceEventIndexer extends AbstractIndexer
             $data->getArray('categoryRootResourceLocations');
 
         return new RceEventIndexerParameter(
-            id: $data->getString('id'),
             source: $this->source,
             detailPageUrl: $data->getString('detailPageUrl'),
             group: $data->getInt('group'),

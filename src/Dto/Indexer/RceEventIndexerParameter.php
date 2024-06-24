@@ -11,7 +11,6 @@ class RceEventIndexerParameter
      * @param string[] $categoryRootResourceLocations
      */
     public function __construct(
-        public readonly string $id,
         public readonly string $source,
         public readonly string $detailPageUrl,
         public readonly int $group,
