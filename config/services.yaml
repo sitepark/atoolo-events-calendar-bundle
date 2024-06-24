@@ -1,5 +1,5 @@
 parameters:
-  atoolo_events_calendar.indexer.indexer_scheduler.cron: '0 6-20/2 * * *' # cron expression, every 2 hours from 6am to 8pm
+  atoolo_events_calendar.indexer.rce_event_indexer_scheduler.cron: '0 6-20/2 * * *' # cron expression, every 2 hours from 6am to 8pm
 
 services:
   _defaults:
@@ -51,4 +51,4 @@ services:
 
   Atoolo\EventsCalendar\Service\Indexer\RceEventIndexerScheduler:
     arguments:
-      - '%atoolo_events_calendar.indexer.indexer_scheduler.cron%'
+      - '%atoolo_events_calendar.indexer.rce_event_indexer_scheduler.cron%'
