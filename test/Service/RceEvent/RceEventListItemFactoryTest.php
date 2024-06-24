@@ -33,8 +33,11 @@ class RceEventListItemFactoryTest extends TestCase
 
     public function testDefaults(): void
     {
-        $event = $this->create('<EVENT></EVENT>');
+        $event = $this->create(
+            '<EVENT id="659.1227097009"><DATAPOOL id="1"/></EVENT>'
+        );
         $expected = new RceEventListItem(
+            '1-659.1227097009',
             '',
             false,
             [],
