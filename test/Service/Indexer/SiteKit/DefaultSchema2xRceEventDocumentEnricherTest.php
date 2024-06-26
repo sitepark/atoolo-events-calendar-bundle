@@ -12,6 +12,7 @@ use Atoolo\EventsCalendar\Dto\RceEvent\RceEventListItem;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventSource;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventTheme;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventUpload;
+// phpcs:ignore
 use Atoolo\EventsCalendar\Service\Indexer\SiteKit\DefaultSchema2xRceEventDocumentEnricher;
 use Atoolo\Resource\DataBag;
 use Atoolo\Resource\Resource;
@@ -26,7 +27,6 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(DefaultSchema2xRceEventDocumentEnricher::class)]
 class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 {
-
     private array $rootResources = [];
 
     private array $resourceMap = [];
@@ -178,7 +178,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
         $this->assertEquals(
             $expected,
-             @array_intersect_assoc($fields, $expected)
+            @array_intersect_assoc($fields, $expected)
         );
     }
 
