@@ -257,31 +257,14 @@ class RceEventListItemFactory
                 continue;
             }
 
-            $url = $this->rewriteRceEventUrlsToHttps((string)$upload->URL);
-
             $uploads[] = new RceEventUpload(
                 (string)($upload->NAME ?? ''),
-                $url,
+                (string)$upload->URL,
                 (string)($upload->COPYRIGHT ?? '')
             );
         }
 
         return $uploads;
-    }
-
-    private function rewriteRceEventUrlsToHttps(string $url): string
-    {
-        $isRceEventUrl = strpos($url, 'www.rce-event.de') !== false;
-        if (!$isRceEventUrl) {
-            return $url;
-        }
-
-        $isHttpUrl = strpos($url, 'http://') !== false;
-        if (!$isHttpUrl) {
-            return $url;
-        }
-
-        return str_replace('http://', 'https://', $url);
     }
 
     private function htmlToText(string $html): string

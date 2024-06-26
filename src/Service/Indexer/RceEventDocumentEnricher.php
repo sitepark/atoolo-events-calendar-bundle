@@ -15,11 +15,6 @@ use Atoolo\Search\Service\Indexer\IndexDocument;
  */
 interface RceEventDocumentEnricher
 {
-    public function isIndexable(
-        RceEventListItem $event,
-        RceEventDate $eventDate,
-    ): bool;
-
     /**
      * @template E of T
      * @param E $doc
@@ -32,4 +27,6 @@ interface RceEventDocumentEnricher
         IndexDocument $doc,
         string $processId
     ): IndexDocument;
+
+    public function cleanup(): void;
 }

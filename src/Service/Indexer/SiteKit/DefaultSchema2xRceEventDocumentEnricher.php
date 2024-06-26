@@ -44,13 +44,6 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         $this->categoryLoader->cleanup();
     }
 
-    public function isIndexable(
-        RceEventListItem $event,
-        RceEventDate $eventDate
-    ): bool {
-        return true;
-    }
-
     public function enrichDocument(
         RceEventIndexerParameter $parameter,
         RceEventListItem $event,
@@ -97,6 +90,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         $doc->sp_changed = $eventDate->startDate;
         $doc->sp_date_from = $eventDate->startDate;
         $doc->sp_date_to = $eventDate->endDate;
+        $doc->sp_date_list = [$eventDate->startDate];
 
         if ($eventDate->soldOut) {
             $doc->setMetaBool('event_soldout', true);
@@ -187,23 +181,21 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         IndexDocument $doc
     ): IndexDocument {
 
-        if ($event->theme === null) {
-            return $doc;
-        }
-
-        if ($event->subTheme === null) {
-            $doc = $this->enrichTheme(
-                $parameter,
-                $event->theme,
-                $doc
-            );
-        } else {
-            $doc = $this->enrichSubTheme(
-                $parameter,
-                $event->theme,
-                $event->subTheme,
-                $doc
-            );
+        if ($event->theme !== null) {
+            if ($event->subTheme === null) {
+                $doc = $this->enrichTheme(
+                    $parameter,
+                    $event->theme,
+                    $doc
+                );
+            } else {
+                $doc = $this->enrichSubTheme(
+                    $parameter,
+                    $event->theme,
+                    $event->subTheme,
+                    $doc
+                );
+            }
         }
 
         if ($event->highlight) {

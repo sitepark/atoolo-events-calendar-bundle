@@ -83,12 +83,15 @@ class RceEventListReader
             }
 
             $content = $zip->getFromIndex(0);
+            // unknown how to test it
+            // @codeCoverageIgnoreStart
             if ($content === false) {
                 throw new RuntimeException(
                     'No entry found in zip: ' .
                     $zipUrl
                 );
             }
+            // @codeCoverageIgnoreEnd
 
             $xml = simplexml_load_string($content);
             if ($xml === false) {

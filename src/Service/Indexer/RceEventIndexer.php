@@ -32,7 +32,7 @@ class RceEventIndexer extends AbstractIndexer
         private readonly iterable $documentEnricherList,
         IndexerProgressHandler $progressHandler,
         IndexingAborter $aborter,
-        private readonly RceEventlistReader $rceEventListReader,
+        private readonly RceEventListReader $rceEventListReader,
         private readonly SolrIndexService $indexService,
         IndexName $index,
         IndexerConfigurationLoader $configLoader,
@@ -71,16 +71,12 @@ class RceEventIndexer extends AbstractIndexer
             ) {
                 return $this->progressHandler->getStatus();
             }
-            try {
-                $successCount += $this->indexEvent(
-                    $updater,
-                    $parameter,
-                    $rceEvent,
-                    $processId
-                );
-            } catch (Throwable $e) {
-                $this->progressHandler->error($e);
-            }
+            $successCount += $this->indexEvent(
+                $updater,
+                $parameter,
+                $rceEvent,
+                $processId
+            );
         }
 
         $result = $updater->update();
@@ -197,5 +193,9 @@ class RceEventIndexer extends AbstractIndexer
 
     public function remove(array $idList): void
     {
+        $this->indexService->deleteByIdListForAllLanguages(
+            $this->source,
+            $idList
+        );
     }
 }

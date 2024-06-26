@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Atoolo\EventsCalendar\Dto\Indexer;
 
+/**
+ * @codeCoverageIgnore
+ */
 class RceEventIndexerParameter
 {
     /**

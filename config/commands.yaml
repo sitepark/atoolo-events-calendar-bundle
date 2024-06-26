@@ -1,9 +1,0 @@
-services:
-  _defaults:
-    autowire: true
-    autoconfigure: true
-
-  Atoolo\EventsCalendar\Console\Command\RceEventIndexerCommand:
-    arguments:
-      - '@atoolo_search.indexer.console.progress_bar'
-      - '@Atoolo\EventsCalendar\Service\Indexer\RceEventIndexer'
