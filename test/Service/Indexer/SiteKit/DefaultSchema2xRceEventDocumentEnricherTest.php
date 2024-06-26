@@ -178,7 +178,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
         $this->assertEquals(
             $expected,
-            array_intersect_assoc($fields, $expected)
+             @array_intersect_assoc($fields, $expected)
         );
     }
 
@@ -208,7 +208,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
         $this->assertEquals(
             $expected,
-            array_intersect_assoc($fields, $expected)
+            @array_intersect_assoc($fields, $expected)
         );
     }
 
@@ -242,7 +242,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
         $this->assertEquals(
             $expected,
-            array_intersect_assoc($fields, $expected)
+            @array_intersect_assoc($fields, $expected)
         );
     }
 
@@ -275,7 +275,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
         $this->assertEquals(
             $expected,
-            array_intersect_assoc($fields, $expected)
+            @array_intersect_assoc($fields, $expected)
         );
     }
 
@@ -308,7 +308,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
         $this->assertEquals(
             $expected,
-            array_intersect_assoc($fields, $expected)
+            @array_intersect_assoc($fields, $expected)
         );
     }
 
@@ -340,7 +340,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
         $this->assertEquals(
             $expected,
-            array_intersect_assoc($fields, $expected)
+            @array_intersect_assoc($fields, $expected)
         );
     }
 
@@ -373,7 +373,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
         $this->assertEquals(
             $expected,
-            array_intersect_assoc($fields, $expected)
+            @array_intersect_assoc($fields, $expected)
         );
     }
 
@@ -405,7 +405,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
         $this->assertEquals(
             $expected,
-            array_intersect_assoc($fields, $expected)
+            @array_intersect_assoc($fields, $expected)
         );
     }
     public function createEvent(
@@ -523,7 +523,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
                     ResourceLocation $location
                 ) use ($primaryPathMap) {
                     $parentPath = $primaryPathMap[$location->location];
-                    return $parentPath[count($parentPath) - 2];
+                    return $parentPath[count($parentPath) - 2] ?? null;
                 }
             );
 

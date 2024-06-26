@@ -93,7 +93,7 @@ class RceEventListReader
             }
             // @codeCoverageIgnoreEnd
 
-            $xml = simplexml_load_string($content);
+            $xml = @simplexml_load_string($content);
             if ($xml === false) {
                 throw new RuntimeException(
                     'Unable to parse XML from zip file:' .
@@ -136,7 +136,8 @@ class RceEventListReader
         }
 
         if (
-            !mkdir($concurrentDirectory = $this->workDir, 0777, true) &&
+            !is_dir($this->workDir) &&
+            !@mkdir($concurrentDirectory = $this->workDir, 0777, true) &&
             !is_dir($concurrentDirectory)
         ) {
             throw new RuntimeException(
