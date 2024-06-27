@@ -5,15 +5,14 @@ declare(strict_types=1);
 namespace Atoolo\EventsCalendar\Service\Indexer\SiteKit;
 
 use Atoolo\EventsCalendar\Dto\Indexer\RceEventIndexerParameter;
-use Atoolo\EventsCalendar\Dto\RceEvent\RceEventTheme;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventDate;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventListItem;
+use Atoolo\EventsCalendar\Dto\RceEvent\RceEventTheme;
 use Atoolo\EventsCalendar\Service\Indexer\RceEventDocumentEnricher;
 use Atoolo\Resource\Resource;
 use Atoolo\Resource\ResourceHierarchyFinder;
 use Atoolo\Resource\ResourceHierarchyLoader;
 use Atoolo\Resource\ResourceLocation;
-use Atoolo\Search\Service\Indexer\DocumentEnricher;
 use Atoolo\Search\Service\Indexer\IndexDocument;
 use Atoolo\Search\Service\Indexer\IndexSchema2xDocument;
 

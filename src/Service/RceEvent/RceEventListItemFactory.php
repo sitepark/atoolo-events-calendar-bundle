@@ -6,10 +6,10 @@ namespace Atoolo\EventsCalendar\Service\RceEvent;
 
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventAddress;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventAddresses;
-use Atoolo\EventsCalendar\Dto\RceEvent\RceEventTheme;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventDate;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventListItem;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventSource;
+use Atoolo\EventsCalendar\Dto\RceEvent\RceEventTheme;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventUpload;
 use DateTime;
 use Psr\Log\LoggerInterface;
