@@ -6,6 +6,6 @@
 
 # Atoolo Events Calendar bundle
 
-The event calendar is a Sitepark module that enables the publication and management of events on websites. It offers various options for integrating events, including internal management via the content management system (CMS), external submissions via web forms and imports from other databases. Visitors to the website can search for events filtered by category, keyword and time period, allowing for targeted and interest-based navigation. This module is a powerful tool for website operators to efficiently provide and manage information about upcoming events.
+The event calendar is a Sitepark product that enables the publication and management of events on websites. It offers various options for integrating events, including internal management via the content management system (CMS), external entry via web forms and import from other databases. Visitors to the website can search for events filtered by category, keyword and time period, enabling targeted and interest-based navigation. This module is a powerful tool for website operators to efficiently provide and manage information about upcoming events. It also provides integrations to external event calendars.
 
-This bundle provides the functional scope of the Events Calendar.
+[Documentation](https://sitepark.github.io/atoolo-docs/develop/bundles/events-calendar/)

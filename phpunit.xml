@@ -12,7 +12,8 @@
 		displayDetailsOnTestsThatTriggerWarnings="true">
 
 
-<coverage>
+	<coverage
+			disableCodeCoverageIgnore="false">
 		<report>
 			<clover outputFile="var/log/clover/clover.xml"/>
 			<html outputDirectory="var/log/clover"/>

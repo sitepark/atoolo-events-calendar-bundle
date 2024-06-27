@@ -11,11 +11,16 @@
     ],
     "require": {
         "php": ">=8.1 <8.4.0",
-        "atoolo/resource": "dev-main",
-        "atoolo/search": "dev-feature/initial-implementation",
+        "ext-simplexml": "*",
+        "ext-zip": "*",
+        "atoolo/search-bundle": "dev-main",
+        "dragonmantank/cron-expression": "^3.3",
+        "soundasleep/html2text": "^2.1",
         "symfony/config": "^6.3 || ^7.0",
         "symfony/dependency-injection": "^6.3 || ^7.0",
         "symfony/http-kernel": "^6.3 || ^7.0",
+        "symfony/messenger": "^6.3 || ^7.0",
+        "symfony/scheduler": "^6.3 || ^7.0",
         "symfony/yaml": "^6.3 || ^7.0"
     },
     "require-dev": {
