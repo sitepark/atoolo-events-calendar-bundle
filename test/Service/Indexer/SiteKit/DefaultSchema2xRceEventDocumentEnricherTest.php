@@ -24,8 +24,6 @@ use DateTime;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-// phpcs:ignore
-
 #[CoversClass(DefaultSchema2xRceEventDocumentEnricher::class)]
 class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 {
