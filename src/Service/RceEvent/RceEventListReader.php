@@ -19,9 +19,8 @@ class RceEventListReader
     public function __construct(
         private readonly string $workDir,
         private readonly RceEventListHttpClient $httpClient,
-        private readonly RceEventListItemFactory $factory
-    ) {
-    }
+        private readonly RceEventListItemFactory $factory,
+    ) {}
     /**
      * Unzips the zip file from the URL and reads the contained
      * XML files with simplexml_load_file.
@@ -50,35 +49,35 @@ class RceEventListReader
         $temp = $this->getTmpFile('rce-events', '.zip');
         file_put_contents(
             $temp,
-            $this->httpClient->get($zipUrl)
+            $this->httpClient->get($zipUrl),
         );
         return $temp;
     }
 
     private function loadXmlFromZip(
         string $zipUrl,
-        string $zipFile
+        string $zipFile,
     ): SimpleXMLElement {
         $zip = new ZipArchive();
         try {
             $res = $zip->open($zipFile);
             if ($res !== true) {
                 throw new RuntimeException(
-                    'Unable to open zip'
+                    'Unable to open zip',
                 );
             }
 
             if ($zip->numFiles === 0) {
                 throw new RuntimeException(
                     'The zip file contains no files:' .
-                    $zipUrl
+                    $zipUrl,
                 );
             }
 
             if ($zip->numFiles !== 1) {
                 throw new RuntimeException(
                     'The zip file contains more than one file:' .
-                    $zipUrl
+                    $zipUrl,
                 );
             }
 
@@ -88,7 +87,7 @@ class RceEventListReader
             if ($content === false) {
                 throw new RuntimeException(
                     'No entry found in zip: ' .
-                    $zipUrl
+                    $zipUrl,
                 );
             }
             // @codeCoverageIgnoreEnd
@@ -97,7 +96,7 @@ class RceEventListReader
             if ($xml === false) {
                 throw new RuntimeException(
                     'Unable to parse XML from zip file:' .
-                    $zipUrl
+                    $zipUrl,
                 );
             }
 
@@ -129,7 +128,7 @@ class RceEventListReader
         if (is_dir($this->workDir)) {
             if (!is_writable($this->workDir)) {
                 throw new RuntimeException(
-                    'Workdir is not writable ' . $this->workDir
+                    'Workdir is not writable ' . $this->workDir,
                 );
             }
             return $this->workDir;
@@ -141,7 +140,7 @@ class RceEventListReader
             !is_dir($concurrentDirectory)
         ) {
             throw new RuntimeException(
-                sprintf('Directory "%s" was not created', $concurrentDirectory)
+                sprintf('Directory "%s" was not created', $concurrentDirectory),
             );
         }
 

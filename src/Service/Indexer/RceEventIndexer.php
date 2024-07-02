@@ -36,14 +36,14 @@ class RceEventIndexer extends AbstractIndexer
         private readonly SolrIndexService $indexService,
         IndexName $index,
         IndexerConfigurationLoader $configLoader,
-        string $source
+        string $source,
     ) {
         parent::__construct(
             $index,
             $progressHandler,
             $aborter,
             $configLoader,
-            $source
+            $source,
         );
     }
 
@@ -75,14 +75,14 @@ class RceEventIndexer extends AbstractIndexer
                 $updater,
                 $parameter,
                 $rceEvent,
-                $processId
+                $processId,
             );
         }
 
         $result = $updater->update();
         if ($result->getStatus() !== 0) {
             $this->progressHandler->error(new Exception(
-                $result->getResponse()->getStatusMessage()
+                $result->getResponse()->getStatusMessage(),
             ));
             $this->progressHandler->getStatus();
         }
@@ -93,7 +93,7 @@ class RceEventIndexer extends AbstractIndexer
             $this->indexService->deleteExcludingProcessId(
                 ResourceLanguage::default(),
                 $this->source,
-                $processId
+                $processId,
             );
         }
 
@@ -124,7 +124,7 @@ class RceEventIndexer extends AbstractIndexer
             groupPath: $groupPath,
             categoryRootResourceLocations: $categoryRootResourceLocations,
             cleanupThreshold: $data->getInt('cleanupThreshold'),
-            exportUrl: $data->getString('exportUrl')
+            exportUrl: $data->getString('exportUrl'),
         );
     }
 
@@ -132,7 +132,7 @@ class RceEventIndexer extends AbstractIndexer
         SolrIndexUpdater $updater,
         RceEventIndexerParameter $parameter,
         RceEventListItem $event,
-        string $processId
+        string $processId,
     ): int {
 
         $count = 0;
@@ -142,7 +142,7 @@ class RceEventIndexer extends AbstractIndexer
                 $parameter,
                 $event,
                 $eventDate,
-                $processId
+                $processId,
             );
         }
         return $count;
@@ -153,7 +153,7 @@ class RceEventIndexer extends AbstractIndexer
         RceEventIndexerParameter $parameter,
         RceEventListItem $event,
         RceEventDate $eventDate,
-        string $processId
+        string $processId,
     ): int {
 
         $this->progressHandler->advance(1);
@@ -169,7 +169,7 @@ class RceEventIndexer extends AbstractIndexer
                     $event,
                     $eventDate,
                     $doc,
-                    $processId
+                    $processId,
                 );
             }
 
@@ -195,7 +195,7 @@ class RceEventIndexer extends AbstractIndexer
     {
         $this->indexService->deleteByIdListForAllLanguages(
             $this->source,
-            $idList
+            $idList,
         );
     }
 }

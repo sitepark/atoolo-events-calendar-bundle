@@ -28,7 +28,6 @@ class RceEventListItem
         public readonly ?RceEventSource $source,
         public readonly RceEventAddresses $addresses,
         public readonly string $keywords,
-        public readonly array $uploads
-    ) {
-    }
+        public readonly array $uploads,
+    ) {}
 }

@@ -19,14 +19,14 @@ class RceEventIndexerSchedulerTest extends TestCase
         $indexer = $this->createStub(RceEventIndexer::class);
         $rceEventIndexerScheduler = new RceEventIndexerScheduler(
             '* 2 * * *',
-            $indexer
+            $indexer,
         );
 
         $schedule = $rceEventIndexerScheduler->getSchedule();
 
         $this->assertEquals(
             1,
-            count($schedule->getRecurringMessages())
+            count($schedule->getRecurringMessages()),
         );
     }
 
@@ -35,7 +35,7 @@ class RceEventIndexerSchedulerTest extends TestCase
         $indexer = $this->createMock(RceEventIndexer::class);
         $rceEventIndexerScheduler = new RceEventIndexerScheduler(
             '* 2 * * *',
-            $indexer
+            $indexer,
         );
 
         $indexer->expects($this->once())

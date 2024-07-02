@@ -24,7 +24,7 @@ interface RceEventDocumentEnricher
         RceEventListItem $event,
         RceEventDate $eventDate,
         IndexDocument $doc,
-        string $processId
+        string $processId,
     ): IndexDocument;
 
     public function cleanup(): void;
