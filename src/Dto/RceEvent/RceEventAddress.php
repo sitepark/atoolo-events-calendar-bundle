@@ -15,6 +15,5 @@ class RceEventAddress
         public readonly string $street,
         public readonly string $zip,
         public readonly string $city,
-    ) {
-    }
+    ) {}
 }

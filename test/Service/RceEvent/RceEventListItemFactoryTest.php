@@ -34,7 +34,7 @@ class RceEventListItemFactoryTest extends TestCase
     public function testDefaults(): void
     {
         $event = $this->create(
-            '<EVENT id="659.1227097009"><DATAPOOL id="1"/></EVENT>'
+            '<EVENT id="659.1227097009"><DATAPOOL id="1"/></EVENT>',
         );
         $expected = new RceEventListItem(
             '1-659.1227097009',
@@ -51,7 +51,7 @@ class RceEventListItemFactoryTest extends TestCase
             null,
             new RceEventAddresses(),
             '',
-            []
+            [],
         );
 
         $this->assertEquals($expected, $event, 'unexpected defaults');
@@ -88,7 +88,7 @@ class RceEventListItemFactoryTest extends TestCase
                     </DATE>
                 </DATELIST>
             </EVENT>
-            EOS
+            EOS,
         );
 
         $startDate = new DateTime();
@@ -104,12 +104,12 @@ class RceEventListItemFactoryTest extends TestCase
             $endDate,
             false,
             false,
-            false
+            false,
         );
         $this->assertEquals(
             [$expectedDate],
             $event->dates,
-            'unexpected dateList'
+            'unexpected dateList',
         );
     }
 
@@ -126,7 +126,7 @@ class RceEventListItemFactoryTest extends TestCase
                     </DATE>
                 </DATELIST>
             </EVENT>
-            EOS
+            EOS,
         );
 
         $empty = new DateTime();
@@ -138,12 +138,12 @@ class RceEventListItemFactoryTest extends TestCase
             $empty,
             true,
             false,
-            false
+            false,
         );
         $this->assertEquals(
             [$expectedDate],
             $event->dates,
-            'unexpected backlisted'
+            'unexpected backlisted',
         );
     }
 
@@ -158,7 +158,7 @@ class RceEventListItemFactoryTest extends TestCase
                     </DATE>
                 </DATELIST>
             </EVENT>
-            EOS
+            EOS,
         );
 
         $empty = new DateTime();
@@ -170,12 +170,12 @@ class RceEventListItemFactoryTest extends TestCase
             $empty,
             false,
             true,
-            false
+            false,
         );
         $this->assertEquals(
             [$expectedDate],
             $event->dates,
-            'unexpected soldout'
+            'unexpected soldout',
         );
     }
 
@@ -190,7 +190,7 @@ class RceEventListItemFactoryTest extends TestCase
                     </DATE>
                 </DATELIST>
             </EVENT>
-            EOS
+            EOS,
         );
 
         $empty = new DateTime();
@@ -202,12 +202,12 @@ class RceEventListItemFactoryTest extends TestCase
             $empty,
             false,
             false,
-            true
+            true,
         );
         $this->assertEquals(
             [$expectedDate],
             $event->dates,
-            'unexpected canceled'
+            'unexpected canceled',
         );
     }
 
@@ -222,7 +222,7 @@ class RceEventListItemFactoryTest extends TestCase
                     </DATE>
                 </DATELIST>
             </EVENT>
-            EOS
+            EOS,
         );
 
         $startDate = new DateTime();
@@ -243,7 +243,7 @@ class RceEventListItemFactoryTest extends TestCase
         $this->assertEquals(
             [$expectedDate],
             $event->dates,
-            'unexpected dateList'
+            'unexpected dateList',
         );
     }
 
@@ -257,7 +257,7 @@ class RceEventListItemFactoryTest extends TestCase
                     </DATE>
                 </DATELIST>
             </EVENT>
-            EOS
+            EOS,
         );
 
         $empty = new DateTime();
@@ -275,7 +275,7 @@ class RceEventListItemFactoryTest extends TestCase
         $this->assertEquals(
             [$expectedDate],
             $event->dates,
-            'unexpected dateList'
+            'unexpected dateList',
         );
     }
 
@@ -291,7 +291,7 @@ class RceEventListItemFactoryTest extends TestCase
                     </DATE>
                 </DATELIST>
             </EVENT>
-            EOS
+            EOS,
         );
     }
 
@@ -305,13 +305,13 @@ class RceEventListItemFactoryTest extends TestCase
                     <p>test2</p>                   
                 ]]></DESCRIPTION>
             </EVENT>
-            EOS
+            EOS,
         );
 
         $this->assertEquals(
             'test test2',
             $event->description,
-            'unexpected description'
+            'unexpected description',
         );
     }
 
@@ -328,7 +328,7 @@ class RceEventListItemFactoryTest extends TestCase
             <EVENT>
                 <TICKETLINK>https://www.ticket.com</TICKETLINK>
             </EVENT>
-            EOS
+            EOS,
         );
         $this->assertFalse($event->online, 'unexpected online');
     }
@@ -352,7 +352,7 @@ class RceEventListItemFactoryTest extends TestCase
             <EVENT>
                 <DESCRIPTION highlight="yes"></DESCRIPTION>
             </EVENT>
-            EOS
+            EOS,
         );
         $this->assertTrue($event->highlight, 'unexpected highlight');
     }
@@ -364,12 +364,12 @@ class RceEventListItemFactoryTest extends TestCase
             <EVENT>
                 <TICKETLINK>https://www.ticket.com</TICKETLINK>
             </EVENT>
-            EOS
+            EOS,
         );
         $this->assertEquals(
             'https://www.ticket.com',
             $event->ticketLink,
-            'unexpected ticketLink'
+            'unexpected ticketLink',
         );
     }
 
@@ -380,12 +380,12 @@ class RceEventListItemFactoryTest extends TestCase
             <EVENT>
                 <THEME id="1">Test</THEME>
             </EVENT>
-            EOS
+            EOS,
         );
         $this->assertEquals(
             new RceEventTheme('1', 'Test'),
             $event->theme,
-            'unexpected theme'
+            'unexpected theme',
         );
     }
 
@@ -396,12 +396,12 @@ class RceEventListItemFactoryTest extends TestCase
             <EVENT>
                 <SUBTHEME id="1">Test</SUBTHEME>
             </EVENT>
-            EOS
+            EOS,
         );
         $this->assertEquals(
             new RceEventTheme('1', 'Test'),
             $event->subTheme,
-            'unexpected subTheme'
+            'unexpected subTheme',
         );
     }
 
@@ -412,12 +412,12 @@ class RceEventListItemFactoryTest extends TestCase
             <EVENT>
                 <KEYWORD>Test</KEYWORD>
             </EVENT>
-            EOS
+            EOS,
         );
         $this->assertEquals(
             'Test',
             $event->keywords,
-            'unexpected keywords'
+            'unexpected keywords',
         );
     }
 
@@ -427,7 +427,7 @@ class RceEventListItemFactoryTest extends TestCase
         $this->assertEquals(
             new RceEventSource('1', 'Test'),
             $event->source,
-            'unexpected source'
+            'unexpected source',
         );
     }
 
@@ -450,7 +450,7 @@ class RceEventListItemFactoryTest extends TestCase
                     </ADDRESS>
                 </ADDRESSLIST>
             </EVENT>
-            EOS
+            EOS,
         );
 
         $location = new RceEventAddress(
@@ -458,7 +458,7 @@ class RceEventListItemFactoryTest extends TestCase
             '6611000',
             '',
             '34117',
-            'Kassel'
+            'Kassel',
         );
 
         $organizer = new RceEventAddress(
@@ -466,14 +466,14 @@ class RceEventListItemFactoryTest extends TestCase
             '',
             'Obere Königsstraße 15',
             '34117',
-            'Kassel'
+            'Kassel',
         );
 
         $addresses = new RceEventAddresses($location, $organizer);
         $this->assertEquals(
             $addresses,
             $event->addresses,
-            'unexpected addresses'
+            'unexpected addresses',
         );
     }
 
@@ -495,7 +495,7 @@ class RceEventListItemFactoryTest extends TestCase
                     </UPLOAD>
                 </UPLOADLIST>
             </EVENT>
-            EOS
+            EOS,
         );
 
         $upload = new RceEventUpload(
@@ -507,7 +507,7 @@ class RceEventListItemFactoryTest extends TestCase
         $this->assertEquals(
             [$upload],
             $event->uploads,
-            'unexpected uploads'
+            'unexpected uploads',
         );
     }
 

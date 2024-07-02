@@ -13,13 +13,13 @@ return [
         1097,
         4295,
         4298,
-        4299
+        4299,
     ],
     "categoryRootResourceLocations" => [
         "/kategorien/themen/rce-veranstaltungsart.php",
         "/kategorien/gemeinde/rce-gemeinde.php",
-        "/kategorien/quellen/rce-quellen.php"
+        "/kategorien/quellen/rce-quellen.php",
     ],
     "cleanupThreshold" => 0,
-    "exportUrl" => "https://www.rce-event.de/export/uid573/rce-xml_neu.zip"
+    "exportUrl" => "https://www.rce-event.de/export/uid573/rce-xml_neu.zip",
 ];

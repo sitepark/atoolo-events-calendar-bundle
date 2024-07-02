@@ -12,8 +12,7 @@ class RceEventTheme
     public function __construct(
         public readonly string $id,
         public readonly string $name,
-    ) {
-    }
+    ) {}
 
     public function getKey(): string
     {
@@ -21,7 +20,7 @@ class RceEventTheme
         $name = str_replace(
             ['ä', 'ö', 'ü'],
             ['ae', 'oe', 'ue'],
-            $name
+            $name,
         );
         $name = preg_replace('/[^a-z0-9]/', '-', $name) ?: $name;
         $name = preg_replace('/-+/', '-', $name) ?: $name;

@@ -13,6 +13,5 @@ class RceEventUpload
         public readonly string $name,
         public readonly string $url,
         public readonly string $copyright,
-    ) {
-    }
+    ) {}
 }

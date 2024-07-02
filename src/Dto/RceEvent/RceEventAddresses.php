@@ -12,6 +12,5 @@ class RceEventAddresses
     public function __construct(
         public readonly ?RceEventAddress $location = null,
         public readonly ?RceEventAddress $organizer = null,
-    ) {
-    }
+    ) {}
 }

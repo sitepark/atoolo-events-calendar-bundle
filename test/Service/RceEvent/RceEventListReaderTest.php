@@ -69,13 +69,13 @@ class RceEventListReaderTest extends TestCase
                 $zip = __DIR__ .
                     '/../../resources/RceEventListReader/rce-xml_neu.zip';
                 return file_get_contents($zip);
-            }
+            },
         );
 
         $reader = new RceEventListReader(
             $this->workDir,
             $this->httpClient,
-            $this->factory
+            $this->factory,
         );
         $reader->read('https://dummy.url');
 
@@ -83,7 +83,7 @@ class RceEventListReaderTest extends TestCase
         $this->assertEquals(
             $this->event,
             $items[0],
-            'unexpected event in list'
+            'unexpected event in list',
         );
     }
 
@@ -92,13 +92,13 @@ class RceEventListReaderTest extends TestCase
         $this->httpClient->method('get')->willReturnCallback(
             function (string $url): string {
                 return "nozipdata";
-            }
+            },
         );
 
         $reader = new RceEventListReader(
             $this->workDir,
             $this->httpClient,
-            $this->factory
+            $this->factory,
         );
         $this->expectException(ValueError::class);
         $reader->read('https://dummy.url');
@@ -111,13 +111,13 @@ class RceEventListReaderTest extends TestCase
                 $zip = __DIR__ .
                     '/../../resources/RceEventListReader/empty.zip';
                 return file_get_contents($zip);
-            }
+            },
         );
 
         $reader = new RceEventListReader(
             $this->workDir,
             $this->httpClient,
-            $this->factory
+            $this->factory,
         );
         $this->expectException(RuntimeException::class);
         $reader->read('https://dummy.url');
@@ -130,13 +130,13 @@ class RceEventListReaderTest extends TestCase
                 $zip = __DIR__ .
                     '/../../resources/RceEventListReader/two-files.zip';
                 return file_get_contents($zip);
-            }
+            },
         );
 
         $reader = new RceEventListReader(
             $this->workDir,
             $this->httpClient,
-            $this->factory
+            $this->factory,
         );
         $this->expectException(RuntimeException::class);
         $reader->read('https://dummy.url');
@@ -149,13 +149,13 @@ class RceEventListReaderTest extends TestCase
                 $zip = __DIR__ .
                     '/../../resources/RceEventListReader/noxml.zip';
                 return file_get_contents($zip);
-            }
+            },
         );
 
         $reader = new RceEventListReader(
             $this->workDir,
             $this->httpClient,
-            $this->factory
+            $this->factory,
         );
         $this->expectException(RuntimeException::class);
         $reader->read('https://dummy.url');
@@ -172,7 +172,7 @@ class RceEventListReaderTest extends TestCase
         $reader = new RceEventListReader(
             $workDir,
             $this->httpClient,
-            $this->factory
+            $this->factory,
         );
         $this->expectException(RuntimeException::class);
         $reader->read('https://dummy.url');
@@ -188,7 +188,7 @@ class RceEventListReaderTest extends TestCase
         $reader = new RceEventListReader(
             $workDir,
             $this->httpClient,
-            $this->factory
+            $this->factory,
         );
         $this->expectException(RuntimeException::class);
         $reader->read('https://dummy.url');

@@ -7,6 +7,4 @@ namespace Atoolo\EventsCalendar\Dto\RceEvent;
 /**
  * @codeCoverageIgnore
  */
-class RceEventIndexEvent
-{
-}
+class RceEventIndexEvent {}

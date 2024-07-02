@@ -49,23 +49,23 @@ class RceEventIndexerTest extends TestCase
     {
         $doc = $this->createStub(IndexSchema2xDocument::class);
         $this->documentEnricher = $this->createMock(
-            RceEventDocumentEnricher::class
+            RceEventDocumentEnricher::class,
         );
         $this->documentEnricher->method('enrichDocument')
             ->willReturn($doc);
         $documentEnricherList = [$this->documentEnricher];
         $this->progressHandler = $this->createMock(
-            IndexerProgressHandler::class
+            IndexerProgressHandler::class,
         );
         $this->aborter = $this->createStub(IndexingAborter::class);
 
         $events = [
             $this->createRceEventListItem('test-1'),
-            $this->createRceEventListItem('test-2')
+            $this->createRceEventListItem('test-2'),
         ];
 
         $this->rceEventListReader = $this->createMock(
-            RceEventListReader::class
+            RceEventListReader::class,
         );
         $this->rceEventListReader->method('getItems')->willReturn($events);
         $updater = $this->createMock(SolrIndexUpdater::class);
@@ -79,7 +79,7 @@ class RceEventIndexerTest extends TestCase
 
         $index = $this->createStub(IndexName::class);
         $this->configLoader = $this->createMock(
-            IndexerConfigurationLoader::class
+            IndexerConfigurationLoader::class,
         );
 
         $this->indexer = new RceEventIndexer(
@@ -90,7 +90,7 @@ class RceEventIndexerTest extends TestCase
             $this->indexService,
             $index,
             $this->configLoader,
-            'test'
+            'test',
         );
     }
 
@@ -119,7 +119,7 @@ class RceEventIndexerTest extends TestCase
     public function testIndexWithoutExportUrl(): void
     {
         $config = $this->createConfig([
-            'exportUrl' => ''
+            'exportUrl' => '',
         ]);
 
         $this->configLoader
@@ -210,7 +210,7 @@ class RceEventIndexerTest extends TestCase
             $endDate,
             false,
             false,
-            false
+            false,
         );
         $addresses = new RceEventAddresses();
         return new RceEventListItem(
@@ -228,7 +228,7 @@ class RceEventIndexerTest extends TestCase
             null,
             $addresses,
             '',
-            []
+            [],
         );
     }
 
@@ -239,18 +239,18 @@ class RceEventIndexerTest extends TestCase
                 'group' => 3,
                 'groupPath' => [1,2,3],
                 'categoryRootResourceLocations' => [
-                    '/path/to/category/root.php'
+                    '/path/to/category/root.php',
                 ],
                 'detailPageUrl' => 'https://www.example.com/detail.php',
                 'cleanupThreshold' => 1,
-                'exportUrl' => 'https://www.example.com/export.zip'
+                'exportUrl' => 'https://www.example.com/export.zip',
             ],
-            $overrides
+            $overrides,
         );
         return new IndexerConfiguration(
             'test',
             'test',
-            new DataBag($data)
+            new DataBag($data),
         );
     }
 }

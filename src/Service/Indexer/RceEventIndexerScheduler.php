@@ -25,11 +25,10 @@ class RceEventIndexerScheduler implements ScheduleProviderInterface
         private string $cron,
         private readonly RceEventIndexer $indexer,
         private readonly LockFactory $lockFactory = new LockFactory(
-            new SemaphoreStore()
+            new SemaphoreStore(),
         ),
         private readonly LoggerInterface $logger = new NullLogger(),
-    ) {
-    }
+    ) {}
 
     public function getSchedule(): Schedule
     {
@@ -37,7 +36,7 @@ class RceEventIndexerScheduler implements ScheduleProviderInterface
             ->add(
                 RecurringMessage::cron($this->cron, new RceEventIndexEvent()),
             )->lock($this->lockFactory->createLock(
-                'rce-event-indexer-scheduler'
+                'rce-event-indexer-scheduler',
             ));
     }
 

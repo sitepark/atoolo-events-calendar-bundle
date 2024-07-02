@@ -28,9 +28,8 @@ class RceEventListItemFactory
     private const YES = 'yes';
 
     public function __construct(
-        private readonly LoggerInterface $logger = new NullLogger()
-    ) {
-    }
+        private readonly LoggerInterface $logger = new NullLogger(),
+    ) {}
 
     public function create(SimpleXMLElement $event): RceEventListItem
     {
@@ -49,7 +48,7 @@ class RceEventListItemFactory
             $this->createSource($event),
             $this->createAddresses($event),
             $this->createKeywords($event),
-            $this->createUploads($event)
+            $this->createUploads($event),
         );
     }
 
@@ -60,12 +59,12 @@ class RceEventListItemFactory
 
     private function createName(SimpleXMLElement $event): string
     {
-        return (string)($event->NAME ?? '');
+        return (string) ($event->NAME ?? '');
     }
 
     private function isActiveEvent(SimpleXMLElement $event): bool
     {
-        $isActive = (string)$event['active'];
+        $isActive = (string) $event['active'];
         $isActive = strtolower($isActive);
         return ($isActive === self::YES);
     }
@@ -83,12 +82,12 @@ class RceEventListItemFactory
         $dateList = [];
         foreach ($event->DATELIST->DATE as $date) {
             $dateList[] = new RceEventDate(
-                (string)$date['hashid'],
+                (string) $date['hashid'],
                 $this->createDateTime($date, 'STARTTIME', '00:00:00'),
                 $this->createDateTime($date, 'ENDTIME', '23:59:59'),
                 $this->isBlacklistedEventDate($date),
                 $this->isSoldOut($date),
-                $this->isCanceled($date)
+                $this->isCanceled($date),
             );
         }
         return $dateList;
@@ -96,7 +95,7 @@ class RceEventListItemFactory
 
     private function createDescription(SimpleXMLElement $event): string
     {
-        $desc = (string)$event->DESCRIPTION;
+        $desc = (string) $event->DESCRIPTION;
         $description = '';
         try {
             $eventDescription = $this->htmlToText($desc);
@@ -113,14 +112,14 @@ class RceEventListItemFactory
                     $description .= $str;
                 }
             }
-        // no test scenario found that triggers this exception.
-        //@codeCoverageIgnoreStart
+            // no test scenario found that triggers this exception.
+            //@codeCoverageIgnoreStart
         } catch (\Exception $e) {
             $this->logger->error(
                 'sanitize description failed',
                 [
-                    'exception' => $e
-                ]
+                    'exception' => $e,
+                ],
             );
         }
         //@codeCoverageIgnoreEnd
@@ -129,11 +128,11 @@ class RceEventListItemFactory
 
     private function isOnline(SimpleXMLElement $event): bool
     {
-        if (!empty((string)$event->TICKETLINK)) {
+        if (!empty((string) $event->TICKETLINK)) {
             return false;
         }
 
-        $eventType = (string)$event[self::EVENT_TYPE_KEY];
+        $eventType = (string) $event[self::EVENT_TYPE_KEY];
         return
             $eventType === self::EVENT_TYPE_VALUE_ONLINE ||
             $eventType === self::EVENT_TYPE_VALUE_HYBRID;
@@ -141,7 +140,7 @@ class RceEventListItemFactory
 
     private function isOnsite(SimpleXMLElement $event): bool
     {
-        $eventType = (string)$event[self::EVENT_TYPE_KEY];
+        $eventType = (string) $event[self::EVENT_TYPE_KEY];
         return $eventType === self::EVENT_TYPE_VALUE_ONSITE;
     }
 
@@ -151,7 +150,7 @@ class RceEventListItemFactory
             return false;
         }
 
-        return ((string)$date->STATUS) === self::SCHEDULE_STATUS_SOLDOUT;
+        return ((string) $date->STATUS) === self::SCHEDULE_STATUS_SOLDOUT;
     }
 
     private function isCanceled(SimpleXMLElement $date): bool
@@ -160,18 +159,18 @@ class RceEventListItemFactory
             return false;
         }
 
-        return ((string)$date->STATUS) === self::SCHEDULE_STATUS_CANCELED;
+        return ((string) $date->STATUS) === self::SCHEDULE_STATUS_CANCELED;
     }
 
     private function isHighlight(SimpleXMLElement $event): bool
     {
-        $highlight = strtolower((string)$event->DESCRIPTION['highlight']);
+        $highlight = strtolower((string) $event->DESCRIPTION['highlight']);
         return $highlight === self::YES;
     }
 
     private function createTicketLink(SimpleXMLElement $event): string
     {
-        return (string)($event->TICKETLINK ?? '');
+        return (string) ($event->TICKETLINK ?? '');
     }
 
     private function createTheme(SimpleXMLElement $event): ?RceEventTheme
@@ -180,8 +179,8 @@ class RceEventListItemFactory
             return null;
         }
         return new RceEventTheme(
-            (string)($event->THEME['id'] ?? ''),
-            (string)($event->THEME ?? '')
+            (string) ($event->THEME['id'] ?? ''),
+            (string) ($event->THEME ?? ''),
         );
     }
 
@@ -191,20 +190,20 @@ class RceEventListItemFactory
             return null;
         }
         return new RceEventTheme(
-            (string)($event->SUBTHEME['id'] ?? ''),
-            (string)($event->SUBTHEME ?? '')
+            (string) ($event->SUBTHEME['id'] ?? ''),
+            (string) ($event->SUBTHEME ?? ''),
         );
     }
 
     private function createKeywords(SimpleXMLElement $event): string
     {
-        return (string)($event->KEYWORD ?? '');
+        return (string) ($event->KEYWORD ?? '');
     }
 
     private function createSource(SimpleXMLElement $event): ?RceEventSource
     {
-        $userId = (string)$event['userid'];
-        $supply = (string)$event['supply'];
+        $userId = (string) $event['userid'];
+        $supply = (string) $event['supply'];
         if (empty($userId) || empty($supply)) {
             return null;
         }
@@ -220,11 +219,11 @@ class RceEventListItemFactory
         $location = null;
         $organizer = null;
         foreach ($event->ADDRESSLIST->ADDRESS as $address) {
-            $type = strtolower((string)$address['type']);
+            $type = strtolower((string) $address['type']);
 
             $address = new RceEventAddress(
-                (string)$address->NAME,
-                (string)$address->GEMKEY,
+                (string) $address->NAME,
+                (string) $address->GEMKEY,
                 (string) $address->STREET,
                 (string) $address->ZIP,
                 (string) $address->CITY,
@@ -253,14 +252,14 @@ class RceEventListItemFactory
         $uploads = [];
 
         foreach ($event->UPLOADLIST->UPLOAD as $upload) {
-            if (empty((string)$upload->URL)) {
+            if (empty((string) $upload->URL)) {
                 continue;
             }
 
             $uploads[] = new RceEventUpload(
-                (string)($upload->NAME ?? ''),
-                (string)$upload->URL,
-                (string)($upload->COPYRIGHT ?? '')
+                (string) ($upload->NAME ?? ''),
+                (string) $upload->URL,
+                (string) ($upload->COPYRIGHT ?? ''),
             );
         }
 
@@ -274,16 +273,16 @@ class RceEventListItemFactory
         }
 
         return Html2Text::convert($html, [
-            'ignore_errors' => true
+            'ignore_errors' => true,
         ]);
     }
 
     private function replaceLineFeeds(string $text): string
     {
-        $text = (string)str_replace(
+        $text = (string) str_replace(
             ["\r\n", "\n\r", "\r"],
             "\n",
-            $text
+            $text,
         ) ?: $text;
         $text = preg_replace('/\n{2,}/', '<br><br>', $text) ?: $text;
         return preg_replace('/\n{1,}/', '<br>', $text) ?: $text;
@@ -292,37 +291,37 @@ class RceEventListItemFactory
     private function isBlacklistedEventDate(SimpleXMLElement $date): bool
     {
         return !empty($date->BLACKLISTLIST[0]->BLACKLIST) &&
-            (string)$date->BLACKLISTLIST[0]->BLACKLIST === self::YES;
+            (string) $date->BLACKLISTLIST[0]->BLACKLIST === self::YES;
     }
 
     private function createDateTime(
         SimpleXMLElement $xml,
         string $field,
-        string $defaultTime
+        string $defaultTime,
     ): DateTime {
-        $date = (string)$xml->STARTDATE;
+        $date = (string) $xml->STARTDATE;
         if (empty($date)) {
             $empty = new DateTime();
             $empty->setTimestamp(0);
             return $empty;
         }
 
-        $time = (string)$xml->$field;
+        $time = (string) $xml->$field;
         if (empty($time)) {
             $time = $defaultTime;
         }
 
         $datetime = DateTime::createFromFormat(
             'Y-m-d H:i:s',
-            $date . ' ' . $time
+            $date . ' ' . $time,
         );
         if ($datetime === false) {
             $this->logger->error(
                 'failed to create date from format',
                 [
                     'date' => $date,
-                    'field' => $field
-                ]
+                    'field' => $field,
+                ],
             );
             $empty = new DateTime();
             $empty->setTimestamp(0);

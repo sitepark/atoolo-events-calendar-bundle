@@ -78,7 +78,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
             $event,
             $event->dates[0],
             $doc,
-            'process-id'
+            'process-id',
         );
 
         $expected = new IndexSchema2xDocument();
@@ -96,7 +96,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
             'schedule',
             'schedule_single',
             'schedule_start',
-            'schedule_end'
+            'schedule_end',
         ];
         $expected->sp_changed = $event->dates[0]->startDate;
         $expected->sp_date = $event->dates[0]->startDate;
@@ -113,7 +113,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
             'location-name location-street location-zip location-city';
         $expected->setMetaString(
             'event_ticketLink',
-            'https://www.example.com/ticket'
+            'https://www.example.com/ticket',
         );
         $expected->setMetaBool('event_onlineEvent', true);
         $expected->setMetaString('imageUrl', []);
@@ -127,7 +127,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
         $this->assertEquals(
             $expected,
             $enrichedDoc,
-            'Document should be enriched with the correct data.'
+            'Document should be enriched with the correct data.',
         );
     }
 
@@ -142,13 +142,13 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
             $event,
             $event->dates[0],
             $doc,
-            'process-id'
+            'process-id',
         );
 
         $fields = $enrichedDoc->getFields();
         $this->assertEquals(
             'https://www.example.com/ticket',
-            $fields['sp_meta_string_event_streamingLink']
+            $fields['sp_meta_string_event_streamingLink'],
         );
     }
 
@@ -157,7 +157,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
         $theme = new RceEventTheme('1', 'Ausstellung');
         $event = $this->createEvent(
             false,
-            $theme
+            $theme,
         );
 
         $doc = new IndexSchema2xDocument();
@@ -167,19 +167,19 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
             $event,
             $event->dates[0],
             $doc,
-            'process-id'
+            'process-id',
         );
 
         $fields = $enrichedDoc->getFields();
         $expected = [
             'sp_meta_string_kicker' => 'Ausstellung',
             'sp_category' => [12, 11],
-            'sp_category_path' => [10, 12, 10, 11]
+            'sp_category_path' => [10, 12, 10, 11],
         ];
 
         $this->assertEquals(
             $expected,
-            @array_intersect_assoc($fields, $expected)
+            @array_intersect_assoc($fields, $expected),
         );
     }
 
@@ -188,7 +188,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
         $theme = new RceEventTheme('1', 'Abc');
         $event = $this->createEvent(
             false,
-            $theme
+            $theme,
         );
 
         $doc = new IndexSchema2xDocument();
@@ -198,18 +198,18 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
             $event,
             $event->dates[0],
             $doc,
-            'process-id'
+            'process-id',
         );
 
         $fields = $enrichedDoc->getFields();
         $expected = [
             'sp_category' => [11],
-            'sp_category_path' => [10, 11]
+            'sp_category_path' => [10, 11],
         ];
 
         $this->assertEquals(
             $expected,
-            @array_intersect_assoc($fields, $expected)
+            @array_intersect_assoc($fields, $expected),
         );
     }
 
@@ -221,7 +221,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
         $event = $this->createEvent(
             false,
             $theme,
-            $subTheme
+            $subTheme,
         );
 
         $doc = new IndexSchema2xDocument();
@@ -231,19 +231,19 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
             $event,
             $event->dates[0],
             $doc,
-            'process-id'
+            'process-id',
         );
 
         $fields = $enrichedDoc->getFields();
         $expected = [
             'sp_meta_string_kicker' => 'Ausstellung',
             'sp_category' => [13, 11],
-            'sp_category_path' => [10, 12, 13, 10, 11]
+            'sp_category_path' => [10, 12, 13, 10, 11],
         ];
 
         $this->assertEquals(
             $expected,
-            @array_intersect_assoc($fields, $expected)
+            @array_intersect_assoc($fields, $expected),
         );
     }
 
@@ -254,7 +254,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
         $event = $this->createEvent(
             false,
             $theme,
-            $subTheme
+            $subTheme,
         );
 
         $doc = new IndexSchema2xDocument();
@@ -264,19 +264,19 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
             $event,
             $event->dates[0],
             $doc,
-            'process-id'
+            'process-id',
         );
 
         $fields = $enrichedDoc->getFields();
         $expected = [
             'sp_meta_string_kicker' => 'Ausstellung',
             'sp_category' => [15, 11],
-            'sp_category_path' => [10, 11]
+            'sp_category_path' => [10, 11],
         ];
 
         $this->assertEquals(
             $expected,
-            @array_intersect_assoc($fields, $expected)
+            @array_intersect_assoc($fields, $expected),
         );
     }
 
@@ -287,7 +287,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
         $event = $this->createEvent(
             false,
             $theme,
-            $subTheme
+            $subTheme,
         );
 
         $doc = new IndexSchema2xDocument();
@@ -297,19 +297,19 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
             $event,
             $event->dates[0],
             $doc,
-            'process-id'
+            'process-id',
         );
 
         $fields = $enrichedDoc->getFields();
         $expected = [
             'sp_meta_string_kicker' => 'Ausstellung',
             'sp_category' => [12, 11],
-            'sp_category_path' => [10, 12, 10, 11]
+            'sp_category_path' => [10, 12, 10, 11],
         ];
 
         $this->assertEquals(
             $expected,
-            @array_intersect_assoc($fields, $expected)
+            @array_intersect_assoc($fields, $expected),
         );
     }
 
@@ -320,7 +320,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
         $event = $this->createEvent(
             false,
             $theme,
-            $subTheme
+            $subTheme,
         );
 
         $doc = new IndexSchema2xDocument();
@@ -330,18 +330,18 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
             $event,
             $event->dates[0],
             $doc,
-            'process-id'
+            'process-id',
         );
 
         $fields = $enrichedDoc->getFields();
         $expected = [
             'sp_category' => [13, 11],
-            'sp_category_path' => [10, 12, 13, 10, 11]
+            'sp_category_path' => [10, 12, 13, 10, 11],
         ];
 
         $this->assertEquals(
             $expected,
-            @array_intersect_assoc($fields, $expected)
+            @array_intersect_assoc($fields, $expected),
         );
     }
 
@@ -352,7 +352,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
         $event = $this->createEvent(
             false,
             $theme,
-            $subTheme
+            $subTheme,
         );
 
         $doc = new IndexSchema2xDocument();
@@ -362,19 +362,19 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
             $event,
             $event->dates[0],
             $doc,
-            'process-id'
+            'process-id',
         );
 
         $fields = $enrichedDoc->getFields();
         $expected = [
             'sp_meta_string_kicker' => 'Ausstellung',
             'sp_category' => [14, 12, 11],
-            'sp_category_path' => [10, 14, 10, 12, 10, 11]
+            'sp_category_path' => [10, 14, 10, 12, 10, 11],
         ];
 
         $this->assertEquals(
             $expected,
-            @array_intersect_assoc($fields, $expected)
+            @array_intersect_assoc($fields, $expected),
         );
     }
 
@@ -385,7 +385,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
             false,
             null,
             null,
-            $source
+            $source,
         );
 
         $doc = new IndexSchema2xDocument();
@@ -395,25 +395,25 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
             $event,
             $event->dates[0],
             $doc,
-            'process-id'
+            'process-id',
         );
 
         $fields = $enrichedDoc->getFields();
         $expected = [
             'sp_category' => [11, 21],
-            'sp_category_path' => [10, 11, 20, 21]
+            'sp_category_path' => [10, 11, 20, 21],
         ];
 
         $this->assertEquals(
             $expected,
-            @array_intersect_assoc($fields, $expected)
+            @array_intersect_assoc($fields, $expected),
         );
     }
     public function createEvent(
         bool $online = false,
         RceEventTheme $theme = null,
         RceEventTheme $subTheme = null,
-        RceEventSource $source = null
+        RceEventSource $source = null,
     ): RceEventListItem {
         $startDate = new DateTime();
         $startDate->setDate(2024, 6, 25);
@@ -429,7 +429,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
             $endDate,
             false,
             true,
-            true
+            true,
         );
         $addresses = new RceEventAddresses(
             new RceEventAddress(
@@ -437,15 +437,15 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
                 'location-gemkey',
                 'location-street',
                 'location-zip',
-                'location-city'
+                'location-city',
             ),
             new RceEventAddress(
                 'organizer-name',
                 'organizer-gemkey',
                 'organizer-street',
                 'organizer-zip',
-                'organizer-city'
-            )
+                'organizer-city',
+            ),
         );
 
         $upload = new RceEventUpload(
@@ -478,7 +478,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
             $source,
             $addresses,
             'keyword',
-            [$upload, $unsupportedUpload, $noDotUpload]
+            [$upload, $unsupportedUpload, $noDotUpload],
         );
     }
 
@@ -495,37 +495,37 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
             ->willReturnCallback(
                 function (ResourceLocation $location) use ($resourceMap) {
                     return $resourceMap[$location->location];
-                }
+                },
             );
 
         $childrenResourceMap = $this->childrenResourceMap;
         $loader->method('getChildrenLocations')
             ->willReturnCallback(
                 function (
-                    Resource $resource
+                    Resource $resource,
                 ) use ($childrenResourceMap) {
                     return $childrenResourceMap[$resource->location] ?? [];
-                }
+                },
             );
 
         $primaryPathMap = $this->primaryPathMap;
         $loader->method('loadPrimaryPath')
             ->willReturnCallback(
                 function (
-                    ResourceLocation $location
+                    ResourceLocation $location,
                 ) use ($primaryPathMap) {
                     return $primaryPathMap[$location->location];
-                }
+                },
             );
 
         $loader->method('loadPrimaryParent')
             ->willReturnCallback(
                 function (
-                    ResourceLocation $location
+                    ResourceLocation $location,
                 ) use ($primaryPathMap) {
                     $parentPath = $primaryPathMap[$location->location];
                     return $parentPath[count($parentPath) - 2] ?? null;
-                }
+                },
             );
 
         return $loader;
@@ -537,37 +537,37 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
             '10',
             '/category/type/root.php',
             'type-root',
-            'type-root'
+            'type-root',
         );
         $highlight = $this->createResource(
             '11',
             '/category/type/highlight.php',
             'rce.type.highlight',
-            'Highlight'
+            'Highlight',
         );
         $ausstellung = $this->createResource(
             '12',
             '/category/type/ausstellung.php',
             'rce.type.ausstellung',
-            'Ausstellung'
+            'Ausstellung',
         );
         $filmMedien = $this->createResource(
             '13',
             '/category/type/film-medien.php',
             'rce.type.film-medien',
-            'Film & Medien'
+            'Film & Medien',
         );
         $konzert = $this->createResource(
             '14',
             '/category/type/konzert.php',
             'rce.type.konzert',
-            'Konzert'
+            'Konzert',
         );
         $noParent = $this->createResource(
             '15',
             '/category/type/no-parent.php',
             'rce.type.no-parent',
-            'No Parent'
+            'No Parent',
         );
 
         $this->rootResources[] = $root->location;
@@ -583,10 +583,10 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
             $ausstellung,
             $filmMedien,
             $konzert,
-            $noParent
+            $noParent,
         ];
         $this->childrenResourceMap[$ausstellung->location] = [
-            $filmMedien
+            $filmMedien,
         ];
 
         $this->primaryPathMap[$root->location] = [$root];
@@ -605,7 +605,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
         $this->primaryPathMap[$filmMedien->location] = [
             $root,
             $ausstellung,
-            $filmMedien
+            $filmMedien,
         ];
         $this->primaryPathMap[$noParent->location] = [];
     }
@@ -616,13 +616,13 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
             '20',
             '/category/source/root.php',
             'source-root',
-            'source-root'
+            'source-root',
         );
         $staatstheaterKassel = $this->createResource(
             '21',
             '/category/source/staatstheater-kassel.php',
             'rce.source.1361',
-            'Staatstheater Kassel'
+            'Staatstheater Kassel',
         );
 
         $this->rootResources[] = $root->location;
@@ -630,12 +630,12 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
         $this->resourceMap[$staatstheaterKassel->location] =
             $staatstheaterKassel;
         $this->childrenResourceMap[$root->location] = [
-            $staatstheaterKassel
+            $staatstheaterKassel,
         ];
         $this->primaryPathMap[$root->location] = [$root];
         $this->primaryPathMap[$staatstheaterKassel->location] = [
             $root,
-            $staatstheaterKassel
+            $staatstheaterKassel,
         ];
     }
 
@@ -645,7 +645,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
             '30',
             '/category/gem/root.php',
             'gem-root',
-            'gem-root'
+            'gem-root',
         );
 
         $this->rootResources[] = $root->location;
@@ -659,7 +659,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
         string $id,
         string $location,
         string $anchor,
-        string $name
+        string $name,
     ): Resource {
         return new Resource(
             $location,
@@ -668,8 +668,8 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
             'objectType',
             ResourceLanguage::default(),
             new DataBag([
-                'anchor' => $anchor
-            ])
+                'anchor' => $anchor,
+            ]),
         );
     }
 }

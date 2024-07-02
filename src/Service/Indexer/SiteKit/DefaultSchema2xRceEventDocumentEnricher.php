@@ -30,13 +30,12 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         'jpeg',
         'png',
         'gif',
-        'bmp'
+        'bmp',
     ];
 
     public function __construct(
         private readonly ResourceHierarchyLoader $categoryLoader,
-    ) {
-    }
+    ) {}
 
     public function cleanup(): void
     {
@@ -48,7 +47,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         RceEventListItem $event,
         RceEventDate $eventDate,
         IndexDocument $doc,
-        string $processId
+        string $processId,
     ): IndexDocument {
 
         $url = $parameter->detailPageUrl . '?id=' . $eventDate->hashId;
@@ -101,18 +100,18 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         if ($event->addresses->location !== null) {
             $doc->setMetaString(
                 'event_location',
-                $event->addresses->location->name
+                $event->addresses->location->name,
             );
             $doc->setMetaText(
                 'event_rce_location',
-                $event->addresses->location->name
+                $event->addresses->location->name,
             );
         }
 
         if ($event->addresses->organizer !== null) {
             $doc->setMetaText(
                 'event_rce_organizer',
-                $event->addresses->organizer->name
+                $event->addresses->organizer->name,
             );
         }
 
@@ -129,7 +128,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
             $cleanContent = preg_replace(
                 '/\s+/',
                 ' ',
-                implode(' ', $content)
+                implode(' ', $content),
             );
             $doc->content = $cleanContent;
         }
@@ -143,7 +142,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         }
         $doc->setMetaString(
             'imageUrl',
-            $imagesUrls
+            $imagesUrls,
         );
 
         $doc->contenttype = 'text/html; charset=UTF-8';
@@ -152,7 +151,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
             'schedule',
             'schedule_single',
             'schedule_start',
-            'schedule_end'
+            'schedule_end',
         ];
         $doc->sp_contenttype = $spContentTypes;
 
@@ -163,7 +162,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         $doc = $this->enrichCategories(
             $parameter,
             $event,
-            $doc
+            $doc,
         );
 
         return $doc;
@@ -177,7 +176,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
     private function enrichCategories(
         RceEventIndexerParameter $parameter,
         RceEventListItem $event,
-        IndexDocument $doc
+        IndexDocument $doc,
     ): IndexDocument {
 
         if ($event->theme !== null) {
@@ -185,14 +184,14 @@ class DefaultSchema2xRceEventDocumentEnricher implements
                 $doc = $this->enrichTheme(
                     $parameter,
                     $event->theme,
-                    $doc
+                    $doc,
                 );
             } else {
                 $doc = $this->enrichSubTheme(
                     $parameter,
                     $event->theme,
                     $event->subTheme,
-                    $doc
+                    $doc,
                 );
             }
         }
@@ -201,7 +200,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
             $doc = $this->enrichCategoryByAnchor(
                 $doc,
                 $parameter,
-                'rce.type.highlight'
+                'rce.type.highlight',
             );
         }
 
@@ -209,7 +208,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
             $doc = $this->enrichCategoryByAnchor(
                 $doc,
                 $parameter,
-                'rce.source.' . $event->source->userId
+                'rce.source.' . $event->source->userId,
             );
         }
 
@@ -220,7 +219,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
             $doc = $this->enrichCategoryByAnchor(
                 $doc,
                 $parameter,
-                'rce.gemkey.' . $event->addresses->location->gemkey
+                'rce.gemkey.' . $event->addresses->location->gemkey,
             );
         }
 
@@ -231,7 +230,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
             $doc = $this->enrichCategoryByAnchor(
                 $doc,
                 $parameter,
-                'rce.gemkey.' . $event->addresses->organizer->gemkey
+                'rce.gemkey.' . $event->addresses->organizer->gemkey,
             );
         }
 
@@ -246,12 +245,12 @@ class DefaultSchema2xRceEventDocumentEnricher implements
     private function enrichTheme(
         RceEventIndexerParameter $preset,
         RceEventTheme $theme,
-        IndexDocument $doc
+        IndexDocument $doc,
     ): IndexDocument {
 
         $resource = $this->findCategoryByAnchor(
             $preset->categoryRootResourceLocations,
-            'rce.type.' . $theme->getKey()
+            'rce.type.' . $theme->getKey(),
         );
 
         if ($resource === null) {
@@ -260,7 +259,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
 
         $doc->sp_category = array_merge(
             $doc->sp_category ?? [],
-            [$resource->id]
+            [$resource->id],
         );
 
         $doc = $this->enrichCategoryPath($doc, $resource);
@@ -287,16 +286,16 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         RceEventIndexerParameter $preset,
         RceEventTheme $theme,
         RceEventTheme $subTheme,
-        IndexDocument $doc
+        IndexDocument $doc,
     ): IndexDocument {
 
         $themeResource = $this->findCategoryByAnchor(
             $preset->categoryRootResourceLocations,
-            'rce.type.' . $theme->getKey()
+            'rce.type.' . $theme->getKey(),
         );
         $subThemeResource = $this->findCategoryByAnchor(
             $preset->categoryRootResourceLocations,
-            'rce.type.' . $subTheme->getKey()
+            'rce.type.' . $subTheme->getKey(),
         );
 
         if ($subThemeResource === null) {
@@ -304,7 +303,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
                 $doc = $this->enrichTheme(
                     $preset,
                     $theme,
-                    $doc
+                    $doc,
                 );
             }
             return $doc;
@@ -312,7 +311,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
 
         $doc->sp_category = array_merge(
             $doc->sp_category ?? [],
-            [$subThemeResource->id]
+            [$subThemeResource->id],
         );
 
         $this->enrichCategoryPath($doc, $subThemeResource);
@@ -322,7 +321,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         }
 
         $parent = $this->categoryLoader->loadPrimaryParent(
-            $subThemeResource->toLocation()
+            $subThemeResource->toLocation(),
         );
         if ($parent === null) {
             return $doc;
@@ -335,7 +334,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         if ($parent->id !== $themeResource->id) {
             $doc->sp_category = array_merge(
                 $doc->sp_category ?? [],
-                [$themeResource->id]
+                [$themeResource->id],
             );
             $doc = $this->enrichCategoryPath($doc, $themeResource);
         }
@@ -351,11 +350,11 @@ class DefaultSchema2xRceEventDocumentEnricher implements
     private function enrichCategoryByAnchor(
         IndexDocument $doc,
         RceEventIndexerParameter $parameter,
-        string $anchor
+        string $anchor,
     ): IndexDocument {
         $category = $this->findCategoryByAnchor(
             $parameter->categoryRootResourceLocations,
-            $anchor
+            $anchor,
         );
 
         if ($category === null) {
@@ -364,7 +363,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
 
         $doc->sp_category = array_merge(
             $doc->sp_category ?? [],
-            [$category->id]
+            [$category->id],
         );
 
         $this->enrichCategoryPath($doc, $category);
@@ -379,10 +378,10 @@ class DefaultSchema2xRceEventDocumentEnricher implements
      */
     private function enrichCategoryPath(
         IndexDocument $doc,
-        Resource $category
+        Resource $category,
     ): IndexDocument {
         $path = $this->categoryLoader->loadPrimaryPath(
-            $category->toLocation()
+            $category->toLocation(),
         );
         $categoryPath = [];
         foreach ($path as $resource) {
@@ -390,7 +389,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         }
         $doc->sp_category_path = array_merge(
             $doc->sp_category_path ?? [],
-            $categoryPath
+            $categoryPath,
         );
         return $doc;
     }
@@ -402,7 +401,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
      */
     private function findCategoryByAnchor(
         array $categoryRootResourceLocations,
-        string $anchor
+        string $anchor,
     ): ?Resource {
         foreach ($categoryRootResourceLocations as $path) {
             $location = ResourceLocation::of($path);
@@ -413,7 +412,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
                     $resourceAnchor =
                         $resource->data->getString('anchor');
                     return $resourceAnchor === $anchor;
-                }
+                },
             );
             if ($resource !== null) {
                 return $resource;
@@ -435,7 +434,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         return in_array(
             $suffix,
             $this->supportedImageExtensions,
-            true
+            true,
         );
     }
 }

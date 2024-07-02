@@ -20,7 +20,6 @@ class RceEventIndexerParameter
         public readonly array $groupPath,
         public readonly array $categoryRootResourceLocations,
         public readonly int $cleanupThreshold,
-        public readonly string $exportUrl
-    ) {
-    }
+        public readonly string $exportUrl,
+    ) {}
 }
