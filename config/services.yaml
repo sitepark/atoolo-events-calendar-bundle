@@ -36,7 +36,7 @@ services:
       - '@atoolo_search.indexer.status_store'
       - 'rce-event'
 
-  atoolo_events_calendar.indexer.rceEventFilter:
+  atoolo_events_calendar.indexer.rce_event_filter:
     class: Atoolo\EventsCalendar\Service\Indexer\RceEventIndexerDateFilter
 
   Atoolo\EventsCalendar\Service\Indexer\RceEventIndexer:
@@ -48,7 +48,7 @@ services:
       - '@atoolo_search.indexer.solr_index_service'
       - '@atoolo_search.index_name'
       - '@atoolo_search.indexer.configuration_loader'
-      - '@atoolo_events_calendar.indexer.rceEventFilter'
+      - '@atoolo_events_calendar.indexer.rce_event_filter'
       - 'rce-event'
     tags:
       - { name: 'atoolo_search.indexer', priority: 10 }
