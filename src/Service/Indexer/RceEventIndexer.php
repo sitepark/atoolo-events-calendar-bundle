@@ -20,7 +20,6 @@ use Atoolo\Search\Service\Indexer\IndexSchema2xDocument;
 use Atoolo\Search\Service\Indexer\SolrIndexService;
 use Atoolo\Search\Service\Indexer\SolrIndexUpdater;
 use Atoolo\Search\Service\IndexName;
-use DateTime;
 use Exception;
 use Throwable;
 
@@ -153,8 +152,6 @@ class RceEventIndexer extends AbstractIndexer
     ): int {
 
         $count = 0;
-        $startOfToday = new DateTime();
-        $startOfToday->setTime(0, 0);
         foreach ($event->dates as $eventDate) {
             if ($this->filter->accept($event, $eventDate) === false) {
                 $this->progressHandler->skip(1);
