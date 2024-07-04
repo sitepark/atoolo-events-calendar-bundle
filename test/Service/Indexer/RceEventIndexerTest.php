@@ -9,6 +9,7 @@ use Atoolo\EventsCalendar\Dto\RceEvent\RceEventDate;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventListItem;
 use Atoolo\EventsCalendar\Service\Indexer\RceEventDocumentEnricher;
 use Atoolo\EventsCalendar\Service\Indexer\RceEventIndexer;
+use Atoolo\EventsCalendar\Service\Indexer\RceEventIndexerFilter;
 use Atoolo\EventsCalendar\Service\RceEvent\RceEventListReader;
 use Atoolo\Resource\DataBag;
 use Atoolo\Search\Dto\Indexer\IndexerConfiguration;
@@ -21,6 +22,7 @@ use Atoolo\Search\Service\Indexer\SolrIndexUpdater;
 use Atoolo\Search\Service\IndexName;
 use DateTime;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
@@ -30,6 +32,8 @@ use Solarium\QueryType\Update\Result as UpdateResult;
 class RceEventIndexerTest extends TestCase
 {
     private RceEventIndexer $indexer;
+
+    private RceEventIndexerFilter&Stub $filter;
 
     private SolrIndexService&MockObject $indexService;
 
@@ -45,6 +49,9 @@ class RceEventIndexerTest extends TestCase
 
     private UpdateResult&Stub $updateResult;
 
+    /**
+     * @throws Exception
+     */
     public function setUp(): void
     {
         $doc = $this->createStub(IndexSchema2xDocument::class);
@@ -81,6 +88,7 @@ class RceEventIndexerTest extends TestCase
         $this->configLoader = $this->createMock(
             IndexerConfigurationLoader::class,
         );
+        $this->filter = $this->createStub(RceEventIndexerFilter::class);
 
         $this->indexer = new RceEventIndexer(
             $documentEnricherList,
@@ -90,6 +98,7 @@ class RceEventIndexerTest extends TestCase
             $this->indexService,
             $index,
             $this->configLoader,
+            $this->filter,
             'test',
         );
     }
@@ -112,6 +121,9 @@ class RceEventIndexerTest extends TestCase
         $this->configLoader
             ->expects($this->once())
             ->method('load');
+        $this->filter
+            ->method('accept')
+            ->willReturn(true);
 
         $this->indexer->index();
     }
@@ -166,6 +178,10 @@ class RceEventIndexerTest extends TestCase
 
         $this->progressHandler->expects($this->exactly(2))
             ->method('error');
+
+        $this->filter
+            ->method('accept')
+            ->willReturn(true);
 
         $this->indexer->index();
     }
@@ -236,12 +252,17 @@ class RceEventIndexerTest extends TestCase
     {
         $data = array_merge(
             [
-                'group' => 3,
-                'groupPath' => [1,2,3],
+                'instanceList' => [
+                    [
+                        'id' => 1,
+                        'detailPageUrl' => 'https://www.example.com/detail.php',
+                        'group' => 3,
+                        'groupPath' => [1,2,3],
+                    ],
+                ],
                 'categoryRootResourceLocations' => [
                     '/path/to/category/root.php',
                 ],
-                'detailPageUrl' => 'https://www.example.com/detail.php',
                 'cleanupThreshold' => 1,
                 'exportUrl' => 'https://www.example.com/export.zip',
             ],

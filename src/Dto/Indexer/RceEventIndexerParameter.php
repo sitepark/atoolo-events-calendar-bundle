@@ -11,13 +11,12 @@ class RceEventIndexerParameter
 {
     /**
      * @param int[] $groupPath
-     * @param string[] $categoryRootResourceLocations
+     * @param array<RceEventIndexerInstance> $instanceList
+     * @param array<string> $categoryRootResourceLocations
      */
     public function __construct(
         public readonly string $source,
-        public readonly string $detailPageUrl,
-        public readonly int $group,
-        public readonly array $groupPath,
+        public readonly array $instanceList,
         public readonly array $categoryRootResourceLocations,
         public readonly int $cleanupThreshold,
         public readonly string $exportUrl,

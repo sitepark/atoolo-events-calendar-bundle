@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Atoolo\EventsCalendar\Service\Indexer\SiteKit;
 
+use Atoolo\EventsCalendar\Dto\Indexer\RceEventIndexerInstance;
 use Atoolo\EventsCalendar\Dto\Indexer\RceEventIndexerParameter;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventDate;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventListItem;
@@ -44,15 +45,18 @@ class DefaultSchema2xRceEventDocumentEnricher implements
 
     public function enrichDocument(
         RceEventIndexerParameter $parameter,
+        RceEventIndexerInstance $instance,
         RceEventListItem $event,
         RceEventDate $eventDate,
         IndexDocument $doc,
         string $processId,
     ): IndexDocument {
 
-        $url = $parameter->detailPageUrl . '?id=' . $eventDate->hashId;
+        $url = $instance->detailPageUrl . '?id=' . $eventDate->hashId;
 
         $doc->id = $parameter->source
+            . '-'
+            . $instance->id
             . '-'
             . $event->id
             . '-'
@@ -67,9 +71,9 @@ class DefaultSchema2xRceEventDocumentEnricher implements
 
         $doc->crawl_process_id = $processId;
 
-        $doc->sp_group = $parameter->group;
-        if (!empty($parameter->groupPath)) {
-            $doc->sp_group_path = $parameter->groupPath;
+        $doc->sp_group = $instance->group;
+        if (!empty($instance->groupPath)) {
+            $doc->sp_group_path = $instance->groupPath;
         }
 
         if ($event->onsite) {
