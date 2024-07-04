@@ -11,6 +11,6 @@ interface RceEventIndexerFilter
 {
     public function accept(
         RceEventListItem $event,
-        RceEventDate $eventDate
+        RceEventDate $eventDate,
     ): bool;
 }
