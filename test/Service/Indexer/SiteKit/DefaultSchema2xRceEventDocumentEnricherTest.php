@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Atoolo\EventsCalendar\Test\Service\Indexer\SiteKit;
 
+use Atoolo\EventsCalendar\Dto\Indexer\RceEventIndexerInstance;
 use Atoolo\EventsCalendar\Dto\Indexer\RceEventIndexerParameter;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventAddress;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventAddresses;
@@ -44,11 +45,15 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
     {
         $loader = $this->createHierarchyLoader();
 
-        $this->parameter = new RceEventIndexerParameter(
-            'test',
+        $instance = new RceEventIndexerInstance(
+            1,
             'https://www.example.com/details.php',
             3,
             [1, 2, 3],
+        );
+        $this->parameter = new RceEventIndexerParameter(
+            'test',
+            [$instance],
             $this->rootResources,
             1,
             '',
@@ -75,6 +80,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
         $enrichedDoc = $this->enricher->enrichDocument(
             $this->parameter,
+            $this->parameter->instanceList[0],
             $event,
             $event->dates[0],
             $doc,
@@ -88,7 +94,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
         $expected->sp_sortvalue = 'myname';
         $expected->description = 'description';
         $expected->crawl_process_id = 'process-id';
-        $expected->id = 'test-123-hash';
+        $expected->id = 'test-1-123-hash';
         $expected->url = 'https://www.example.com/details.php?id=hash';
         $expected->contenttype = 'text/html; charset=UTF-8';
         $expected->sp_contenttype = [
@@ -139,6 +145,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
         $enrichedDoc = $this->enricher->enrichDocument(
             $this->parameter,
+            $this->parameter->instanceList[0],
             $event,
             $event->dates[0],
             $doc,
@@ -164,6 +171,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
         $enrichedDoc = $this->enricher->enrichDocument(
             $this->parameter,
+            $this->parameter->instanceList[0],
             $event,
             $event->dates[0],
             $doc,
@@ -195,6 +203,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
         $enrichedDoc = $this->enricher->enrichDocument(
             $this->parameter,
+            $this->parameter->instanceList[0],
             $event,
             $event->dates[0],
             $doc,
@@ -228,6 +237,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
         $enrichedDoc = $this->enricher->enrichDocument(
             $this->parameter,
+            $this->parameter->instanceList[0],
             $event,
             $event->dates[0],
             $doc,
@@ -261,6 +271,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
         $enrichedDoc = $this->enricher->enrichDocument(
             $this->parameter,
+            $this->parameter->instanceList[0],
             $event,
             $event->dates[0],
             $doc,
@@ -294,6 +305,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
         $enrichedDoc = $this->enricher->enrichDocument(
             $this->parameter,
+            $this->parameter->instanceList[0],
             $event,
             $event->dates[0],
             $doc,
@@ -327,6 +339,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
         $enrichedDoc = $this->enricher->enrichDocument(
             $this->parameter,
+            $this->parameter->instanceList[0],
             $event,
             $event->dates[0],
             $doc,
@@ -359,6 +372,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
         $enrichedDoc = $this->enricher->enrichDocument(
             $this->parameter,
+            $this->parameter->instanceList[0],
             $event,
             $event->dates[0],
             $doc,
@@ -392,6 +406,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
         $enrichedDoc = $this->enricher->enrichDocument(
             $this->parameter,
+            $this->parameter->instanceList[0],
             $event,
             $event->dates[0],
             $doc,

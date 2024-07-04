@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Atoolo\EventsCalendar\Service\Indexer;
 
+use Atoolo\EventsCalendar\Dto\Indexer\RceEventIndexerInstance;
 use Atoolo\EventsCalendar\Dto\Indexer\RceEventIndexerParameter;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventDate;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventListItem;
@@ -19,6 +20,7 @@ use Atoolo\Search\Service\Indexer\IndexSchema2xDocument;
 use Atoolo\Search\Service\Indexer\SolrIndexService;
 use Atoolo\Search\Service\Indexer\SolrIndexUpdater;
 use Atoolo\Search\Service\IndexName;
+use DateTime;
 use Exception;
 use Throwable;
 
@@ -36,6 +38,7 @@ class RceEventIndexer extends AbstractIndexer
         private readonly SolrIndexService $indexService,
         IndexName $index,
         IndexerConfigurationLoader $configLoader,
+        private readonly RceEventIndexerFilter $filter,
         string $source,
     ) {
         parent::__construct(
@@ -58,25 +61,30 @@ class RceEventIndexer extends AbstractIndexer
 
         $this->rceEventListReader->read($parameter->exportUrl);
 
-        $this->progressHandler->start($this->countEventDates());
+        $this->progressHandler->start(
+            $this->countEventDates() * count($parameter->instanceList),
+        );
 
         $updater = $this->indexService->updater(ResourceLanguage::default());
 
         $processId = uniqid('', true);
         $successCount = 0;
 
-        foreach ($this->rceEventListReader->getItems() as $rceEvent) {
-            if (
-                $this->isAbortionRequested()
-            ) {
-                return $this->progressHandler->getStatus();
+        foreach ($parameter->instanceList as $instance) {
+            foreach ($this->rceEventListReader->getItems() as $rceEvent) {
+                if (
+                    $this->isAbortionRequested()
+                ) {
+                    return $this->progressHandler->getStatus();
+                }
+                $successCount += $this->indexEvent(
+                    $updater,
+                    $parameter,
+                    $instance,
+                    $rceEvent,
+                    $processId,
+                );
             }
-            $successCount += $this->indexEvent(
-                $updater,
-                $parameter,
-                $rceEvent,
-                $processId,
-            );
         }
 
         $result = $updater->update();
@@ -117,11 +125,19 @@ class RceEventIndexer extends AbstractIndexer
         $categoryRootResourceLocations =
             $data->getArray('categoryRootResourceLocations');
 
+        $instanceList = [];
+        foreach ($data->getArray('instanceList') as $instance) {
+            $instanceList[] = new RceEventIndexerInstance(
+                $instance['id'],
+                $instance['detailPageUrl'],
+                $instance['group'],
+                $instance['groupPath'],
+            );
+        }
+
         return new RceEventIndexerParameter(
             source: $this->source,
-            detailPageUrl: $data->getString('detailPageUrl'),
-            group: $data->getInt('group'),
-            groupPath: $groupPath,
+            instanceList: $instanceList,
             categoryRootResourceLocations: $categoryRootResourceLocations,
             cleanupThreshold: $data->getInt('cleanupThreshold'),
             exportUrl: $data->getString('exportUrl'),
@@ -131,15 +147,23 @@ class RceEventIndexer extends AbstractIndexer
     private function indexEvent(
         SolrIndexUpdater $updater,
         RceEventIndexerParameter $parameter,
+        RceEventIndexerInstance $instance,
         RceEventListItem $event,
         string $processId,
     ): int {
 
         $count = 0;
+        $startOfToday = new DateTime();
+        $startOfToday->setTime(0, 0);
         foreach ($event->dates as $eventDate) {
+            if ($this->filter->accept($event, $eventDate) === false) {
+                $this->progressHandler->skip(1);
+                continue;
+            }
             $count += $this->indexEventDate(
                 $updater,
                 $parameter,
+                $instance,
                 $event,
                 $eventDate,
                 $processId,
@@ -151,6 +175,7 @@ class RceEventIndexer extends AbstractIndexer
     private function indexEventDate(
         SolrIndexUpdater $updater,
         RceEventIndexerParameter $parameter,
+        RceEventIndexerInstance $instance,
         RceEventListItem $event,
         RceEventDate $eventDate,
         string $processId,
@@ -166,6 +191,7 @@ class RceEventIndexer extends AbstractIndexer
                 /** @var IndexSchema2xDocument $doc */
                 $doc = $enricher->enrichDocument(
                     $parameter,
+                    $instance,
                     $event,
                     $eventDate,
                     $doc,

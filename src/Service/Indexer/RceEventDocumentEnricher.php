@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Atoolo\EventsCalendar\Service\Indexer;
 
+use Atoolo\EventsCalendar\Dto\Indexer\RceEventIndexerInstance;
 use Atoolo\EventsCalendar\Dto\Indexer\RceEventIndexerParameter;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventDate;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventListItem;
@@ -21,6 +22,7 @@ interface RceEventDocumentEnricher
      */
     public function enrichDocument(
         RceEventIndexerParameter $parameter,
+        RceEventIndexerInstance $instance,
         RceEventListItem $event,
         RceEventDate $eventDate,
         IndexDocument $doc,
