@@ -9,6 +9,9 @@ namespace Atoolo\EventsCalendar\Dto\Indexer;
  */
 class RceEventIndexerInstance
 {
+    /**
+     * @param array<int> $groupPath
+     */
     public function __construct(
         public readonly int $id,
         public readonly string $detailPageUrl,

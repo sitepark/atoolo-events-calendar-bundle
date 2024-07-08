@@ -125,6 +125,13 @@ class RceEventIndexer extends AbstractIndexer
             $data->getArray('categoryRootResourceLocations');
 
         $instanceList = [];
+        /** @var array{
+         *     id:int,
+         *     detailPageUrl: string,
+         *     group:int,
+         *     groupPath: array<int>
+         * } $instance
+         */
         foreach ($data->getArray('instanceList') as $instance) {
             $instanceList[] = new RceEventIndexerInstance(
                 $instance['id'],
