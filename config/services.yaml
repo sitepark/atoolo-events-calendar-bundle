@@ -52,7 +52,3 @@ services:
       - 'rce-event'
     tags:
       - { name: 'atoolo_search.indexer', priority: 10 }
-
-  Atoolo\EventsCalendar\Service\Indexer\RceEventIndexerScheduler:
-    arguments:
-      - '%atoolo_events_calendar.indexer.rce_event_indexer_scheduler.cron%'

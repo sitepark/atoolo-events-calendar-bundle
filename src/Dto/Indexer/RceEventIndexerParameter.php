@@ -10,7 +10,6 @@ namespace Atoolo\EventsCalendar\Dto\Indexer;
 class RceEventIndexerParameter
 {
     /**
-     * @param int[] $groupPath
      * @param array<RceEventIndexerInstance> $instanceList
      * @param array<string> $categoryRootResourceLocations
      */
