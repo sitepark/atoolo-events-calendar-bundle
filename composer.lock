@@ -68,22 +68,23 @@
         },
         {
             "name": "atoolo/search-bundle",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sitepark/atoolo-search-bundle.git",
-                "reference": "ed8f437490d8a25075fe5e0373724ab04626c866"
+                "reference": "23fe37e16bab3fc25d7df050954aafbf4c47e9c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sitepark/atoolo-search-bundle/zipball/ed8f437490d8a25075fe5e0373724ab04626c866",
-                "reference": "ed8f437490d8a25075fe5e0373724ab04626c866",
+                "url": "https://api.github.com/repos/sitepark/atoolo-search-bundle/zipball/23fe37e16bab3fc25d7df050954aafbf4c47e9c4",
+                "reference": "23fe37e16bab3fc25d7df050954aafbf4c47e9c4",
                 "shasum": ""
             },
             "require": {
                 "atoolo/resource-bundle": "^1.0",
                 "dragonmantank/cron-expression": "^3.3",
                 "ext-intl": "*",
+                "ext-xmlreader": "*",
                 "php": ">=8.1 <8.4.0",
                 "solarium/solarium": "^6.3",
                 "symfony/config": "^6.3 || ^7.0",
@@ -96,7 +97,7 @@
                 "symfony/lock": "^6.3 || ^7.0",
                 "symfony/messenger": "^6.3 || ^7.0",
                 "symfony/property-access": "^6.3 || ^7.0",
-                "symfony/scheduler": "^6.3 || ^7.1",
+                "symfony/scheduler": "^6.3 || ^7.0",
                 "symfony/serializer": "^6.3 || ^7.0",
                 "symfony/yaml": "^6.3 || ^7.0"
             },
@@ -133,9 +134,9 @@
             "description": "Indexing und searching",
             "support": {
                 "issues": "https://github.com/sitepark/atoolo-search-bundle/issues",
-                "source": "https://github.com/sitepark/atoolo-search-bundle/tree/1.0.0"
+                "source": "https://github.com/sitepark/atoolo-search-bundle/tree/1.1.0"
             },
-            "time": "2024-06-28T06:52:59+00:00"
+            "time": "2024-07-08T07:44:03+00:00"
         },
         {
             "name": "dragonmantank/cron-expression",
@@ -4735,12 +4736,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "4a150f693df8f5d7b60a8557b15660a60b4d17bd"
+                "reference": "0970dcafb84065dda980b50a7074acacafd68368"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/4a150f693df8f5d7b60a8557b15660a60b4d17bd",
-                "reference": "4a150f693df8f5d7b60a8557b15660a60b4d17bd",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/0970dcafb84065dda980b50a7074acacafd68368",
+                "reference": "0970dcafb84065dda980b50a7074acacafd68368",
                 "shasum": ""
             },
             "conflict": {
@@ -4882,7 +4883,7 @@
                 "ec-cube/ec-cube": "<2.4.4|>=2.11,<=2.17.1|>=3,<=3.0.18.0-patch4|>=4,<=4.1.2",
                 "ecodev/newsletter": "<=4",
                 "ectouch/ectouch": "<=2.7.2",
-                "egroupware/egroupware": "<16.1.20170922",
+                "egroupware/egroupware": "<23.1.20240624",
                 "elefant/cms": "<2.0.7",
                 "elgg/elgg": "<3.3.24|>=4,<4.0.5",
                 "elijaa/phpmemcacheadmin": "<=1.3",
@@ -5255,9 +5256,9 @@
                 "shopware/core": "<6.5.8.8-dev|>=6.6.0.0-RC1-dev,<6.6.1",
                 "shopware/platform": "<6.5.8.8-dev|>=6.6.0.0-RC1-dev,<6.6.1",
                 "shopware/production": "<=6.3.5.2",
-                "shopware/shopware": "<6.2.3",
+                "shopware/shopware": "<=5.7.17",
                 "shopware/storefront": "<=6.4.8.1|>=6.5.8,<6.5.8.7-dev",
-                "shopxo/shopxo": "<2.2.6",
+                "shopxo/shopxo": "<=6.1",
                 "showdoc/showdoc": "<2.10.4",
                 "silverstripe-australia/advancedreports": ">=1,<=2",
                 "silverstripe/admin": "<1.13.19|>=2,<2.1.8",
@@ -5449,7 +5450,7 @@
                 "yidashi/yii2cmf": "<=2",
                 "yii2mod/yii2-cms": "<1.9.2",
                 "yiisoft/yii": "<1.1.29",
-                "yiisoft/yii2": "<2.0.50",
+                "yiisoft/yii2": "<2.0.49.4-dev",
                 "yiisoft/yii2-authclient": "<2.2.15",
                 "yiisoft/yii2-bootstrap": "<2.0.4",
                 "yiisoft/yii2-dev": "<2.0.43",
@@ -5535,7 +5536,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-07-05T21:04:37+00:00"
+            "time": "2024-07-08T20:05:45+00:00"
         },
         {
             "name": "sanmai/later",
