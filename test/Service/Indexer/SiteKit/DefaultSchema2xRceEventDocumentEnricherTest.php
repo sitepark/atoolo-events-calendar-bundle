@@ -55,6 +55,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
             'test',
             [$instance],
             $this->rootResources,
+            111,
             1,
             '',
         );
@@ -112,8 +113,8 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
         $expected->sp_group = 3;
         $expected->sp_group_path = [1, 2, 3];
         $expected->sp_source = ['test'];
-        $expected->sp_category = [11];
-        $expected->sp_category_path = [10, 11];
+        $expected->sp_category = [111];
+        $expected->sp_category_path = [111];
         $expected->keywords = ['keyword'];
         $expected->content =
             'location-name location-street location-zip location-city';
@@ -181,8 +182,8 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
         $fields = $enrichedDoc->getFields();
         $expected = [
             'sp_meta_string_kicker' => 'Ausstellung',
-            'sp_category' => [12, 11],
-            'sp_category_path' => [10, 12, 10, 11],
+            'sp_category' => [12, 111],
+            'sp_category_path' => [10, 12, 111],
         ];
 
         $this->assertEquals(
@@ -212,8 +213,8 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
         $fields = $enrichedDoc->getFields();
         $expected = [
-            'sp_category' => [11],
-            'sp_category_path' => [10, 11],
+            'sp_category' => [111],
+            'sp_category_path' => [111],
         ];
 
         $this->assertEquals(
@@ -247,8 +248,8 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
         $fields = $enrichedDoc->getFields();
         $expected = [
             'sp_meta_string_kicker' => 'Ausstellung',
-            'sp_category' => [13, 11],
-            'sp_category_path' => [10, 12, 13, 10, 11],
+            'sp_category' => [13, 111],
+            'sp_category_path' => [10, 12, 13, 111],
         ];
 
         $this->assertEquals(
@@ -281,8 +282,8 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
         $fields = $enrichedDoc->getFields();
         $expected = [
             'sp_meta_string_kicker' => 'Ausstellung',
-            'sp_category' => [15, 11],
-            'sp_category_path' => [10, 11],
+            'sp_category' => [15, 111],
+            'sp_category_path' => [111],
         ];
 
         $this->assertEquals(
@@ -315,8 +316,8 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
         $fields = $enrichedDoc->getFields();
         $expected = [
             'sp_meta_string_kicker' => 'Ausstellung',
-            'sp_category' => [12, 11],
-            'sp_category_path' => [10, 12, 10, 11],
+            'sp_category' => [12, 111],
+            'sp_category_path' => [10, 12, 111],
         ];
 
         $this->assertEquals(
@@ -348,8 +349,8 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
         $fields = $enrichedDoc->getFields();
         $expected = [
-            'sp_category' => [13, 11],
-            'sp_category_path' => [10, 12, 13, 10, 11],
+            'sp_category' => [13, 111],
+            'sp_category_path' => [10, 12, 13, 111],
         ];
 
         $this->assertEquals(
@@ -382,8 +383,8 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
         $fields = $enrichedDoc->getFields();
         $expected = [
             'sp_meta_string_kicker' => 'Ausstellung',
-            'sp_category' => [14, 12, 11],
-            'sp_category_path' => [10, 14, 10, 12, 10, 11],
+            'sp_category' => [14, 12, 111],
+            'sp_category_path' => [10, 14, 10, 12, 111],
         ];
 
         $this->assertEquals(
@@ -415,8 +416,8 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
         $fields = $enrichedDoc->getFields();
         $expected = [
-            'sp_category' => [11, 21],
-            'sp_category_path' => [10, 11, 20, 21],
+            'sp_category' => [111, 21],
+            'sp_category_path' => [111, 20, 21],
         ];
 
         $this->assertEquals(
@@ -554,12 +555,6 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
             'type-root',
             'type-root',
         );
-        $highlight = $this->createResource(
-            '11',
-            '/category/type/highlight.php',
-            'rce.type.highlight',
-            'Highlight',
-        );
         $ausstellung = $this->createResource(
             '12',
             '/category/type/ausstellung.php',
@@ -587,14 +582,12 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
         $this->rootResources[] = $root->location;
         $this->resourceMap[$root->location] = $root;
-        $this->resourceMap[$highlight->location] = $highlight;
         $this->resourceMap[$ausstellung->location] = $ausstellung;
         $this->resourceMap[$filmMedien->location] = $filmMedien;
         $this->resourceMap[$konzert->location] = $konzert;
         $this->resourceMap[$noParent->location] = $noParent;
 
         $this->childrenResourceMap[$root->location] = [
-            $highlight,
             $ausstellung,
             $filmMedien,
             $konzert,
@@ -605,10 +598,6 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
         ];
 
         $this->primaryPathMap[$root->location] = [$root];
-        $this->primaryPathMap[$highlight->location] = [
-            $root,
-            $highlight,
-        ];
         $this->primaryPathMap[$ausstellung->location] = [
             $root,
             $ausstellung,

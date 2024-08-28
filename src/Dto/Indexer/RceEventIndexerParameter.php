@@ -17,6 +17,7 @@ class RceEventIndexerParameter
         public readonly string $source,
         public readonly array $instanceList,
         public readonly array $categoryRootResourceLocations,
+        public readonly int $highlightCategory,
         public readonly int $cleanupThreshold,
         public readonly string $exportUrl,
     ) {}
