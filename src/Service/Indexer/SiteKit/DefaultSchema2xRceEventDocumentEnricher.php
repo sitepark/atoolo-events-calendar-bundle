@@ -200,11 +200,14 @@ class DefaultSchema2xRceEventDocumentEnricher implements
             }
         }
 
-        if ($event->highlight) {
-            $doc = $this->enrichCategoryByAnchor(
-                $doc,
-                $parameter,
-                'rce.type.highlight',
+        if ($event->highlight && $parameter->highlightCategory > 0) {
+            $doc->sp_category = array_merge(
+                $doc->sp_category ?? [],
+                [(string) $parameter->highlightCategory],
+            );
+            $doc->sp_category_path = array_merge(
+                $doc->sp_category_path ?? [],
+                [(string) $parameter->highlightCategory],
             );
         }
 

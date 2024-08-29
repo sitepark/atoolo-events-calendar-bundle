@@ -145,6 +145,7 @@ class RceEventIndexer extends AbstractIndexer
             source: $this->source,
             instanceList: $instanceList,
             categoryRootResourceLocations: $categoryRootResourceLocations,
+            highlightCategory: $data->getInt('highlightCategory'),
             cleanupThreshold: $data->getInt('cleanupThreshold'),
             exportUrl: $data->getString('exportUrl'),
         );
