@@ -8,7 +8,17 @@ use Atoolo\Resource\Resource;
 use Atoolo\Search\Exception\DocumentEnrichingException;
 use Atoolo\Search\Service\Indexer\DocumentEnricher;
 use Atoolo\Search\Service\Indexer\IndexDocument;
+use Atoolo\Search\Service\Indexer\IndexSchema2xDocument;
 
+/**
+ * @implements DocumentEnricher<IndexSchema2xDocument>
+ * @phpstan-type CategoryItem array{
+ *      model?: array{
+ *          categories?: array<array{id?: string}>,
+ *          categoriesPath?: array<array{id?: string}>
+ *      }
+ *  }
+ */
 class DefaultSchema2xEventDocumentEnricher implements DocumentEnricher
 {
     /**
@@ -20,20 +30,31 @@ class DefaultSchema2xEventDocumentEnricher implements DocumentEnricher
         string $processId,
     ): IndexDocument {
 
+        /** @var array<string, mixed> $items */
         $items = $resource->data->getAssociativeArray('content.items');
 
+        /** @var array{items?:array<string,mixed>} $main */
         $main = $this->findInList($items, 'type', 'main');
 
+        /** @var CategoryItem$venue */
         $venue = $this->findInList($main['items'] ?? [], 'id', 'eventsCalendar-venue');
         $doc = $this->addCategories($doc, $venue);
 
+        /** @var CategoryItem $ticketAgency */
         $ticketAgency = $this->findInList($main['items'] ?? [], 'id', 'eventsCalendar-ticketAgency');
         $doc = $this->addCategories($doc, $ticketAgency);
 
+        /** @var CategoryItem $organizer */
         $organizer = $this->findInList($main['items'] ?? [], 'id', 'eventsCalendar-organizer');
         return $this->addCategories($doc, $organizer);
     }
 
+    /**
+     * @template E of IndexSchema2xDocument
+     * @param E $doc
+     * @param CategoryItem $item
+     * @return E
+     */
     private function addCategories(IndexDocument $doc, array $item): IndexDocument
     {
         foreach ($item['model']['categories'] ?? [] as $category) {
@@ -50,9 +71,14 @@ class DefaultSchema2xEventDocumentEnricher implements DocumentEnricher
         return $doc;
     }
 
+    /**
+     * @param array<string, mixed|string> $list
+     * @return array<string, mixed>
+     */
     private function findInList(array $list, string $name, string $value): array
     {
         foreach ($list as $item) {
+            /** @var array<string, mixed> $item */
             if ($item[$name] === $value) {
                 return $item;
             }
