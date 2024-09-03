@@ -12,6 +12,7 @@ use Atoolo\EventsCalendar\Service\Indexer\RceEventIndexer;
 use Atoolo\EventsCalendar\Service\Indexer\RceEventIndexerFilter;
 use Atoolo\EventsCalendar\Service\RceEvent\RceEventListReader;
 use Atoolo\Resource\DataBag;
+use Atoolo\Resource\ResourceLanguage;
 use Atoolo\Search\Dto\Indexer\IndexerConfiguration;
 use Atoolo\Search\Service\Indexer\IndexerConfigurationLoader;
 use Atoolo\Search\Service\Indexer\IndexerProgressHandler;
@@ -208,6 +209,15 @@ class RceEventIndexerTest extends TestCase
             ->with('test', ['a', 'b']);
 
         $this->indexer->remove(['a', 'b']);
+    }
+
+    public function testGetIndex(): void
+    {
+        $lang = ResourceLanguage::default();
+        $this->indexService->expects($this->once())
+            ->method('getIndex')
+            ->with($lang);
+        $this->indexer->getIndex($lang);
     }
 
     private function createRceEventListItem(string $id): RceEventListItem

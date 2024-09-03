@@ -49,6 +49,11 @@ class RceEventIndexer extends AbstractIndexer
         );
     }
 
+    public function getIndex(ResourceLanguage $lang): string
+    {
+        return $this->indexService->getIndex($lang);
+    }
+
     public function index(): IndexerStatus
     {
 

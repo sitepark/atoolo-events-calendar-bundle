@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Atoolo\EventsCalendar\Service\Indexer;
 
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventIndexEvent;
+use Atoolo\Resource\ResourceLanguage;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\Lock\LockFactory;
@@ -32,11 +33,12 @@ class RceEventIndexerScheduler implements ScheduleProviderInterface
 
     public function getSchedule(): Schedule
     {
+        $name = $this->indexer->getIndex(ResourceLanguage::default());
         return $this->schedule ??= (new Schedule())
             ->add(
                 RecurringMessage::cron($this->cron, new RceEventIndexEvent()),
             )->lock($this->lockFactory->createLock(
-                'rce-event-indexer-scheduler',
+                'rce-event-indexer-scheduler-' . $name,
             ));
     }
 
