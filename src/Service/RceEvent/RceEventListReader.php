@@ -120,7 +120,10 @@ class RceEventListReader
 
     private function getTmpFile(string $prefix, string $suffix): string
     {
-        return tempnam($this->getWorkDir(), $prefix) . $suffix;
+        $file = tempnam($this->getWorkDir(), $prefix);
+        $fileWithSuffix = $file .= $suffix;
+        rename($file, $fileWithSuffix);
+        return $fileWithSuffix;
     }
 
     private function getWorkDir(): string
