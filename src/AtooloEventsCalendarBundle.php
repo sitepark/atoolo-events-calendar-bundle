@@ -18,7 +18,17 @@ class AtooloEventsCalendarBundle extends Bundle
 {
     public function build(ContainerBuilder $container): void
     {
+        $container->setParameter(
+            'atoolo_events_calendar.src_dir',
+            __DIR__,
+        );
+
         $configDir = __DIR__ . '/../config';
+
+        $container->setParameter(
+            'atoolo_events_calendar.config_dir',
+            $configDir,
+        );
 
         $loader = new GlobFileLoader(new FileLocator($configDir));
         $loader->setResolver(
@@ -29,6 +39,7 @@ class AtooloEventsCalendarBundle extends Bundle
             ),
         );
 
+        $loader->load('graphql.yaml');
         $loader->load('services.yaml');
     }
 }

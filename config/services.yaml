@@ -52,3 +52,29 @@ services:
       - 'rce-event'
     tags:
       - { name: 'atoolo_search.indexer', priority: 10 }
+
+  # GraphQL
+
+  atoolo_events_calendar.graphql.resolver.resource.resource_eventdate_resolver:
+    class: Atoolo\EventsCalendar\Service\GraphQL\Resolver\Resource\ResourceEventDateResolver
+
+  atoolo_events_calendar.graphql.resolver.teaser.event_teaser_resolver:
+    class: Atoolo\EventsCalendar\Service\GraphQL\Resolver\Teaser\EventTeaserResolver
+    arguments:
+      - '@atoolo_graphql_search.resolver.resource.resource_asset_resolver'
+      - '@atoolo_graphql_search.resolver.resource.resource_symbolic_image_resolver'
+      - '@atoolo_graphql_search.resolver.resource.resource_kicker_resolver'
+      - '@atoolo_events_calendar.graphql.resolver.resource.resource_eventdate_resolver'
+    tags:
+      - { name: 'atoolo_graphql_search.resolver' }
+
+  atoolo_events_calendar.graphql.factory.event_teaser_factory:
+    class: Atoolo\EventsCalendar\Service\GraphQL\Factory\EventTeaserFactory
+    arguments:
+      - '@atoolo_graphql_search.factory.link_factory'
+    tags:
+      - { name: 'atoolo_graphql_search.teaser_factory', objectType: 'eventsCalendar-event' }
+
+  
+
+
