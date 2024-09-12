@@ -55,8 +55,13 @@ services:
 
   # GraphQL
 
+  atoolo_events_calendar.graphql.factory.event_date_factory:
+    class: Atoolo\EventsCalendar\Service\GraphQL\Factory\EventDateFactory
+
   atoolo_events_calendar.graphql.resolver.resource.resource_eventdate_resolver:
     class: Atoolo\EventsCalendar\Service\GraphQL\Resolver\Resource\ResourceEventDateResolver
+    arguments:
+      - '@atoolo_events_calendar.graphql.factory.event_date_factory'
 
   atoolo_events_calendar.graphql.resolver.teaser.event_teaser_resolver:
     class: Atoolo\EventsCalendar\Service\GraphQL\Resolver\Teaser\EventTeaserResolver

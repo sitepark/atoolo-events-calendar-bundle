@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Atoolo\EventsCalendar\Service\GraphQL;
+namespace Atoolo\EventsCalendar\Service\GraphQL\Factory;
 
 use Atoolo\EventsCalendar\Service\GraphQL\Types\EventDate;
 
@@ -26,12 +26,12 @@ use Atoolo\EventsCalendar\Service\GraphQL\Types\EventDate;
  *     interval?: int,
  * }
  */
-class SchedulingToEventDateConverter
+class EventDateFactory
 {
     /**
      * @param RawScheduling $rawScheduling
      */
-    public function rawSchedulingToEventDate(
+    public function createFromRawSchedulung(
         array $rawScheduling,
     ): ?EventDate {
         $startDateTime = $this->getStartDateTimeFromRawScheduling($rawScheduling);
@@ -41,7 +41,7 @@ class SchedulingToEventDateConverter
         return new EventDate(
             $startDateTime,
             $this->getEndDateTimeFromRawScheduling($rawScheduling),
-            $this->getRecurrenceRuleTimeFromRawScheduling($rawScheduling),
+            $this->getRRuleFromRawScheduling($rawScheduling),
             ($rawScheduling['isFullDay'] ?? false) === true,
             isset($rawScheduling['beginTime']),
             isset($rawScheduling['endTime']),
@@ -85,7 +85,7 @@ class SchedulingToEventDateConverter
     /**
      * @param RawScheduling $rawScheduling
      */
-    public function getRecurrenceRuleTimeFromRawScheduling(
+    public function getRRuleFromRawScheduling(
         array $rawScheduling,
     ): ?string {
         $type = $rawScheduling['type'] ?? null;
