@@ -56,7 +56,7 @@ class EventTeaserResolver implements Resolver
     public function getEventDates(
         EventTeaser $teaser,
         ArgumentInterface $args,
-    ): ?array {
+    ): array {
         return $this->eventDateResolver
             ->getEventDates($teaser->resource);
     }

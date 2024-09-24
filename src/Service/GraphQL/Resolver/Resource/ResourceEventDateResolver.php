@@ -20,7 +20,7 @@ class ResourceEventDateResolver
      */
     public function getEventDates(
         Resource $resource,
-    ): ?array {
+    ): array {
         $schedulingRaws = $resource->data->getArray('metadata.schedulingRaw');
         $eventDates = [];
         foreach ($schedulingRaws as $schedulingRaw) {
