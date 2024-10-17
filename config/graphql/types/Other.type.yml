@@ -1,10 +1,10 @@
-EventDate:
+Scheduling:
   type: "object"
   config:
     fields:
       start: { type: "DateTime!" }
       end: { type: "DateTime" }
-      rrule: { type: "String" }
+      rRule: { type: "String" }
       isFullDay: { type: "Boolean!" }
       hasStartTime: { type: "Boolean!" }
       hasEndTime: { type: "Boolean!" }

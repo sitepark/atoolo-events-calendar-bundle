@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Atoolo\EventsCalendar\Service\GraphQL\Factory;
+namespace Atoolo\EventsCalendar;
 
-use Atoolo\EventsCalendar\Service\GraphQL\Types\EventDate;
+use Atoolo\Resource\Resource;
 
 /**
- * @phpstan-type RawScheduling array{
+ * @phpstan-type RawSiteKitScheduling array{
  *     type?: string,
  *     isFullDay?: boolean,
  *     beginDate?: int,
  *     endDate?: int,
  *     beginTime?: string,
  *     endTime? : string,
- *     repetition?: RawSchedulingRepitition
+ *     repetition?: RawSiteKitSchedulingRepitition
  * }
- * @phpstan-type RawSchedulingRepitition array{
+ * @phpstan-type RawSiteKitSchedulingRepitition array{
  *     count?: int,
  *     dow?: string,
  *     oom?: int,
@@ -26,30 +26,48 @@ use Atoolo\EventsCalendar\Service\GraphQL\Types\EventDate;
  *     interval?: int,
  * }
  */
-class EventDateFactory
+class SchedulingFactory
 {
     /**
-     * @param RawScheduling $rawScheduling
+     * @return Scheduling[]
+     */
+    public function create(
+        Resource $resource,
+    ): array {
+        $schedulingRaws = $resource->data->getArray('metadata.schedulingRaw');
+        $eventDates = [];
+        foreach ($schedulingRaws as $schedulingRaw) {
+            // @phpstan-ignore argument.type
+            $eventDate = $this->createFromRawSchedulung($schedulingRaw);
+            if ($eventDate !== null) {
+                $eventDates[] = $eventDate;
+            }
+        }
+        return $eventDates;
+    }
+
+    /**
+     * @param RawSiteKitScheduling $rawScheduling
      */
     public function createFromRawSchedulung(
         array $rawScheduling,
-    ): ?EventDate {
+    ): ?Scheduling {
         $startDateTime = $this->getStartDateTimeFromRawScheduling($rawScheduling);
         if ($startDateTime === null) {
             return null;
         }
-        return new EventDate(
+        return (new Scheduling(
             $startDateTime,
             $this->getEndDateTimeFromRawScheduling($rawScheduling),
-            $this->getRRuleFromRawScheduling($rawScheduling),
-            ($rawScheduling['isFullDay'] ?? false) === true,
-            isset($rawScheduling['beginTime']),
-            isset($rawScheduling['endTime']),
-        );
+        ))
+            ->setRRuleFromString($this->getRRuleFromRawScheduling($rawScheduling))
+            ->setIsFullDay(($rawScheduling['isFullDay'] ?? false) === true)
+            ->setHasStartTime(isset($rawScheduling['beginTime']))
+            ->setHasEndTime(isset($rawScheduling['endTime']));
     }
 
     /**
-     * @param RawScheduling $rawScheduling
+     * @param RawSiteKitScheduling $rawScheduling
      */
     public function getStartDateTimeFromRawScheduling(
         array $rawScheduling,
@@ -66,7 +84,7 @@ class EventDateFactory
     }
 
     /**
-     * @param RawScheduling $rawScheduling
+     * @param RawSiteKitScheduling $rawScheduling
      */
     public function getEndDateTimeFromRawScheduling(
         array $rawScheduling,
@@ -83,7 +101,7 @@ class EventDateFactory
     }
 
     /**
-     * @param RawScheduling $rawScheduling
+     * @param RawSiteKitScheduling $rawScheduling
      */
     public function getRRuleFromRawScheduling(
         array $rawScheduling,
