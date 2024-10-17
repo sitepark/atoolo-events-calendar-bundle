@@ -19,7 +19,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(ResourceSchedulingResolver::class)]
-class ResourceEventDateResolverTest extends TestCase
+class ResourceSchedulingResolverTest extends TestCase
 {
     private ResourceSchedulingResolver $resolver;
 

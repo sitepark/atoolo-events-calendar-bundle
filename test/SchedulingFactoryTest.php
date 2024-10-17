@@ -7,11 +7,14 @@ namespace Atoolo\EventsCalendar\Test;
 use Atoolo\EventsCalendar\SchedulingFactory;
 use Atoolo\EventsCalendar\Test\Constraint\EqualsRRule;
 use Atoolo\EventsCalendar\Test\Constraint\IsRRule;
+use Atoolo\Resource\DataBag;
+use Atoolo\Resource\Resource;
+use Atoolo\Resource\ResourceLanguage;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(SchedulingFactory::class)]
-class EventDateFactoryTest extends TestCase
+class SchedulingFactoryTest extends TestCase
 {
     private SchedulingFactory $factory;
 
@@ -21,6 +24,25 @@ class EventDateFactoryTest extends TestCase
     public function setUp(): void
     {
         $this->factory = new SchedulingFactory();
+    }
+
+    public function testCreate()
+    {
+        $resource = $this->createResource([
+            'metadata' => [
+                'schedulingRaw' => [
+                    [
+                        "beginDate" => 1640991600,
+                        "beginTime" => "19:58",
+                    ],
+                ],
+            ],
+        ]);
+        $scheduling = $this->factory->create($resource);
+        $this->assertEquals(
+            1641063480,
+            $scheduling[0]->getStart()->getTimestamp(),
+        );
     }
 
     public function testCreateFromRawSchedulungInvalid()
@@ -200,7 +222,7 @@ class EventDateFactoryTest extends TestCase
     public function testGetRRuleFromRawSchedulingMonthlyByOccurenceUntil()
     {
         $actual = $this->factory->getRRuleFromRawScheduling([
-            "type" => "monthlyByDay",
+            "type" => "monthlyByOccurrence",
             "repetition" => [
                 "date" => self::UNTIL,
                 "oom" => 2,
@@ -250,5 +272,20 @@ class EventDateFactoryTest extends TestCase
         $expected = 'FREQ=YEARLY;INTERVAL=2;BYMONTH=3;BYDAY=3SU;UNTIL=20250101T000000Z';
         $this->assertThat($actual, new IsRRule());
         $this->assertThat($actual, new EqualsRRule($expected));
+    }
+
+    /**
+     * @param array<string,mixed> $data
+     */
+    private function createResource(array $data): Resource
+    {
+        return new Resource(
+            $data['url'] ?? '',
+            $data['id'] ?? '',
+            $data['name'] ?? '',
+            $data['objectType'] ?? '',
+            ResourceLanguage::default(),
+            new DataBag($data),
+        );
     }
 }
