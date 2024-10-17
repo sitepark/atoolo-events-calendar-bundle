@@ -2,25 +2,25 @@
 
 declare(strict_types=1);
 
-namespace Atoolo\EventsCalendar\Test\Service\GraphQL\Factory;
+namespace Atoolo\EventsCalendar\Test;
 
-use Atoolo\EventsCalendar\Service\GraphQL\Factory\EventDateFactory;
+use Atoolo\EventsCalendar\SchedulingFactory;
 use Atoolo\EventsCalendar\Test\Constraint\EqualsRRule;
 use Atoolo\EventsCalendar\Test\Constraint\IsRRule;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-#[CoversClass(EventDateFactory::class)]
+#[CoversClass(SchedulingFactory::class)]
 class EventDateFactoryTest extends TestCase
 {
-    private EventDateFactory $factory;
+    private SchedulingFactory $factory;
 
     // 01.01.2025 00:00 GMT
     private const UNTIL = 1735689600;
 
     public function setUp(): void
     {
-        $this->factory = new EventDateFactory();
+        $this->factory = new SchedulingFactory();
     }
 
     public function testCreateFromRawSchedulungInvalid()
@@ -30,10 +30,10 @@ class EventDateFactoryTest extends TestCase
             "isFullDay" => true,
             "endDate" => 1726178400,
         ];
-        $eventDate = $this->factory->createFromRawSchedulung(
+        $scheduling = $this->factory->createFromRawSchedulung(
             $rawScheduling,
         );
-        $this->assertNull($eventDate);
+        $this->assertNull($scheduling);
     }
 
     public function testCreateFromRawSchedulungMulti()
@@ -44,15 +44,14 @@ class EventDateFactoryTest extends TestCase
             "beginDate" => 1726005600,
             "endDate" => 1726178400,
         ];
-        $eventDate = $this->factory->createFromRawSchedulung(
+        $scheduling = $this->factory->createFromRawSchedulung(
             $rawScheduling,
         );
-        $this->assertEquals(1726005600, $eventDate->start->getTimestamp());
-        $this->assertEquals(1726178400, $eventDate->end->getTimestamp());
-        $this->assertTrue($eventDate->isFullDay);
-        $this->assertFalse($eventDate->hasStartTime);
-        $this->assertFalse($eventDate->hasEndTime);
-        $this->assertNUll($eventDate->status);
+        $this->assertEquals(1726005600, $scheduling->getStart()->getTimestamp());
+        $this->assertEquals(1726178400, $scheduling->getEnd()->getTimestamp());
+        $this->assertTrue($scheduling->isFullDay());
+        $this->assertFalse($scheduling->hasStartTime());
+        $this->assertFalse($scheduling->hasEndTime());
     }
 
     public function testGetStartDateTimeFromRawScheduling()
