@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Atoolo\EventsCalendar\Service\GraphQL\Resolver\Teaser;
 
-use Atoolo\EventsCalendar\Service\GraphQL\Resolver\Resource\ResourceEventDateResolver;
-use Atoolo\EventsCalendar\Service\GraphQL\Types\EventDate;
+use Atoolo\EventsCalendar\Scheduling;
+use Atoolo\EventsCalendar\Service\GraphQL\Resolver\Resource\ResourceSchedulingResolver;
 use Atoolo\EventsCalendar\Service\GraphQL\Types\EventTeaser;
 use Atoolo\GraphQL\Search\Resolver\Resolver;
 use Atoolo\GraphQL\Search\Resolver\Resource\ResourceAssetResolver;
@@ -20,7 +20,7 @@ class EventTeaserResolver implements Resolver
         private readonly ResourceAssetResolver $assetResolver,
         private readonly ResourceSymbolicImageResolver $symbolicImageResolver,
         private readonly ResourceKickerResolver $kickerResolver,
-        private readonly ResourceEventDateResolver $eventDateResolver,
+        private readonly ResourceSchedulingResolver $schedulingResolver,
     ) {}
 
     public function getUrl(
@@ -51,13 +51,13 @@ class EventTeaserResolver implements Resolver
     }
 
     /**
-     * @return EventDate[]
+     * @return Scheduling[]
      */
-    public function getEventDates(
+    public function getSchedulings(
         EventTeaser $teaser,
         ArgumentInterface $args,
     ): array {
-        return $this->eventDateResolver
-            ->getEventDates($teaser->resource);
+        return $this->schedulingResolver
+            ->getSchedulings($teaser->resource);
     }
 }

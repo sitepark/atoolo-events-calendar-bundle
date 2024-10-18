@@ -16,6 +16,7 @@
         "atoolo/graphql-search-bundle": "dev-main",
         "atoolo/search-bundle": "^1.0",
         "dragonmantank/cron-expression": "^3.3",
+        "rlanvin/php-rrule": "^2.5",
         "soundasleep/html2text": "^2.1",
         "symfony/config": "^6.3 || ^7.0",
         "symfony/dependency-injection": "^6.3 || ^7.0",
@@ -82,10 +83,10 @@
         "analyse:phpcsfixer": "./tools/php-cs-fixer check --diff --show-progress=dots",
         "analyse:phplint": "./tools/phplint",
         "analyse:phpstan": "./tools/phpstan analyse",
-        "cs-fix": [
-            "@cs-fix:phpcbf"
+        "fix": [
+            "@fix:phpcsfixer"
         ],
-        "cs-fix:phpcbf": "./vendor/bin/phpcbf",
+        "fix:phpcsfixer": "./tools/php-cs-fixer fix",
         "report": [
             "@report:phpstan"
         ],
