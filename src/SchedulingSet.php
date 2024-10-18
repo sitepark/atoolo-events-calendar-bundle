@@ -175,17 +175,4 @@ class SchedulingSet
         }
         return false;
     }
-
-    /**
-     * Checks whether the scheduling set has an occurence at a given date
-     */
-    public function occursAt(\DateTime $date): bool
-    {
-        foreach ($this->schedulings as $scheduling) {
-            if ($scheduling->occursAt($date)) {
-                return true;
-            }
-        }
-        return false;
-    }
 }

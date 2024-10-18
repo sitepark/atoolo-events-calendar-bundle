@@ -64,7 +64,7 @@ class Scheduling
         ?\DateTime $to = null,
         ?int $limit = null,
     ): \Generator {
-        $numberOfDaysPerSchedule = $this->getNumberOfMidnights() ?? 0 + 1;
+        $numberOfDaysPerSchedule = ($this->getNumberOfMidnights() ?? 0) + 1;
         $dateOccurenceIterable = $this->rRule === null
             ? [clone $this->getStart()]
             : $this->rRule;
@@ -74,7 +74,7 @@ class Scheduling
                 continue;
             }
             if ($to !== null && $dateOccurence > $to) {
-                break;
+                return;
             }
             $scheduling = (clone $this)
                 ->setStart($dateOccurence)
@@ -93,7 +93,7 @@ class Scheduling
                         $end = $scheduling->getEnd();
                         $newStart = (clone $end)->setTime(0, 0);
                         if ($to !== null && $newStart > $to) {
-                            break;
+                            return;
                         }
                         yield (clone $scheduling)->setStart(
                             $newStart,
@@ -105,7 +105,7 @@ class Scheduling
                             ->add(new \DateInterval('P' . ($i - 1) . 'D'))
                             ->setTime(0, 0);
                         if ($to !== null && $nextMorning > $to) {
-                            break;
+                            return;
                         }
                         yield (clone $scheduling)
                             ->setStart($nextMorning)->setEnd(
@@ -114,14 +114,14 @@ class Scheduling
                     }
                     $n++;
                     if ($limit !== null && $n >= $limit) {
-                        break;
+                        return;
                     }
                 }
             } else {
                 yield $scheduling;
                 $n++;
                 if ($limit !== null && $n >= $limit) {
-                    break;
+                    return;
                 }
             }
         }
@@ -148,7 +148,7 @@ class Scheduling
         ?\DateTime $to = null,
         ?int $limit = null,
     ): array {
-        if (($to === null || $limit === null) && $this->isInfinite()) {
+        if ($to === null && $limit === null && $this->isInfinite()) {
             throw new \LogicException('Cannot get all occurrences of an infinite recurrence rule.');
         }
         return iterator_to_array(
@@ -190,22 +190,9 @@ class Scheduling
             return null;
         }
         if ($this->isMultiDay === null) {
-            $this->isMultiDay = $this->start->format('Y-m-d') === $this->end->format('Y-m-d');
+            $this->isMultiDay = $this->start->format('Y-m-d') !== $this->end->format('Y-m-d');
         }
         return $this->isMultiDay;
-    }
-
-    /**
-     * Checks whether the scheduling has an occurence at a given date
-     */
-    public function occursAt(\DateTime $date): bool
-    {
-        if ($this->rRule !== null) {
-            return $this->rRule->occursAt($date);
-        } else {
-            return $this->start <= $date
-                && ($this->end === null || $this->end >= $date);
-        }
     }
 
     /**
