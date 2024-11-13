@@ -76,7 +76,7 @@ services:
     class: Atoolo\EventsCalendar\Service\GraphQL\Resolver\Teaser\EventTeaserResolver
     arguments:
       - '@atoolo_graphql_search.resolver.resource.resource_asset_resolver'
-      - '@atoolo_graphql_search.resolver.resource.resource_symbolic_image_resolver'
+      - '@atoolo_graphql_search.resolver.resource.resource_symbolic_asset_resolver'
       - '@atoolo_graphql_search.resolver.resource.resource_kicker_resolver'
       - '@atoolo_events_calendar.graphql.resolver.resource.resource_scheduling_resolver'
     tags:
