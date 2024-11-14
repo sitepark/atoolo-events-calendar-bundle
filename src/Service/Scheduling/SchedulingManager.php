@@ -34,7 +34,6 @@ class SchedulingManager
         ?\DateTime $to = null,
         ?int $limit = null,
     ): \Generator {
-        $schedulingBuilder = new SchedulingBuilder();
         $numberOfDaysPerSchedule = ($this->getNumberOfMidnights($scheduling) ?? 0) + 1;
         $dateOccurenceIterable = $scheduling->rRule === null
             ? [clone $scheduling->start]
@@ -47,7 +46,7 @@ class SchedulingManager
             if ($to !== null && $dateOccurence > $to) {
                 return;
             }
-            $currentScheduling = $schedulingBuilder
+            $currentScheduling = (new SchedulingBuilder())
                 ->fromScheduling($scheduling)
                 ->setStart($dateOccurence, true)
                 ->setRRule(null)
@@ -57,7 +56,7 @@ class SchedulingManager
                 for ($i = 1; $i <= $numberOfDaysPerSchedule; $i++) {
                     if ($i === 1) {
                         // first day: from start to 23:59
-                        yield $schedulingBuilder
+                        yield (new SchedulingBuilder())
                             ->fromScheduling($currentScheduling)
                             ->setEnd((clone $currentScheduling->start)->setTime(23, 59, 59, 999999))
                             ->build();
@@ -69,7 +68,7 @@ class SchedulingManager
                         if ($to !== null && $newStart > $to) {
                             return;
                         }
-                        yield $schedulingBuilder
+                        yield (new SchedulingBuilder())
                             ->fromScheduling($currentScheduling)
                             ->setStart($newStart)
                             ->build();
@@ -81,7 +80,7 @@ class SchedulingManager
                         if ($to !== null && $nextMorning > $to) {
                             return;
                         }
-                        yield $schedulingBuilder
+                        yield (new SchedulingBuilder())
                             ->fromScheduling($currentScheduling)
                             ->setStart($nextMorning)
                             ->setEnd((clone $nextMorning)->setTime(23, 59, 59, 999999))
