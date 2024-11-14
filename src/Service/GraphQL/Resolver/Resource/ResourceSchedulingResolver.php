@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Atoolo\EventsCalendar\Service\GraphQL\Resolver\Resource;
 
-use Atoolo\EventsCalendar\Scheduling;
-use Atoolo\EventsCalendar\SchedulingFactory;
+use Atoolo\EventsCalendar\Dto\Scheduling\Scheduling;
+use Atoolo\EventsCalendar\Service\GraphQL\Factory\SchedulingFactory;
 use Atoolo\Resource\Resource;
 
 class ResourceSchedulingResolver

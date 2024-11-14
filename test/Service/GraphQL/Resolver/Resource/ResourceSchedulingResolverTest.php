@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace Atoolo\EventsCalendar\Test\Service\GraphQL\Resolver\Resource;
 
-use Atoolo\EventsCalendar\Scheduling;
-use Atoolo\EventsCalendar\SchedulingFactory;
-use Atoolo\EventsCalendar\Service\GraphQL\Factory\EventDateFactory;
-use Atoolo\EventsCalendar\Service\GraphQL\Resolver\Resource\ResourceEventDateResolver;
+use Atoolo\EventsCalendar\Dto\Scheduling\Scheduling;
+use Atoolo\EventsCalendar\Service\GraphQL\Factory\SchedulingFactory;
 use Atoolo\EventsCalendar\Service\GraphQL\Resolver\Resource\ResourceSchedulingResolver;
-use Atoolo\EventsCalendar\Service\GraphQL\Types\EventDate;
 use Atoolo\Resource\DataBag;
 use Atoolo\Resource\Resource;
 use Atoolo\Resource\ResourceLanguage;
@@ -35,10 +32,19 @@ class ResourceSchedulingResolverTest extends TestCase
         );
     }
 
-    public function testGetEventDates(): void
+    public function testGetSchedulings(): void
     {
         $resource = $this->createResource([]);
-        $schedulingsExpected = [new Scheduling(new DateTime())];
+        $schedulingsExpected = [
+            new Scheduling(
+                new DateTime(),
+                null,
+                false,
+                true,
+                false,
+                null,
+            ),
+        ];
         $this->schedulingFactory
             ->method('create')
             ->willReturn($schedulingsExpected);

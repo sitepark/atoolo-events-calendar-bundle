@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Atoolo\EventsCalendar;
+namespace Atoolo\EventsCalendar\Service\GraphQL\Factory;
 
+use Atoolo\EventsCalendar\Dto\Scheduling\Scheduling;
+use Atoolo\EventsCalendar\Dto\Scheduling\SchedulingBuilder;
 use Atoolo\Resource\Resource;
 
 /**
@@ -35,15 +37,15 @@ class SchedulingFactory
         Resource $resource,
     ): array {
         $schedulingRaws = $resource->data->getArray('metadata.schedulingRaw');
-        $eventDates = [];
+        $schedulings = [];
+        /** @var  RawSiteKitScheduling $schedulingRaw */
         foreach ($schedulingRaws as $schedulingRaw) {
-            // @phpstan-ignore argument.type
-            $eventDate = $this->createFromRawSchedulung($schedulingRaw);
-            if ($eventDate !== null) {
-                $eventDates[] = $eventDate;
+            $scheduling = $this->createFromRawSchedulung($schedulingRaw);
+            if ($scheduling !== null) {
+                $schedulings[] = $scheduling;
             }
         }
-        return $eventDates;
+        return $schedulings;
     }
 
     /**
@@ -56,14 +58,14 @@ class SchedulingFactory
         if ($startDateTime === null) {
             return null;
         }
-        return (new Scheduling(
+        return new Scheduling(
             $startDateTime,
             $this->getEndDateTimeFromRawScheduling($rawScheduling),
-        ))
-            ->setRRuleFromString($this->getRRuleFromRawScheduling($rawScheduling))
-            ->setIsFullDay(($rawScheduling['isFullDay'] ?? false) === true)
-            ->setHasStartTime(isset($rawScheduling['beginTime']))
-            ->setHasEndTime(isset($rawScheduling['endTime']));
+            ($rawScheduling['isFullDay'] ?? false) === true,
+            isset($rawScheduling['beginTime']),
+            isset($rawScheduling['endTime']),
+            $this->getRRuleFromRawScheduling($rawScheduling),
+        );
     }
 
     /**

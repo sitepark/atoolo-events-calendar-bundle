@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Atoolo\EventsCalendar\Service\GraphQL\Resolver\Teaser;
 
-use Atoolo\EventsCalendar\Scheduling;
+use Atoolo\EventsCalendar\Dto\Scheduling\Scheduling;
 use Atoolo\EventsCalendar\Service\GraphQL\Resolver\Resource\ResourceSchedulingResolver;
 use Atoolo\EventsCalendar\Service\GraphQL\Types\EventTeaser;
 use Atoolo\GraphQL\Search\Resolver\Resolver;

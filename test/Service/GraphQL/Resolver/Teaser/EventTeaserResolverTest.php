@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Atoolo\EventsCalendar\Test\Service\GraphQL\Resolver\Teaser;
 
-use Atoolo\EventsCalendar\Service\GraphQL\Resolver\Resource\ResourceEventDateResolver;
 use Atoolo\EventsCalendar\Service\GraphQL\Resolver\Resource\ResourceSchedulingResolver;
 use Atoolo\EventsCalendar\Service\GraphQL\Resolver\Teaser\EventTeaserResolver;
 use Atoolo\EventsCalendar\Service\GraphQL\Types\EventTeaser;
@@ -117,7 +116,7 @@ class EventTeaserResolverTest extends TestCase
         $this->resolver->getKicker($teaser, $args);
     }
 
-    public function testGetEventDates(): void
+    public function testGetSchedulings(): void
     {
         $this->schedulingResolver->expects($this->once())
             ->method('getSchedulings');

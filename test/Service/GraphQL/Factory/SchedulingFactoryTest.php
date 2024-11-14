@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Atoolo\EventsCalendar\Test;
+namespace Atoolo\EventsCalendar\Test\Service\GraphQL\Factory;
 
-use Atoolo\EventsCalendar\SchedulingFactory;
+use Atoolo\EventsCalendar\Service\GraphQL\Factory\SchedulingFactory;
 use Atoolo\EventsCalendar\Test\Constraint\EqualsRRule;
 use Atoolo\EventsCalendar\Test\Constraint\IsRRule;
 use Atoolo\Resource\DataBag;
@@ -41,7 +41,7 @@ class SchedulingFactoryTest extends TestCase
         $scheduling = $this->factory->create($resource);
         $this->assertEquals(
             1641063480,
-            $scheduling[0]->getStart()->getTimestamp(),
+            $scheduling[0]->start->getTimestamp(),
         );
     }
 
@@ -69,11 +69,11 @@ class SchedulingFactoryTest extends TestCase
         $scheduling = $this->factory->createFromRawSchedulung(
             $rawScheduling,
         );
-        $this->assertEquals(1726005600, $scheduling->getStart()->getTimestamp());
-        $this->assertEquals(1726178400, $scheduling->getEnd()->getTimestamp());
-        $this->assertTrue($scheduling->isFullDay());
-        $this->assertFalse($scheduling->hasStartTime());
-        $this->assertFalse($scheduling->hasEndTime());
+        $this->assertEquals(1726005600, $scheduling->start->getTimestamp());
+        $this->assertEquals(1726178400, $scheduling->end->getTimestamp());
+        $this->assertTrue($scheduling->isFullDay);
+        $this->assertFalse($scheduling->hasStartTime);
+        $this->assertFalse($scheduling->hasEndTime);
     }
 
     public function testGetStartDateTimeFromRawScheduling()

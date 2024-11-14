@@ -57,15 +57,10 @@ services:
     tags:
       - { name: 'atoolo_search.indexer', priority: 10 }
 
-  atoolo_events_calendar.scheduling_factory:
-    class: Atoolo\EventsCalendar\SchedulingFactory
-
   # GraphQL
 
-  atoolo_events_calendar.graphql.resolver.scheduling_resolver:
-    class: Atoolo\EventsCalendar\Service\GraphQL\Resolver\SchedulingResolver
-    tags:
-        - { name: 'atoolo_graphql_search.resolver' }
+  atoolo_events_calendar.scheduling_factory:
+    class: Atoolo\EventsCalendar\Service\GraphQL\Factory\SchedulingFactory
 
   atoolo_events_calendar.graphql.resolver.resource.resource_scheduling_resolver:
     class: Atoolo\EventsCalendar\Service\GraphQL\Resolver\Resource\ResourceSchedulingResolver
