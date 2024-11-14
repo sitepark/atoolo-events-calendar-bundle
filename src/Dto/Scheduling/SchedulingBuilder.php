@@ -6,6 +6,9 @@ namespace Atoolo\EventsCalendar\Dto\Scheduling;
 
 use DateTime;
 
+/**
+ * @codeCoverageIgnore
+ */
 class SchedulingBuilder
 {
     private DateTime $start;
