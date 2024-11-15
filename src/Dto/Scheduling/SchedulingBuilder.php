@@ -6,20 +6,17 @@ namespace Atoolo\EventsCalendar\Dto\Scheduling;
 
 use DateTime;
 
-/**
- * @codeCoverageIgnore
- */
 class SchedulingBuilder
 {
     private DateTime $start;
 
     private ?DateTime $end = null;
 
-    private bool $isFullDay;
+    private bool $isFullDay = false;
 
-    private bool $hasStartTime;
+    private bool $hasStartTime = true;
 
-    private bool $hasEndTime;
+    private bool $hasEndTime = true;
 
     private ?string $rRule = null;
 

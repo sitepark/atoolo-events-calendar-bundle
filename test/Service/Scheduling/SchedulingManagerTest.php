@@ -391,4 +391,129 @@ class SchedulingManagerTest extends TestCase
         $this->assertFalse($this->schedulingManager->isInfinite($finiteScheduling));
         $this->assertTrue($this->schedulingManager->isInfinite($infiniteScheduling));
     }
+
+    public function testGetOccurrencesMultipleSchedulesEmpty(): void
+    {
+        $this->assertEmpty(
+            $this->schedulingManager->getAllOccurrencesOfSchedulings([]),
+        );
+    }
+
+    public function testGetOccurrencesMultipleSchedulesSingle(): void
+    {
+        $scheduling = new Scheduling(
+            new \DateTime('01.01.2024 12:00'),
+            new \DateTime('02.01.2024 22:00'),
+            false,
+            true,
+            true,
+            'FREQ=WEEKLY;INTERVAL=1;BYDAY=MO;COUNT=3',
+        );
+        $this->assertEquals(
+            $this->schedulingManager->getAllOccurrencesOfScheduling($scheduling),
+            $this->schedulingManager->getAllOccurrencesOfSchedulings([$scheduling]),
+        );
+    }
+
+    public function testGetOccurrencesMultipleSchedulesMulti(): void
+    {
+        $schedulings = [
+            new Scheduling(
+                new \DateTime('01.01.2024 12:00'),
+                new \DateTime('02.01.2024 22:00'),
+                false,
+                true,
+                true,
+                'FREQ=WEEKLY;INTERVAL=1;BYDAY=MO;COUNT=2',
+            ),
+            new Scheduling(
+                new \DateTime('03.01.2024 14:00'),
+                new \DateTime('03.01.2024 20:00'),
+                false,
+                true,
+                true,
+                'FREQ=WEEKLY;INTERVAL=1;BYDAY=TH;COUNT=2',
+            ),
+        ];
+        $this->assertEquals(
+            $this->schedulingManager->getAllOccurrencesOfSchedulings(
+                $schedulings,
+                true,
+            ),
+            [
+                new Scheduling(
+                    new \DateTime('01.01.2024 12:00'),
+                    new \DateTime('01.01.2024 23:59:59.999999'),
+                    false,
+                    true,
+                    true,
+                    null,
+                ),
+                new Scheduling(
+                    new \DateTime('02.01.2024 00:00'),
+                    new \DateTime('02.01.2024 22:00'),
+                    false,
+                    true,
+                    true,
+                    null,
+                ),
+                new Scheduling(
+                    new \DateTime('04.01.2024 14:00'),
+                    new \DateTime('04.01.2024 20:00'),
+                    false,
+                    true,
+                    true,
+                    null,
+                ),
+                new Scheduling(
+                    new \DateTime('08.01.2024 12:00'),
+                    new \DateTime('08.01.2024 23:59:59.999999'),
+                    false,
+                    true,
+                    true,
+                    null,
+                ),
+                new Scheduling(
+                    new \DateTime('09.01.2024 00:00'),
+                    new \DateTime('09.01.2024 22:00'),
+                    false,
+                    true,
+                    true,
+                    null,
+                ),
+                new Scheduling(
+                    new \DateTime('11.01.2024 14:00'),
+                    new \DateTime('11.01.2024 20:00'),
+                    false,
+                    true,
+                    true,
+                    null,
+                ),
+            ],
+        );
+    }
+
+    public function testGetOccurrencesMultipleSchedulesWithInfinite(): void
+    {
+        $schedulings = [
+            new Scheduling(
+                new \DateTime('01.01.2024 12:00'),
+                new \DateTime('01.01.2024 22:00'),
+                false,
+                true,
+                true,
+                null,
+            ),
+            new Scheduling(
+                new \DateTime('01.02.2024 12:00'),
+                new \DateTime('01.02.2024 22:00'),
+                false,
+                true,
+                true,
+                'FREQ=WEEKLY;INTERVAL=1',
+            ),
+        ];
+        $this->expectException(\LogicException::class);
+        $this->schedulingManager->getAllOccurrencesOfSchedulings($schedulings);
+    }
 }
