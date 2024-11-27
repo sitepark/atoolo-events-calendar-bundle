@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Atoolo\EventsCalendar\Test\Service\GraphQL\Resolver\Teaser;
 
-use Atoolo\EventsCalendar\Service\GraphQL\Resolver\Resource\ResourceEventDateResolver;
+use Atoolo\EventsCalendar\Service\GraphQL\Resolver\Resource\ResourceSchedulingResolver;
 use Atoolo\EventsCalendar\Service\GraphQL\Resolver\Teaser\EventTeaserResolver;
 use Atoolo\EventsCalendar\Service\GraphQL\Types\EventTeaser;
 use Atoolo\GraphQL\Search\Resolver\Resource\ResourceAssetResolver;
@@ -29,7 +29,7 @@ class EventTeaserResolverTest extends TestCase
 
     private ResourceKickerResolver&MockObject $kickerResolver;
 
-    private ResourceEventDateResolver&MockObject $eventDateResolver;
+    private ResourceSchedulingResolver&MockObject $schedulingResolver;
 
     /**
      * @throws Exception
@@ -45,14 +45,14 @@ class EventTeaserResolverTest extends TestCase
         $this->kickerResolver = $this->createMock(
             ResourceKickerResolver::class,
         );
-        $this->eventDateResolver = $this->createMock(
-            ResourceEventDateResolver::class,
+        $this->schedulingResolver = $this->createMock(
+            ResourceSchedulingResolver::class,
         );
         $this->resolver = new EventTeaserResolver(
             $this->assetResolver,
             $this->symbolicAssetResolver,
             $this->kickerResolver,
-            $this->eventDateResolver,
+            $this->schedulingResolver,
         );
     }
 
@@ -84,7 +84,6 @@ class EventTeaserResolverTest extends TestCase
             $this->createStub(Resource::class),
         );
         $args = $this->createStub(ArgumentInterface::class);
-
         $this->resolver->getAsset($teaser, $args);
     }
 
@@ -114,14 +113,13 @@ class EventTeaserResolverTest extends TestCase
             $this->createStub(Resource::class),
         );
         $args = $this->createStub(ArgumentInterface::class);
-
         $this->resolver->getKicker($teaser, $args);
     }
 
-    public function testGetEventDates(): void
+    public function testGetSchedulings(): void
     {
-        $this->eventDateResolver->expects($this->once())
-            ->method('getEventDates');
+        $this->schedulingResolver->expects($this->once())
+            ->method('getSchedulings');
         $teaser = new EventTeaser(
             null,
             '',
@@ -129,7 +127,6 @@ class EventTeaserResolverTest extends TestCase
             $this->createStub(Resource::class),
         );
         $args = $this->createStub(ArgumentInterface::class);
-
-        $this->resolver->getEventDates($teaser, $args);
+        $this->resolver->getSchedulings($teaser, $args);
     }
 }

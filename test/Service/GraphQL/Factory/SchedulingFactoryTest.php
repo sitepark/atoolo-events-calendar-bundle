@@ -4,23 +4,45 @@ declare(strict_types=1);
 
 namespace Atoolo\EventsCalendar\Test\Service\GraphQL\Factory;
 
-use Atoolo\EventsCalendar\Service\GraphQL\Factory\EventDateFactory;
+use Atoolo\EventsCalendar\Service\GraphQL\Factory\SchedulingFactory;
 use Atoolo\EventsCalendar\Test\Constraint\EqualsRRule;
 use Atoolo\EventsCalendar\Test\Constraint\IsRRule;
+use Atoolo\Resource\DataBag;
+use Atoolo\Resource\Resource;
+use Atoolo\Resource\ResourceLanguage;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-#[CoversClass(EventDateFactory::class)]
-class EventDateFactoryTest extends TestCase
+#[CoversClass(SchedulingFactory::class)]
+class SchedulingFactoryTest extends TestCase
 {
-    private EventDateFactory $factory;
+    private SchedulingFactory $factory;
 
     // 01.01.2025 00:00 GMT
     private const UNTIL = 1735689600;
 
     public function setUp(): void
     {
-        $this->factory = new EventDateFactory();
+        $this->factory = new SchedulingFactory();
+    }
+
+    public function testCreate()
+    {
+        $resource = $this->createResource([
+            'metadata' => [
+                'schedulingRaw' => [
+                    [
+                        "beginDate" => 1640991600,
+                        "beginTime" => "19:58",
+                    ],
+                ],
+            ],
+        ]);
+        $scheduling = $this->factory->create($resource);
+        $this->assertEquals(
+            1641063480,
+            $scheduling[0]->start->getTimestamp(),
+        );
     }
 
     public function testCreateFromRawSchedulungInvalid()
@@ -30,10 +52,10 @@ class EventDateFactoryTest extends TestCase
             "isFullDay" => true,
             "endDate" => 1726178400,
         ];
-        $eventDate = $this->factory->createFromRawSchedulung(
+        $scheduling = $this->factory->createFromRawSchedulung(
             $rawScheduling,
         );
-        $this->assertNull($eventDate);
+        $this->assertNull($scheduling);
     }
 
     public function testCreateFromRawSchedulungMulti()
@@ -44,15 +66,14 @@ class EventDateFactoryTest extends TestCase
             "beginDate" => 1726005600,
             "endDate" => 1726178400,
         ];
-        $eventDate = $this->factory->createFromRawSchedulung(
+        $scheduling = $this->factory->createFromRawSchedulung(
             $rawScheduling,
         );
-        $this->assertEquals(1726005600, $eventDate->start->getTimestamp());
-        $this->assertEquals(1726178400, $eventDate->end->getTimestamp());
-        $this->assertTrue($eventDate->isFullDay);
-        $this->assertFalse($eventDate->hasStartTime);
-        $this->assertFalse($eventDate->hasEndTime);
-        $this->assertNUll($eventDate->status);
+        $this->assertEquals(1726005600, $scheduling->start->getTimestamp());
+        $this->assertEquals(1726178400, $scheduling->end->getTimestamp());
+        $this->assertTrue($scheduling->isFullDay);
+        $this->assertFalse($scheduling->hasStartTime);
+        $this->assertFalse($scheduling->hasEndTime);
     }
 
     public function testGetStartDateTimeFromRawScheduling()
@@ -201,7 +222,7 @@ class EventDateFactoryTest extends TestCase
     public function testGetRRuleFromRawSchedulingMonthlyByOccurenceUntil()
     {
         $actual = $this->factory->getRRuleFromRawScheduling([
-            "type" => "monthlyByDay",
+            "type" => "monthlyByOccurrence",
             "repetition" => [
                 "date" => self::UNTIL,
                 "oom" => 2,
@@ -251,5 +272,20 @@ class EventDateFactoryTest extends TestCase
         $expected = 'FREQ=YEARLY;INTERVAL=2;BYMONTH=3;BYDAY=3SU;UNTIL=20250101T000000Z';
         $this->assertThat($actual, new IsRRule());
         $this->assertThat($actual, new EqualsRRule($expected));
+    }
+
+    /**
+     * @param array<string,mixed> $data
+     */
+    private function createResource(array $data): Resource
+    {
+        return new Resource(
+            $data['url'] ?? '',
+            $data['id'] ?? '',
+            $data['name'] ?? '',
+            $data['objectType'] ?? '',
+            ResourceLanguage::default(),
+            new DataBag($data),
+        );
     }
 }

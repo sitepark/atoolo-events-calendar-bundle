@@ -29,6 +29,6 @@ EventTeaserDecorator:
           variant:
             type: "String"
             description: The asset variant is used to decide which image format is to be returned.
-      eventDates:
-        type: "[EventDate!]!"
-        description: event dates
+      schedulings:
+        type: "[Scheduling!]!"
+        description: schedulings
