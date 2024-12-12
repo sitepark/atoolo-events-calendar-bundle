@@ -79,14 +79,6 @@ class ICalFactoryTest extends TestCase
                     null,
                 ),
                 new Scheduling(
-                    new \DateTime('09.02.2024', new DateTimeZone('Europe/Berlin')),
-                    null,
-                    true,
-                    false,
-                    false,
-                    null,
-                ),
-                new Scheduling(
                     new \DateTime('11.02.2024', new DateTimeZone('Europe/Berlin')),
                     new \DateTime('14.02.2024', new DateTimeZone('Europe/Berlin')),
                     false,
@@ -135,18 +127,66 @@ class ICalFactoryTest extends TestCase
             'SUMMARY:Event',
             'DESCRIPTION:Amazing event',
             'URL:https://www.test.de/some/location',
-            'DTSTART;VALUE=DATE:20240209',
-            'RELATED-TO:1-0@www.test.de',
-            'END:VEVENT',
-            'BEGIN:VEVENT',
-            'UID:1-3@www.test.de',
-            // 'DTSTAMP:20241212T131535Z', Ignore timestamp
-            'SUMMARY:Event',
-            'DESCRIPTION:Amazing event',
-            'URL:https://www.test.de/some/location',
             'DTSTART;TZID=Europe/Berlin:20240211T000000',
             'DTEND;TZID=Europe/Berlin:20240214T235959',
             'RELATED-TO:1-0@www.test.de',
+            'END:VEVENT',
+            'END:VCALENDAR',
+            '',
+        ];
+        $this->assertEquals($expectedLines, $resultLines);
+    }
+
+    public function testCreateCalendarAsStringExternal(): void
+    {
+        $resource = $this->createResource([
+            'id' => '1',
+            'url' => 'https://www.external.de/some/location',
+            'metadata' => [
+                'headline' => 'Event',
+                'description' => 'Amazing event',
+            ],
+        ]);
+        $resourceChannel = $this->createResourceChannel([
+            'serverName' => 'www.test.de',
+        ]);
+        $this->resourceChannelFactory
+            ->method('create')
+            ->willReturn($resourceChannel);
+        $this->schedulingFactory
+            ->method('create')
+            ->with($resource)
+            ->willReturn([
+                new Scheduling(
+                    new \DateTime('09.02.2024', new DateTimeZone('Europe/Berlin')),
+                    null,
+                    true,
+                    false,
+                    false,
+                    null,
+                ),
+            ]);
+        $result = $this->iCalFactory->createCalendarAsString($resource);
+        $resultLines = array_values(
+            array_filter(
+                explode("\r\n", $result),
+                function ($row) {
+                    return !str_starts_with($row, 'DTSTAMP'); // Ignore timestamp
+                },
+            ),
+        );
+        $expectedLines = [
+            'BEGIN:VCALENDAR',
+            'PRODID:-//atoolo/events-calendar-bundle//1.0/EN',
+            'VERSION:2.0',
+            'CALSCALE:GREGORIAN',
+            'BEGIN:VEVENT',
+            'UID:1-0@www.test.de',
+            // 'DTSTAMP:20241212T131535Z', Ignore timestamp
+            'SUMMARY:Event',
+            'DESCRIPTION:Amazing event',
+            'URL:https://www.external.de/some/location',
+            'DTSTART;VALUE=DATE:20240209',
             'END:VEVENT',
             'END:VCALENDAR',
             '',

@@ -136,4 +136,18 @@ class EventTeaserResolverTest extends TestCase
         $args = $this->createStub(ArgumentInterface::class);
         $this->resolver->getSchedulings($teaser, $args);
     }
+
+    public function testGetICalUrl(): void
+    {
+        $this->iCalResolver->expects($this->once())
+            ->method('getICalUrl');
+        $teaser = new EventTeaser(
+            null,
+            '',
+            '',
+            $this->createStub(Resource::class),
+        );
+        $args = $this->createStub(ArgumentInterface::class);
+        $this->resolver->getICalUrl($teaser, $args);
+    }
 }
