@@ -25,7 +25,7 @@ final class ICalController extends AbstractController
     public function __construct(
         private readonly Search $search,
         private readonly ResourceLoader $loader,
-        private readonly ICalFactory $icalFactory,
+        private readonly ICalFactory $iCalFactory,
     ) {}
 
     /**
@@ -34,13 +34,13 @@ final class ICalController extends AbstractController
     #[Route('/api/ical', name: 'atoolo_events_calendar_ical')]
     public function createICalResponse(Request $request): Response
     {
-        $id = $request->query->getString('id');
-        if (!empty($id)) {
-            return $this->createICalResponseById($id);
-        }
         $location = $request->query->getString('location');
         if (!empty($location)) {
             return $this->createICalResponseByLocation(ResourceLocation::of($location));
+        }
+        $id = $request->query->getString('id');
+        if (!empty($id)) {
+            return $this->createICalResponseById($id);
         }
         $res = new JsonResponse(['error' => 'Either provide an \'id\' or a \'location\' of a resource']);
         $res->setStatusCode(400);
@@ -80,7 +80,7 @@ final class ICalController extends AbstractController
 
     private function createICalResponeByResource(Resource $resource): Response
     {
-        $res = new Response($this->icalFactory->createCalendarAsString($resource));
+        $res = new Response($this->iCalFactory->createCalendarAsString($resource));
         $res->headers->set('Content-Type', 'text/calendar');
         return $res;
     }
