@@ -16,6 +16,7 @@
         "atoolo/graphql-search-bundle": "dev-main",
         "atoolo/search-bundle": "^1.0",
         "dragonmantank/cron-expression": "^3.3",
+        "eluceo/ical": "^2.14",
         "rlanvin/php-rrule": "^2.5",
         "soundasleep/html2text": "^2.1",
         "symfony/config": "^6.3 || ^7.0",
@@ -29,7 +30,7 @@
         "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
         "infection/infection": "^0.27.6",
         "phpcompatibility/php-compatibility": "^9.3",
-        "phpunit/phpunit": "^10.4",
+        "phpunit/phpunit": "^10.5",
         "roave/security-advisories": "dev-latest",
         "squizlabs/php_codesniffer": "^3.7"
     },
