@@ -32,3 +32,6 @@ EventTeaserDecorator:
       schedulings:
         type: "[Scheduling!]!"
         description: schedulings
+      iCalUrl:
+        type: "String"
+        description: Downlaod url for the event scheduling as an .ics file
