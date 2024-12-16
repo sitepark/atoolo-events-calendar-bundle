@@ -124,8 +124,9 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
         );
         $expected->setMetaBool('event_onlineEvent', true);
         $expected->setMetaString('imageUrl', []);
-        $expected->setMetaBool('event_soldout', true);
         $expected->setMetaBool('event_cancelled', true);
+        $expected->setMetaBool('event_soldout', true);
+        $expected->setMetaBool('event_postponed', true);
         $expected->setMetaString('event_location', 'location-name');
         $expected->setMetaText('event_rce_location', 'location-name');
         $expected->setMetaText('event_rce_organizer', 'organizer-name');
@@ -444,6 +445,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
             $startDate,
             $endDate,
             false,
+            true,
             true,
             true,
         );

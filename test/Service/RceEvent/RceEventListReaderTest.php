@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Atoolo\EventsCalendar\Test\Service\RceEvent;
 
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventListItem;
+use Atoolo\EventsCalendar\Service\Platform;
 use Atoolo\EventsCalendar\Service\RceEvent\RceEventListHttpClient;
 use Atoolo\EventsCalendar\Service\RceEvent\RceEventListItemFactory;
 use Atoolo\EventsCalendar\Service\RceEvent\RceEventListReader;
@@ -19,6 +20,8 @@ class RceEventListReaderTest extends TestCase
     private string $workDir =
         __DIR__ . '/../../../var/test/RceEventListReaderTest';
 
+    private Platform $platform;
+
     private RceEventListItem $event;
     private RceEventListItemFactory $factory;
     private RceEventListHttpClient $httpClient;
@@ -29,6 +32,7 @@ class RceEventListReaderTest extends TestCase
         $this->factory = $this->createStub(RceEventListItemFactory::class);
         $this->factory->method('create')->willReturn($this->event);
         $this->httpClient = $this->createStub(RceEventListHttpClient::class);
+        $this->platform = new Platform();
     }
 
     public function tearDown(): void
@@ -72,10 +76,13 @@ class RceEventListReaderTest extends TestCase
             },
         );
 
+        $platform = $this->createStub(Platform::class);
+
         $reader = new RceEventListReader(
             $this->workDir,
             $this->httpClient,
             $this->factory,
+            $this->platform,
         );
         $reader->read('https://dummy.url');
 
@@ -95,10 +102,13 @@ class RceEventListReaderTest extends TestCase
             },
         );
 
+        $platform = $this->createStub(Platform::class);
+
         $reader = new RceEventListReader(
             $this->workDir,
             $this->httpClient,
             $this->factory,
+            $this->platform,
         );
         $this->expectException(ValueError::class);
         $reader->read('https://dummy.url');
@@ -114,10 +124,13 @@ class RceEventListReaderTest extends TestCase
             },
         );
 
+        $platform = $this->createStub(Platform::class);
+
         $reader = new RceEventListReader(
             $this->workDir,
             $this->httpClient,
             $this->factory,
+            $this->platform,
         );
         $this->expectException(RuntimeException::class);
         $reader->read('https://dummy.url');
@@ -133,10 +146,13 @@ class RceEventListReaderTest extends TestCase
             },
         );
 
+        $platform = $this->createStub(Platform::class);
+
         $reader = new RceEventListReader(
             $this->workDir,
             $this->httpClient,
             $this->factory,
+            $this->platform,
         );
         $this->expectException(RuntimeException::class);
         $reader->read('https://dummy.url');
@@ -152,10 +168,13 @@ class RceEventListReaderTest extends TestCase
             },
         );
 
+        $platform = $this->createStub(Platform::class);
+
         $reader = new RceEventListReader(
             $this->workDir,
             $this->httpClient,
             $this->factory,
+            $this->platform,
         );
         $this->expectException(RuntimeException::class);
         $reader->read('https://dummy.url');
@@ -163,16 +182,18 @@ class RceEventListReaderTest extends TestCase
 
     public function testReadWithNonWritableWorkdir(): void
     {
-        $base = $this->workDir;
-        mkdir($base, 0777, true);
 
+        $base = $this->workDir;
         $workDir = $base . '/nonwritable';
+
+        mkdir($base, 0777, true);
         mkdir($workDir, 0000, true);
 
         $reader = new RceEventListReader(
             $workDir,
             $this->httpClient,
             $this->factory,
+            $this->platform,
         );
         $this->expectException(RuntimeException::class);
         $reader->read('https://dummy.url');
@@ -189,6 +210,7 @@ class RceEventListReaderTest extends TestCase
             $workDir,
             $this->httpClient,
             $this->factory,
+            $this->platform,
         );
         $this->expectException(RuntimeException::class);
         $reader->read('https://dummy.url');

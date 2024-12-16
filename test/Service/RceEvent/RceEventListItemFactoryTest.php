@@ -105,6 +105,7 @@ class RceEventListItemFactoryTest extends TestCase
             false,
             false,
             false,
+            postponed: false,
         );
         $this->assertEquals(
             [$expectedDate],
@@ -139,6 +140,7 @@ class RceEventListItemFactoryTest extends TestCase
             true,
             false,
             false,
+            postponed: false,
         );
         $this->assertEquals(
             [$expectedDate],
@@ -171,6 +173,7 @@ class RceEventListItemFactoryTest extends TestCase
             false,
             true,
             false,
+            postponed: false,
         );
         $this->assertEquals(
             [$expectedDate],
@@ -178,6 +181,40 @@ class RceEventListItemFactoryTest extends TestCase
             'unexpected soldout',
         );
     }
+
+    public function testDateListWithAusverkauft(): void
+    {
+        $event = $this->create(
+            <<<EOS
+            <EVENT>
+                <DATELIST>
+                    <DATE>
+                        <STATUS>ausverkauft</STATUS>
+                    </DATE>
+                </DATELIST>
+            </EVENT>
+            EOS,
+        );
+
+        $empty = new DateTime();
+        $empty->setTimestamp(0);
+
+        $expectedDate = new RceEventDate(
+            '',
+            $empty,
+            $empty,
+            false,
+            true,
+            false,
+            postponed: false,
+        );
+        $this->assertEquals(
+            [$expectedDate],
+            $event->dates,
+            'unexpected soldout',
+        );
+    }
+
 
     public function testDateListWithCanceled(): void
     {
@@ -203,6 +240,7 @@ class RceEventListItemFactoryTest extends TestCase
             false,
             false,
             true,
+            postponed: false,
         );
         $this->assertEquals(
             [$expectedDate],
@@ -210,6 +248,105 @@ class RceEventListItemFactoryTest extends TestCase
             'unexpected canceled',
         );
     }
+
+    public function testDateListWithAbgesagt(): void
+    {
+        $event = $this->create(
+            <<<EOS
+            <EVENT>
+                <DATELIST>
+                    <DATE>
+                        <STATUS>abgesagt</STATUS>
+                    </DATE>
+                </DATELIST>
+            </EVENT>
+            EOS,
+        );
+
+        $empty = new DateTime();
+        $empty->setTimestamp(0);
+
+        $expectedDate = new RceEventDate(
+            '',
+            $empty,
+            $empty,
+            false,
+            false,
+            true,
+            postponed: false,
+        );
+        $this->assertEquals(
+            [$expectedDate],
+            $event->dates,
+            'unexpected canceled',
+        );
+    }
+
+    public function testDateListWithPostponed(): void
+    {
+        $event = $this->create(
+            <<<EOS
+            <EVENT>
+                <DATELIST>
+                    <DATE>
+                        <STATUS>postponed</STATUS>
+                    </DATE>
+                </DATELIST>
+            </EVENT>
+            EOS,
+        );
+
+        $empty = new DateTime();
+        $empty->setTimestamp(0);
+
+        $expectedDate = new RceEventDate(
+            '',
+            $empty,
+            $empty,
+            false,
+            false,
+            false,
+            true,
+        );
+        $this->assertEquals(
+            [$expectedDate],
+            $event->dates,
+            'unexpected postponed',
+        );
+    }
+    public function testDateListWithVerschoben(): void
+    {
+        $event = $this->create(
+            <<<EOS
+            <EVENT>
+                <DATELIST>
+                    <DATE>
+                        <STATUS>verschoben</STATUS>
+                    </DATE>
+                </DATELIST>
+            </EVENT>
+            EOS,
+        );
+
+        $empty = new DateTime();
+        $empty->setTimestamp(0);
+
+        $expectedDate = new RceEventDate(
+            '',
+            $empty,
+            $empty,
+            false,
+            false,
+            false,
+            true,
+        );
+        $this->assertEquals(
+            [$expectedDate],
+            $event->dates,
+            'unexpected postponed',
+        );
+    }
+
 
     public function testDateListDefaultTimes(): void
     {
@@ -239,6 +376,7 @@ class RceEventListItemFactoryTest extends TestCase
             false,
             false,
             false,
+            postponed: false,
         );
         $this->assertEquals(
             [$expectedDate],
@@ -271,6 +409,7 @@ class RceEventListItemFactoryTest extends TestCase
             false,
             false,
             false,
+            postponed: false,
         );
         $this->assertEquals(
             [$expectedDate],

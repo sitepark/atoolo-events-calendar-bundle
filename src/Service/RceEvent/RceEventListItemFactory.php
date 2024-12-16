@@ -19,8 +19,9 @@ use Soundasleep\Html2Text;
 
 class RceEventListItemFactory
 {
-    private const SCHEDULE_STATUS_SOLDOUT  = 'soldout';
-    private const SCHEDULE_STATUS_CANCELED = 'canceled';
+    private const SCHEDULE_STATUS_SOLDOUT  = ['soldout', 'ausverkauft'];
+    private const SCHEDULE_STATUS_CANCELED = ['canceled', 'abgesagt'];
+    private const SCHEDULE_STATUS_POSTPONED = ['postponed', 'verschoben'];
     private const EVENT_TYPE_KEY = 'digitalevent';
     private const EVENT_TYPE_VALUE_ONSITE = 'onsite';
     private const EVENT_TYPE_VALUE_ONLINE = 'online';
@@ -88,6 +89,7 @@ class RceEventListItemFactory
                 $this->isBlacklistedEventDate($date),
                 $this->isSoldOut($date),
                 $this->isCanceled($date),
+                $this->isPostponed($date),
             );
         }
         return $dateList;
@@ -150,7 +152,7 @@ class RceEventListItemFactory
             return false;
         }
 
-        return ((string) $date->STATUS) === self::SCHEDULE_STATUS_SOLDOUT;
+        return in_array((string) $date->STATUS, self::SCHEDULE_STATUS_SOLDOUT);
     }
 
     private function isCanceled(SimpleXMLElement $date): bool
@@ -159,8 +161,18 @@ class RceEventListItemFactory
             return false;
         }
 
-        return ((string) $date->STATUS) === self::SCHEDULE_STATUS_CANCELED;
+        return in_array((string) $date->STATUS, self::SCHEDULE_STATUS_CANCELED);
     }
+
+    private function isPostponed(SimpleXMLElement $date): bool
+    {
+        if (!isset($date->STATUS)) {
+            return false;
+        }
+
+        return in_array((string) $date->STATUS, self::SCHEDULE_STATUS_POSTPONED);
+    }
+
 
     private function isHighlight(SimpleXMLElement $event): bool
     {

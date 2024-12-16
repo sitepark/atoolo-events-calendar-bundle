@@ -100,6 +100,9 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         if ($eventDate->cancelled) {
             $doc->setMetaBool('event_cancelled', true);
         }
+        if ($eventDate->postponed) {
+            $doc->setMetaBool('event_postponed', true);
+        }
 
         if ($event->addresses->location !== null) {
             $doc->setMetaString(
