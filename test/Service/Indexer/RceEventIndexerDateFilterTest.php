@@ -27,6 +27,7 @@ class RceEventIndexerDateFilterTest extends TestCase
             blacklisted: false,
             soldOut: false,
             cancelled: false,
+            postponed: false,
         );
 
         $this->assertTrue(
@@ -50,6 +51,7 @@ class RceEventIndexerDateFilterTest extends TestCase
             blacklisted: false,
             soldOut: false,
             cancelled: false,
+            postponed: false,
         );
 
         $this->assertTrue(

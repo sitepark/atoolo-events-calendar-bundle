@@ -237,6 +237,7 @@ class RceEventIndexerTest extends TestCase
             false,
             false,
             false,
+            postponed: false,
         );
         $addresses = new RceEventAddresses();
         return new RceEventListItem(

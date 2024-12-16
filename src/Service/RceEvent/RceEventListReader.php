@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Atoolo\EventsCalendar\Service\RceEvent;
 
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventListItem;
+use Atoolo\EventsCalendar\Service\Platform;
 use RuntimeException;
 use SimpleXMLElement;
 use ZipArchive;
@@ -20,6 +21,7 @@ class RceEventListReader
         private readonly string $workDir,
         private readonly RceEventListHttpClient $httpClient,
         private readonly RceEventListItemFactory $factory,
+        private readonly Platform $platform,
     ) {}
     /**
      * Unzips the zip file from the URL and reads the contained
@@ -32,7 +34,7 @@ class RceEventListReader
             $xml = $this->loadXmlFromZip($zip, $zipFile);
             $this->items = $this->readXml($xml);
         } finally {
-            unlink($zipFile);
+            $this->platform->unlink($zipFile);
         }
     }
 
@@ -120,16 +122,16 @@ class RceEventListReader
 
     private function getTmpFile(string $prefix, string $suffix): string
     {
-        $file = tempnam($this->getWorkDir(), $prefix);
-        $fileWithSuffix = $file .= $suffix;
-        rename($file, $fileWithSuffix);
+        $file = $this->platform->tempnam($this->getWorkDir(), $prefix);
+        $fileWithSuffix = $file . $suffix;
+        $this->platform->rename($file, $fileWithSuffix);
         return $fileWithSuffix;
     }
 
     private function getWorkDir(): string
     {
-        if (is_dir($this->workDir)) {
-            if (!is_writable($this->workDir)) {
+        if ($this->platform->is_dir($this->workDir)) {
+            if (!$this->platform->is_writeable($this->workDir)) {
                 throw new RuntimeException(
                     'Workdir is not writable ' . $this->workDir,
                 );
@@ -137,16 +139,7 @@ class RceEventListReader
             return $this->workDir;
         }
 
-        if (
-            !is_dir($this->workDir) &&
-            !@mkdir($concurrentDirectory = $this->workDir, 0777, true) &&
-            !is_dir($concurrentDirectory)
-        ) {
-            throw new RuntimeException(
-                sprintf('Directory "%s" was not created', $concurrentDirectory),
-            );
-        }
-
+        $this->platform->mkdir($this->workDir);
         return $this->workDir;
     }
 }
