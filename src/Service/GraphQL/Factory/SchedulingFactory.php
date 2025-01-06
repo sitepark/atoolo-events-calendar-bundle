@@ -130,7 +130,7 @@ class SchedulingFactory
         }
         $rrule['INTERVAL'] = $rawScheduling['repetition']['interval'] ?? 1;
         if (is_int($rawScheduling['repetition']['date'] ?? null)) {
-            $rrule['UNTIL'] = date('Ymd\THis\Z', $rawScheduling['repetition']['date']);
+            $rrule['UNTIL'] = gmdate('Ymd\THis\Z', $rawScheduling['repetition']['date']);
         }
         if (is_int($rawScheduling['repetition']['count'] ?? null)) {
             $rrule['COUNT'] = $rawScheduling['repetition']['count'];
