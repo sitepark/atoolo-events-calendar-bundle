@@ -21,11 +21,11 @@ class Platform
         }
     }
 
-    public function tempnam(string $prefix): string
+    public function tempnam(string $dir, string $prefix): string
     {
-        $file = tempnam(sys_get_temp_dir(), $prefix);
+        $file = tempnam($dir, $prefix);
         if ($file === false) {
-            throw new RuntimeException('Could not create temporary file in directory ' . sys_get_temp_dir());
+            throw new RuntimeException('Could not create temporary file in directory ' . $dir);
         }
 
         return $file;
