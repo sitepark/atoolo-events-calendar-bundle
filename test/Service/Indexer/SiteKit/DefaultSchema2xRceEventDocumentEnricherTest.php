@@ -122,7 +122,6 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
             'event_ticketLink',
             'https://www.example.com/ticket',
         );
-        $expected->setMetaBool('event_onlineEvent', true);
         $expected->setMetaString('imageUrl', []);
         $expected->setMetaBool('event_cancelled', true);
         $expected->setMetaBool('event_soldout', true);

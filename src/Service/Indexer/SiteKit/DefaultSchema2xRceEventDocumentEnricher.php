@@ -76,7 +76,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
             $doc->sp_group_path = $instance->groupPath;
         }
 
-        if ($event->onsite) {
+        if ($event->online) {
             $doc->setMetaBool('event_onlineEvent', true);
         }
 
