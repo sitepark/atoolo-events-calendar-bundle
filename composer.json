@@ -17,6 +17,7 @@
         "atoolo/search-bundle": "^1.0",
         "dragonmantank/cron-expression": "^3.3",
         "eluceo/ical": "^2.14",
+        "phpro/api-problem-bundle": "^1.9",
         "rlanvin/php-rrule": "^2.5",
         "soundasleep/html2text": "^2.1",
         "symfony/config": "^6.3 || ^7.0",

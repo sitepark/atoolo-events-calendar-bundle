@@ -8,21 +8,26 @@ use Atoolo\EventsCalendar\Service\ICal\ICalFactory;
 use Atoolo\Resource\Exception\InvalidResourceException;
 use Atoolo\Resource\Exception\ResourceNotFoundException;
 use Atoolo\Resource\Resource;
+use Atoolo\Resource\ResourceChannel;
+use Atoolo\Resource\ResourceLanguage;
 use Atoolo\Resource\ResourceLoader;
 use Atoolo\Resource\ResourceLocation;
 use Atoolo\Search\Dto\Search\Query\Filter\IdFilter;
+use Atoolo\Search\Dto\Search\Query\SearchQuery;
 use Atoolo\Search\Dto\Search\Query\SearchQueryBuilder;
 use Atoolo\Search\Search;
 use JsonException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class ICalController extends AbstractController
 {
     public function __construct(
+        private readonly ResourceChannel $channel,
         private readonly Search $search,
         private readonly ResourceLoader $loader,
         private readonly ICalFactory $iCalFactory,
@@ -31,31 +36,56 @@ final class ICalController extends AbstractController
     /**
      * @throws JsonException
      */
-    #[Route('/api/ical', name: 'atoolo_events_calendar_ical')]
-    public function createICalResponse(Request $request): Response
+    #[Route(
+        '/api/ical/resource/{lang}/{location}',
+        name: 'atoolo_events_calendar_ical_location',
+        methods: ['GET'],
+        requirements: ['location' => '.+'],
+        format: 'json',
+    )]
+    public function iCalByLocation(string $lang, string $location): Response
     {
-        $location = $request->query->getString('location');
-        if (!empty($location)) {
-            return $this->createICalResponseByLocation(ResourceLocation::of($location));
-        }
-        $id = $request->query->getString('id');
-        if (!empty($id)) {
-            return $this->createICalResponseById($id);
-        }
-        $res = new JsonResponse(['error' => 'Either provide an \'id\' or a \'location\' of a resource']);
-        $res->setStatusCode(400);
-        return $res;
+        $resourceLocation = $this->toResourceLocation($lang, $location);
+        return $this->createICalResponseByLocation($resourceLocation);
     }
 
-    private function createICalResponseById(string $id): Response
+    /**
+     * @throws JsonException
+     */
+    #[Route(
+        '/api/ical/search',
+        name: 'atoolo_events_calendar_ical_search',
+        methods: ['GET'],
+        format: 'json',
+    )]
+    public function iCalBySearch(Request $request): Response
     {
-        $resource = $this->searchResourceById($id);
-        if ($resource === null) {
-            $res = new JsonResponse(['error' => 'resource with id ' . $id . ' not found']);
-            $res->setStatusCode(404);
-            return $res;
+        $query = $this->createSearchQueryFromRequest($request);
+        return $this->createICalResponseBySearchQuery($query);
+    }
+
+    /**
+     * @todo Support all search parameters (move logic to search bundle?)
+     */
+    private function createSearchQueryFromRequest(Request $request): SearchQuery
+    {
+        $queryBuilder = new SearchQueryBuilder();
+        if ($request->query->has('id')) {
+            $queryBuilder->filter(new IdFilter([$request->query->getString('id')]));
         }
-        return $this->createICalResponeByResource($resource);
+        if ($request->query->has('lang')) {
+            $lang = $request->query->getString('lang');
+            if ($this->isSupportedTranslation($lang)) {
+                $queryBuilder->lang(ResourceLanguage::of($lang));
+            }
+        }
+        return $queryBuilder->build();
+    }
+
+    private function createICalResponseBySearchQuery(SearchQuery $query): Response
+    {
+        $searchResult = $this->search->search($query);
+        return $this->createICalResponeByResources(...$searchResult->results);
     }
 
     private function createICalResponseByLocation(ResourceLocation $location): Response
@@ -63,34 +93,47 @@ final class ICalController extends AbstractController
         try {
             $resource = $this->loader->load($location);
         } catch (ResourceNotFoundException $e) {
-            $res = new JsonResponse([
-                'error' => 'resource at location ' . $location->__toString() . ' not found',
-            ]);
-            $res->setStatusCode(404);
-            return $res;
+            throw new NotFoundHttpException('Resource at \'' . $location . '\' not found');
         } catch (InvalidResourceException $e) {
-            $res = new JsonResponse([
-                'error' => 'resource at location ' . $location->__toString() . ' is invalid',
-            ]);
-            $res->setStatusCode(500);
-            return $res;
+            throw new HttpException(500, 'Resource at \'' . $location . '\' is invalid');
         }
-        return $this->createICalResponeByResource($resource);
+        return $this->createICalResponeByResources($resource);
     }
 
-    private function createICalResponeByResource(Resource $resource): Response
+    private function createICalResponeByResources(Resource ...$resources): Response
     {
-        $res = new Response($this->iCalFactory->createCalendarAsString($resource));
+        $res = new Response($this->iCalFactory->createCalendarAsString(...$resources));
         $res->headers->set('Content-Type', 'text/calendar');
         return $res;
     }
 
-    private function searchResourceById(string $id): ?Resource
+    private function toResourceLocation(string $lang, string $path): ResourceLocation
     {
-        $query = (new SearchQueryBuilder())
-            ->filter(new IdFilter([$id]))
-            ->build();
-        $searchResult = $this->search->search($query);
-        return  $searchResult->results[0] ?? null;
+        if ($this->isSupportedTranslation($lang)) {
+            return ResourceLocation::of('/' . $path . '.php', ResourceLanguage::of($lang));
+        }
+
+        if (str_starts_with($this->channel->locale, $lang . '_')) {
+            return ResourceLocation::of('/' . $path . '.php');
+        }
+
+        // lang is not a language but part of the path, if not empty
+        $location = (
+            empty($lang)
+            ? '/' . $path
+            : '/' . $lang . '/' . $path
+        ) . '.php';
+
+        return ResourceLocation::of($location);
+    }
+
+    private function isSupportedTranslation(string $lang): bool
+    {
+        foreach ($this->channel->translationLocales as $locale) {
+            if (str_starts_with($locale, $lang . '_')) {
+                return true;
+            }
+        }
+        return false;
     }
 }

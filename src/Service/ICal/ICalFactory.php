@@ -32,51 +32,53 @@ class ICalFactory
     ) {}
 
     public function createCalendarAsString(
-        Resource $resource,
+        Resource ...$resources,
     ): string {
         return (string) (new CalendarFactory(new CustomEventFactory()))
-            ->createCalendar($this->createCalendar($resource));
+            ->createCalendar($this->createCalendar(...$resources));
     }
 
     public function createCalendar(
-        Resource $resource,
+        Resource ...$resources,
     ): Calendar {
         $resourceChannel = $this->resourceChannelFactory->create();
-        $schedulings = $this->schedulingFactory->create($resource);
         $events = [];
-        if (!empty($schedulings)) {
-            $summary = $resource->data->getString(
-                'metadata.headline',
-                $resource->data->getString('metadata.headline'),
-            );
-            $description = $resource->data->getString('metadata.description');
-            $resourceChannel = $this->resourceChannelFactory->create();
-            $isExternal = str_starts_with($resource->location, 'http://')
-                || str_starts_with($resource->location, 'https://');
-            $url = $isExternal
-                ? $resource->location
-                : 'https://' . $resourceChannel->serverName . $resource->location;
-            $firstEventUid = null;
-            foreach ($schedulings as $index => $scheduling) {
-                $uuid = $resource->id . '-' . $index . '@' . $resourceChannel->serverName;
-                $event = new CustomEvent(new UniqueIdentifier($uuid));
-                if ($firstEventUid === null) {
-                    $firstEventUid = $event->getUniqueIdentifier();
-                } else {
-                    $event->setRelatedTo($firstEventUid);
-                }
-                if (!empty($summary)) {
-                    $event->setSummary($summary);
-                }
-                if (!empty($description)) {
-                    $event->setDescription($description);
-                }
-                $event->setUrl(new Uri($url));
-                $event->setOccurrence(
-                    $this->createOccurenceFromScheduling($scheduling),
+        foreach ($resources as $resource) {
+            $schedulings = $this->schedulingFactory->create($resource);
+            if (!empty($schedulings)) {
+                $summary = $resource->data->getString(
+                    'metadata.headline',
+                    $resource->data->getString('metadata.headline'),
                 );
-                $event->setRRule($scheduling->rRule);
-                $events[] = $event;
+                $description = $resource->data->getString('metadata.description');
+                $resourceChannel = $this->resourceChannelFactory->create();
+                $isExternal = str_starts_with($resource->location, 'http://')
+                    || str_starts_with($resource->location, 'https://');
+                $url = $isExternal
+                    ? $resource->location
+                    : 'https://' . $resourceChannel->serverName . $resource->location;
+                $firstEventUid = null;
+                foreach ($schedulings as $index => $scheduling) {
+                    $uuid = $resource->id . '-' . $index . '@' . $resourceChannel->serverName;
+                    $event = new CustomEvent(new UniqueIdentifier($uuid));
+                    if ($firstEventUid === null) {
+                        $firstEventUid = $event->getUniqueIdentifier();
+                    } else {
+                        $event->setRelatedTo($firstEventUid);
+                    }
+                    if (!empty($summary)) {
+                        $event->setSummary($summary);
+                    }
+                    if (!empty($description)) {
+                        $event->setDescription($description);
+                    }
+                    $event->setUrl(new Uri($url));
+                    $event->setOccurrence(
+                        $this->createOccurenceFromScheduling($scheduling),
+                    );
+                    $event->setRRule($scheduling->rRule);
+                    $events[] = $event;
+                }
             }
         }
         $calendar = new Calendar($events);

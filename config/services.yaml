@@ -64,6 +64,7 @@ services:
 
   Atoolo\EventsCalendar\Controller\ICalController:
     arguments:
+      - '@atoolo_resource.resource_channel'
       - '@atoolo_search.search'
       - '@atoolo_resource.resource_loader'
       - '@Atoolo\EventsCalendar\Service\ICal\ICalFactory'
