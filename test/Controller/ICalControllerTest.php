@@ -10,9 +10,11 @@ use Atoolo\Resource\DataBag;
 use Atoolo\Resource\Exception\InvalidResourceException;
 use Atoolo\Resource\Exception\ResourceNotFoundException;
 use Atoolo\Resource\Resource;
+use Atoolo\Resource\ResourceChannel;
 use Atoolo\Resource\ResourceLanguage;
 use Atoolo\Resource\ResourceLoader;
 use Atoolo\Resource\ResourceLocation;
+use Atoolo\Resource\ResourceTenant;
 use Atoolo\Search\Dto\Search\Query\Filter\IdFilter;
 use Atoolo\Search\Dto\Search\Query\SearchQueryBuilder;
 use Atoolo\Search\Dto\Search\Result\SearchResult;
@@ -21,6 +23,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use function PHPUnit\Framework\once;
 
@@ -46,40 +50,35 @@ class ICalControllerTest extends TestCase
         $this->iCalFactory = $this->createMock(
             ICalFactory::class,
         );
+        $resourceChannel = $this->createResourceChannel([
+            'locale' => 'de_DE',
+            'translationLocales' => ['en'],
+        ]);
         $this->controller = new ICalController(
+            $resourceChannel,
             $this->search,
             $this->resourceLoader,
             $this->iCalFactory,
         );
     }
 
-    public function testCreateICalResponseMissingParams(): void
+    public function testICalByLocation(): void
     {
-        $response = $this->controller->createICalResponse(new Request());
-        $this->assertEquals(
-            400,
-            $response->getStatusCode(),
-        );
-    }
-
-    public function testCreateICalResponseByLocation(): void
-    {
-        $location = '/some/location';
+        $location = 'some/location';
         $resource = $this->createResource([
             'url' => $location,
         ]);
-        $request = new Request(['location' => $location]);
         $this->resourceLoader
             ->expects(once())
             ->method('load')
-            ->with(ResourceLocation::of($location))
+            ->with(ResourceLocation::of('/' . $location . '.php'))
             ->willReturn($resource);
         $this->iCalFactory
             ->expects(once())
             ->method('createCalendarAsString')
             ->with($resource)
             ->willReturn('Totally valid calendar data');
-        $response = $this->controller->createICalResponse($request, );
+        $response = $this->controller->iCalByLocation('de', $location);
         $this->assertEquals(
             200,
             $response->getStatusCode(),
@@ -94,91 +93,32 @@ class ICalControllerTest extends TestCase
         );
     }
 
-    public function testCreateICalResponseByLocationNotFound(): void
+    public function testICalByLocationNotFound(): void
     {
-        $location = '/some/location';
-        $request = new Request(['location' => $location]);
+        $location = 'some/location';
         $this->resourceLoader
             ->expects(once())
             ->method('load')
-            ->with(ResourceLocation::of($location))
+            ->with(ResourceLocation::of('/' . $location . '.php'))
             ->willThrowException(
                 new ResourceNotFoundException(ResourceLocation::of($location)),
             );
-        $response = $this->controller->createICalResponse($request);
-        $this->assertEquals(
-            404,
-            $response->getStatusCode(),
-        );
+        $this->expectException(NotFoundHttpException::class);
+        $this->controller->iCalByLocation('de', $location);
     }
 
-    public function testCreateICalResponseByLocationInvalidResource(): void
+    public function testICalByLocationInvalidResource(): void
     {
-        $location = '/some/location';
-        $request = new Request(['location' => $location]);
+        $location = 'some/location';
         $this->resourceLoader
             ->expects(once())
             ->method('load')
-            ->with(ResourceLocation::of($location))
+            ->with(ResourceLocation::of('/' . $location . '.php'))
             ->willThrowException(
                 new InvalidResourceException(ResourceLocation::of($location)),
             );
-        $response = $this->controller->createICalResponse($request);
-        $this->assertEquals(
-            500,
-            $response->getStatusCode(),
-        );
-    }
-
-    public function testCreateICalResponseById(): void
-    {
-        $id = 'some_id';
-        $resource = $this->createResource([
-            'id' => $id,
-        ]);
-        $request = new Request(['id' => $id]);
-        $internalSearchResult = new SearchResult(1, 10, 0, [$resource], [], 1);
-        $this->search
-            ->expects(once())
-            ->method('search')
-            ->willReturn($internalSearchResult);
-        $this->iCalFactory
-            ->expects(once())
-            ->method('createCalendarAsString')
-            ->with($resource)
-            ->willReturn('Totally valid calendar data');
-        $response = $this->controller->createICalResponse($request, );
-        $this->assertEquals(
-            200,
-            $response->getStatusCode(),
-        );
-        $this->assertEquals(
-            'text/calendar',
-            $response->headers->get('Content-Type'),
-        );
-        $this->assertEquals(
-            'Totally valid calendar data',
-            $response->getContent(),
-        );
-    }
-
-    public function testCreateICalResponseByIdNotFound(): void
-    {
-        $id = 'some_id';
-        $resource = $this->createResource([
-            'id' => $id,
-        ]);
-        $request = new Request(['id' => $id]);
-        $internalSearchResult = new SearchResult(0, 10, 0, [], [], 1);
-        $this->search
-            ->expects(once())
-            ->method('search')
-            ->willReturn($internalSearchResult);
-        $response = $this->controller->createICalResponse($request, );
-        $this->assertEquals(
-            404,
-            $response->getStatusCode(),
-        );
+        $this->expectException(HttpException::class);
+        $this->controller->iCalByLocation('de', $location);
     }
 
     /**
@@ -193,6 +133,27 @@ class ICalControllerTest extends TestCase
             $data['objectType'] ?? '',
             ResourceLanguage::default(),
             new DataBag($data),
+        );
+    }
+
+    private function createResourceChannel(array $args): ResourceChannel
+    {
+        /** @var ResourceTenant $tenant */
+        $tenant = $this->createStub(ResourceTenant::class);
+        return new ResourceChannel(
+            id: $args['id'] ?? '',
+            name: $args['name'] ?? '',
+            anchor: $args['anchor'] ?? '',
+            serverName: $args['serverName'] ?? '',
+            isPreview: $args['isPreview'] ?? false,
+            nature: $args['nature'] ?? '',
+            locale: $args['locale'] ?? '',
+            baseDir: $args['baseDir'] ?? '',
+            resourceDir: $args['resourceDir'] ?? '',
+            configDir: $args['configDir'] ?? '',
+            searchIndex: $args['searchIndex'] ?? '',
+            translationLocales: $args['translationLocales'] ?? [],
+            tenant: $tenant,
         );
     }
 }
