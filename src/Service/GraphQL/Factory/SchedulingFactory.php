@@ -91,7 +91,7 @@ class SchedulingFactory
     public function getEndDateTimeFromRawScheduling(
         array $rawScheduling,
     ): ?\DateTime {
-        $endDateTimestamp = $rawScheduling['endDate'] ?? $rawScheduling['beginDate'] ?? null;
+        $endDateTimestamp = $rawScheduling['endDate'] ?? null;
         if (!is_int($endDateTimestamp)) {
             return null;
         }
