@@ -76,7 +76,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
             $doc->sp_group_path = $instance->groupPath;
         }
 
-        if ($event->onsite) {
+        if ($event->online) {
             $doc->setMetaBool('event_onlineEvent', true);
         }
 
@@ -99,6 +99,9 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         }
         if ($eventDate->cancelled) {
             $doc->setMetaBool('event_cancelled', true);
+        }
+        if ($eventDate->postponed) {
+            $doc->setMetaBool('event_postponed', true);
         }
 
         if ($event->addresses->location !== null) {

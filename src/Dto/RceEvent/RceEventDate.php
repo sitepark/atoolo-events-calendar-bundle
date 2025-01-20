@@ -18,5 +18,6 @@ class RceEventDate
         public readonly bool $blacklisted,
         public readonly bool $soldOut,
         public readonly bool $cancelled,
+        public readonly bool $postponed,
     ) {}
 }

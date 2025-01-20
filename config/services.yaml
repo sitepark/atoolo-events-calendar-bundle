@@ -23,6 +23,8 @@ services:
       - '%kernel.project_dir%/var/cache/'
       - 'rce-event'
 
+  Atoolo\EventsCalendar\Service\Platform: ~
+
   Atoolo\EventsCalendar\Service\RceEvent\RceEventListHttpClient: ~
 
   Atoolo\EventsCalendar\Service\RceEvent\RceEventListItemFactory: ~
@@ -32,6 +34,7 @@ services:
       - '%kernel.project_dir%/var/cache/'
       - '@Atoolo\EventsCalendar\Service\RceEvent\RceEventListHttpClient'
       - '@Atoolo\EventsCalendar\Service\RceEvent\RceEventListItemFactory'
+      - '@Atoolo\EventsCalendar\Service\Platform'
 
   atoolo_events_calendar.indexer.progressState:
     class: Atoolo\Search\Service\Indexer\IndexerProgressState
