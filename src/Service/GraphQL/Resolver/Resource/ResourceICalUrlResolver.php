@@ -6,6 +6,8 @@ namespace Atoolo\EventsCalendar\Service\GraphQL\Resolver\Resource;
 
 use Atoolo\Resource\Resource;
 
+use function PHPUnit\Framework\isEmpty;
+
 class ResourceICalUrlResolver
 {
     public function getICalUrl(
@@ -13,8 +15,11 @@ class ResourceICalUrlResolver
     ): ?string {
         $isExternal = str_starts_with($resource->location, 'http://')
             || str_starts_with($resource->location, 'https://');
+        $langCode = !empty($resource->lang->code)
+            ? '/' . $resource->lang->code
+            : '';
         return $isExternal
-            ? '/api/ical?id=' . urlencode($resource->id)
-            : '/api/ical?location=' . urlencode($resource->location);
+            ? null
+            : '/api/ical/resource' . $langCode . $resource->location;
     }
 }
