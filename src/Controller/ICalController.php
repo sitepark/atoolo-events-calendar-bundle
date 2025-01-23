@@ -12,13 +12,8 @@ use Atoolo\Resource\ResourceChannel;
 use Atoolo\Resource\ResourceLanguage;
 use Atoolo\Resource\ResourceLoader;
 use Atoolo\Resource\ResourceLocation;
-use Atoolo\Search\Dto\Search\Query\Filter\IdFilter;
-use Atoolo\Search\Dto\Search\Query\SearchQuery;
-use Atoolo\Search\Dto\Search\Query\SearchQueryBuilder;
-use Atoolo\Search\Search;
 use JsonException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -28,7 +23,6 @@ final class ICalController extends AbstractController
 {
     public function __construct(
         private readonly ResourceChannel $channel,
-        private readonly Search $search,
         private readonly ResourceLoader $loader,
         private readonly ICalFactory $iCalFactory,
     ) {}
@@ -47,45 +41,6 @@ final class ICalController extends AbstractController
     {
         $resourceLocation = $this->toResourceLocation($lang, $location);
         return $this->createICalResponseByLocation($resourceLocation);
-    }
-
-    /**
-     * @throws JsonException
-     */
-    #[Route(
-        '/api/ical/search',
-        name: 'atoolo_events_calendar_ical_search',
-        methods: ['GET'],
-        format: 'json',
-    )]
-    public function iCalBySearch(Request $request): Response
-    {
-        $query = $this->createSearchQueryFromRequest($request);
-        return $this->createICalResponseBySearchQuery($query);
-    }
-
-    /**
-     * @todo Support all search parameters (move logic to search bundle?)
-     */
-    private function createSearchQueryFromRequest(Request $request): SearchQuery
-    {
-        $queryBuilder = new SearchQueryBuilder();
-        if ($request->query->has('id')) {
-            $queryBuilder->filter(new IdFilter([$request->query->getString('id')]));
-        }
-        if ($request->query->has('lang')) {
-            $lang = $request->query->getString('lang');
-            if ($this->isSupportedTranslation($lang)) {
-                $queryBuilder->lang(ResourceLanguage::of($lang));
-            }
-        }
-        return $queryBuilder->build();
-    }
-
-    private function createICalResponseBySearchQuery(SearchQuery $query): Response
-    {
-        $searchResult = $this->search->search($query);
-        return $this->createICalResponeByResources(...$searchResult->results);
     }
 
     private function createICalResponseByLocation(ResourceLocation $location): Response
