@@ -148,6 +148,39 @@ class ICalControllerTest extends TestCase
         );
     }
 
+    public function testICalByLocationWithEmptyLanguage(): void
+    {
+        $locationA = '';
+        $locationB = 'location';
+        $location = $locationA . '/' . $locationB;
+        $resource = $this->createResource([
+            'url' => $location,
+        ]);
+        $this->resourceLoader
+            ->expects(once())
+            ->method('load')
+            ->with(ResourceLocation::of('/' . $locationB . '.php'))
+            ->willReturn($resource);
+        $this->iCalFactory
+            ->expects(once())
+            ->method('createCalendarAsString')
+            ->with($resource)
+            ->willReturn('Totally valid calendar data');
+        $response = $this->controller->iCalByLocation($locationA, $locationB);
+        $this->assertEquals(
+            200,
+            $response->getStatusCode(),
+        );
+        $this->assertEquals(
+            'text/calendar',
+            $response->headers->get('Content-Type'),
+        );
+        $this->assertEquals(
+            'Totally valid calendar data',
+            $response->getContent(),
+        );
+    }
+
     public function testICalByLocationNotFound(): void
     {
         $location = 'some/location';
