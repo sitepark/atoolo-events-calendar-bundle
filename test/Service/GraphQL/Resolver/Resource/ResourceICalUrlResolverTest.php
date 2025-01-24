@@ -32,7 +32,7 @@ class ResourceICalUrlResolverTest extends TestCase
             'url' => '/some/location',
         ]);
         $this->assertEquals(
-            '/api/ical?location=%2Fsome%2Flocation',
+            '/api/ical/resource/some/location',
             $this->resolver->getICalUrl($resource),
         );
     }
@@ -43,10 +43,7 @@ class ResourceICalUrlResolverTest extends TestCase
             'id' => 'some_id',
             'url' => 'https://www.external.com/some/location',
         ]);
-        $this->assertEquals(
-            '/api/ical?id=some_id',
-            $this->resolver->getICalUrl($resource),
-        );
+        $this->assertNull($this->resolver->getICalUrl($resource));
     }
 
     /**

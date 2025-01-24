@@ -56,7 +56,6 @@ class ICalControllerTest extends TestCase
         ]);
         $this->controller = new ICalController(
             $resourceChannel,
-            $this->search,
             $this->resourceLoader,
             $this->iCalFactory,
         );
