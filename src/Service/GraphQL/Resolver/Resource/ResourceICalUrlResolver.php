@@ -6,8 +6,6 @@ namespace Atoolo\EventsCalendar\Service\GraphQL\Resolver\Resource;
 
 use Atoolo\Resource\Resource;
 
-use function PHPUnit\Framework\isEmpty;
-
 class ResourceICalUrlResolver
 {
     public function getICalUrl(
