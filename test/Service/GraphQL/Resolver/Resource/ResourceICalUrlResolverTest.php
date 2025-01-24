@@ -37,6 +37,18 @@ class ResourceICalUrlResolverTest extends TestCase
         );
     }
 
+    public function testGetICalUrlWithLanguage(): void
+    {
+        $resource = $this->createResource([
+            'url' => '/some/location',
+            'lang' => ResourceLanguage::of('en'),
+        ]);
+        $this->assertEquals(
+            '/api/ical/resource/en/some/location',
+            $this->resolver->getICalUrl($resource),
+        );
+    }
+
     public function testGetICalUrlExternal(): void
     {
         $resource = $this->createResource([
@@ -56,7 +68,7 @@ class ResourceICalUrlResolverTest extends TestCase
             $data['id'] ?? '',
             $data['name'] ?? '',
             $data['objectType'] ?? '',
-            ResourceLanguage::default(),
+            $data['lang'] ?? ResourceLanguage::default(),
             new DataBag($data),
         );
     }

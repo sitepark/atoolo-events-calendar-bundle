@@ -15,14 +15,9 @@ use Atoolo\Resource\ResourceLanguage;
 use Atoolo\Resource\ResourceLoader;
 use Atoolo\Resource\ResourceLocation;
 use Atoolo\Resource\ResourceTenant;
-use Atoolo\Search\Dto\Search\Query\Filter\IdFilter;
-use Atoolo\Search\Dto\Search\Query\SearchQueryBuilder;
-use Atoolo\Search\Dto\Search\Result\SearchResult;
-use Atoolo\Search\Search;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -33,17 +28,12 @@ class ICalControllerTest extends TestCase
 {
     private ICalController $controller;
 
-    private Search&MockObject $search;
-
     private ResourceLoader&MockObject $resourceLoader;
 
     private ICalFactory&MockObject $iCalFactory;
 
     public function setUp(): void
     {
-        $this->search = $this->createMock(
-            Search::class,
-        );
         $this->resourceLoader = $this->createMock(
             ResourceLoader::class,
         );
@@ -52,7 +42,7 @@ class ICalControllerTest extends TestCase
         );
         $resourceChannel = $this->createResourceChannel([
             'locale' => 'de_DE',
-            'translationLocales' => ['en'],
+            'translationLocales' => ['en_US'],
         ]);
         $this->controller = new ICalController(
             $resourceChannel,
@@ -78,6 +68,72 @@ class ICalControllerTest extends TestCase
             ->with($resource)
             ->willReturn('Totally valid calendar data');
         $response = $this->controller->iCalByLocation('de', $location);
+        $this->assertEquals(
+            200,
+            $response->getStatusCode(),
+        );
+        $this->assertEquals(
+            'text/calendar',
+            $response->headers->get('Content-Type'),
+        );
+        $this->assertEquals(
+            'Totally valid calendar data',
+            $response->getContent(),
+        );
+    }
+
+    public function testICalByLocationWithLanguage(): void
+    {
+        $lang = 'en';
+        $location = 'some/location';
+        $resource = $this->createResource([
+            'url' => $location,
+            'lang' => ResourceLanguage::of($lang),
+        ]);
+        $this->resourceLoader
+            ->expects(once())
+            ->method('load')
+            ->with(ResourceLocation::of('/' . $location . '.php', ResourceLanguage::of($lang)))
+            ->willReturn($resource);
+        $this->iCalFactory
+            ->expects(once())
+            ->method('createCalendarAsString')
+            ->with($resource)
+            ->willReturn('Totally valid calendar data');
+        $response = $this->controller->iCalByLocation($lang, $location);
+        $this->assertEquals(
+            200,
+            $response->getStatusCode(),
+        );
+        $this->assertEquals(
+            'text/calendar',
+            $response->headers->get('Content-Type'),
+        );
+        $this->assertEquals(
+            'Totally valid calendar data',
+            $response->getContent(),
+        );
+    }
+
+    public function testICalByLocationWithoutLanguage(): void
+    {
+        $locationA = 'some';
+        $locationB = 'location';
+        $location = $locationA . '/' . $locationB;
+        $resource = $this->createResource([
+            'url' => $location,
+        ]);
+        $this->resourceLoader
+            ->expects(once())
+            ->method('load')
+            ->with(ResourceLocation::of('/' . $location . '.php'))
+            ->willReturn($resource);
+        $this->iCalFactory
+            ->expects(once())
+            ->method('createCalendarAsString')
+            ->with($resource)
+            ->willReturn('Totally valid calendar data');
+        $response = $this->controller->iCalByLocation($locationA, $locationB);
         $this->assertEquals(
             200,
             $response->getStatusCode(),
@@ -130,7 +186,7 @@ class ICalControllerTest extends TestCase
             $data['id'] ?? '',
             $data['name'] ?? '',
             $data['objectType'] ?? '',
-            ResourceLanguage::default(),
+            $data['lang'] ?? ResourceLanguage::default(),
             new DataBag($data),
         );
     }
