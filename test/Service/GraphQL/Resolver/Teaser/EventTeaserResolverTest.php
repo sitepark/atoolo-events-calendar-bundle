@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Atoolo\EventsCalendar\Test\Service\GraphQL\Resolver\Teaser;
 
+use Atoolo\EventsCalendar\Service\GraphQL\Resolver\Resource\ResourceICalUrlResolver;
 use Atoolo\EventsCalendar\Service\GraphQL\Resolver\Resource\ResourceSchedulingResolver;
 use Atoolo\EventsCalendar\Service\GraphQL\Resolver\Teaser\EventTeaserResolver;
 use Atoolo\EventsCalendar\Service\GraphQL\Types\EventTeaser;
@@ -31,6 +32,8 @@ class EventTeaserResolverTest extends TestCase
 
     private ResourceSchedulingResolver&MockObject $schedulingResolver;
 
+    private ResourceICalUrlResolver&MockObject $iCalResolver;
+
     /**
      * @throws Exception
      */
@@ -48,11 +51,15 @@ class EventTeaserResolverTest extends TestCase
         $this->schedulingResolver = $this->createMock(
             ResourceSchedulingResolver::class,
         );
+        $this->iCalResolver = $this->createMock(
+            ResourceICalUrlResolver::class,
+        );
         $this->resolver = new EventTeaserResolver(
             $this->assetResolver,
             $this->symbolicAssetResolver,
             $this->kickerResolver,
             $this->schedulingResolver,
+            $this->iCalResolver,
         );
     }
 
@@ -128,5 +135,19 @@ class EventTeaserResolverTest extends TestCase
         );
         $args = $this->createStub(ArgumentInterface::class);
         $this->resolver->getSchedulings($teaser, $args);
+    }
+
+    public function testGetICalUrl(): void
+    {
+        $this->iCalResolver->expects($this->once())
+            ->method('getICalUrl');
+        $teaser = new EventTeaser(
+            null,
+            '',
+            '',
+            $this->createStub(Resource::class),
+        );
+        $args = $this->createStub(ArgumentInterface::class);
+        $this->resolver->getICalUrl($teaser, $args);
     }
 }

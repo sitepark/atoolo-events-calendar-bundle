@@ -60,6 +60,17 @@ services:
     tags:
       - { name: 'atoolo_search.indexer', priority: 10 }
 
+  Atoolo\EventsCalendar\Service\ICal\ICalFactory:
+    arguments:
+      - '@atoolo_events_calendar.scheduling_factory'
+      - '@atoolo_resource.resource_channel_factory'
+
+  Atoolo\EventsCalendar\Controller\ICalController:
+    arguments:
+      - '@atoolo_resource.resource_channel'
+      - '@atoolo_resource.resource_loader'
+      - '@Atoolo\EventsCalendar\Service\ICal\ICalFactory'
+
   # GraphQL
 
   atoolo_events_calendar.scheduling_factory:
@@ -70,6 +81,9 @@ services:
     arguments:
       - '@atoolo_events_calendar.scheduling_factory'
 
+  atoolo_events_calendar.graphql.resolver.resource.resource_ical_url_resolver:
+    class: Atoolo\EventsCalendar\Service\GraphQL\Resolver\Resource\ResourceICalUrlResolver
+  
   atoolo_events_calendar.graphql.resolver.teaser.event_teaser_resolver:
     class: Atoolo\EventsCalendar\Service\GraphQL\Resolver\Teaser\EventTeaserResolver
     arguments:
@@ -77,6 +91,7 @@ services:
       - '@atoolo_graphql_search.resolver.resource.resource_symbolic_asset_resolver'
       - '@atoolo_graphql_search.resolver.resource.resource_kicker_resolver'
       - '@atoolo_events_calendar.graphql.resolver.resource.resource_scheduling_resolver'
+      - '@atoolo_events_calendar.graphql.resolver.resource.resource_ical_url_resolver'
     tags:
       - { name: 'atoolo_graphql_search.resolver' }
 
