@@ -31,13 +31,31 @@ final class ICalController extends AbstractController
      * @throws JsonException
      */
     #[Route(
-        '/api/ical/resource/{lang}/{location}',
+        '/api/ical/resource/{location}',
         name: 'atoolo_events_calendar_ical_location',
         methods: ['GET'],
         requirements: ['location' => '.+'],
         format: 'json',
+        priority: 1,
     )]
-    public function iCalByLocation(string $lang, string $location): Response
+    public function iCalByLocation(string $location): Response
+    {
+        $resourceLocation = $this->toResourceLocation('', $location);
+        return $this->createICalResponseByLocation($resourceLocation);
+    }
+
+    /**
+     * @throws JsonException
+     */
+    #[Route(
+        '/api/ical/resource/{lang}/{location}',
+        name: 'atoolo_events_calendar_ical_lang_location',
+        methods: ['GET'],
+        requirements: ['location' => '.+'],
+        format: 'json',
+        priority: 2,
+    )]
+    public function iCalByLangAndLocation(string $lang, string $location): Response
     {
         $resourceLocation = $this->toResourceLocation($lang, $location);
         return $this->createICalResponseByLocation($resourceLocation);
@@ -64,12 +82,13 @@ final class ICalController extends AbstractController
 
     private function toResourceLocation(string $lang, string $path): ResourceLocation
     {
+        $suffix = str_ends_with($path, '.php') ? '' : '.php';
         if ($this->isSupportedTranslation($lang)) {
-            return ResourceLocation::of('/' . $path . '.php', ResourceLanguage::of($lang));
+            return ResourceLocation::of('/' . $path . $suffix, ResourceLanguage::of($lang));
         }
 
         if (str_starts_with($this->channel->locale, $lang . '_')) {
-            return ResourceLocation::of('/' . $path . '.php');
+            return ResourceLocation::of('/' . $path . $suffix);
         }
 
         // lang is not a language but part of the path, if not empty
@@ -77,7 +96,7 @@ final class ICalController extends AbstractController
             empty($lang)
             ? '/' . $path
             : '/' . $lang . '/' . $path
-        ) . '.php';
+        ) . $suffix;
 
         return ResourceLocation::of($location);
     }
