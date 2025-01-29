@@ -14,6 +14,7 @@
         "ext-simplexml": "*",
         "ext-zip": "*",
         "atoolo/graphql-search-bundle": "^1.2",
+        "atoolo/rewrite-bundle": "^1.0@dev",
         "dragonmantank/cron-expression": "^3.3",
         "eluceo/ical": "^2.14",
         "phpro/api-problem-bundle": "^1.9",

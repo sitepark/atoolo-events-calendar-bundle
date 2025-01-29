@@ -64,6 +64,7 @@ services:
     arguments:
       - '@atoolo_events_calendar.scheduling_factory'
       - '@atoolo_resource.resource_channel_factory'
+      - '@atoolo_rewrite.url_rewriter'
 
   Atoolo\EventsCalendar\Controller\ICalController:
     arguments:

@@ -11,6 +11,9 @@ use Atoolo\EventsCalendar\Service\ICal\Eluceo\CustomEventFactory;
 use Atoolo\EventsCalendar\Service\Scheduling\SchedulingManager;
 use Atoolo\Resource\Resource;
 use Atoolo\Resource\ResourceChannelFactory;
+use Atoolo\Rewrite\Dto\UrlRewriteOptions;
+use Atoolo\Rewrite\Dto\UrlRewriteType;
+use Atoolo\Rewrite\Service\UrlRewriter;
 use Eluceo\iCal\Domain\Entity\Calendar;
 use Eluceo\iCal\Domain\ValueObject\Date;
 use Eluceo\iCal\Domain\ValueObject\DateTime;
@@ -29,6 +32,7 @@ class ICalFactory
     public function __construct(
         protected readonly SchedulingFactory $schedulingFactory,
         protected readonly ResourceChannelFactory $resourceChannelFactory,
+        protected readonly UrlRewriter $urlRewriter,
     ) {}
 
     public function createCalendarAsString(
@@ -52,11 +56,19 @@ class ICalFactory
                 );
                 $description = $resource->data->getString('metadata.description');
                 $resourceChannel = $this->resourceChannelFactory->create();
+                $rewrittenLocation = $this->urlRewriter->rewrite(
+                    UrlRewriteType::LINK,
+                    $resource->location,
+                    UrlRewriteOptions::builder()
+                        ->lang($resource->lang->code)
+                        ->toFullyQualifiedUrl(true)
+                        ->build(),
+                );
                 $isExternal = str_starts_with($resource->location, 'http://')
                     || str_starts_with($resource->location, 'https://');
                 $url = $isExternal
                     ? $resource->location
-                    : 'https://' . $resourceChannel->serverName . $resource->location;
+                    : 'https://' . $resourceChannel->serverName . $rewrittenLocation;
                 $firstEventUid = null;
                 foreach ($schedulings as $index => $scheduling) {
                     $uuid = $resource->id . '-' . $index . '@' . $resourceChannel->serverName;
