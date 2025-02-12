@@ -78,8 +78,8 @@ final class ICalController extends AbstractController implements LoggerAwareInte
         '/api/ical/search/{query}',
         name: 'atoolo_events_calendar_ical_search',
         methods: ['GET'],
+        requirements: ['query' => '.+'],
         format: 'json',
-        priority: 2,
     )]
     public function iCalBySearch(string $query): Response
     {
