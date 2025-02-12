@@ -70,6 +70,8 @@ services:
       - '@atoolo_resource.resource_channel'
       - '@atoolo_resource.resource_loader'
       - '@Atoolo\EventsCalendar\Service\ICal\ICalFactory'
+      - '@atoolo_search.search'
+      - '@serializer'
 
   # GraphQL
 
