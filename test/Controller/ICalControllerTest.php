@@ -15,11 +15,20 @@ use Atoolo\Resource\ResourceLanguage;
 use Atoolo\Resource\ResourceLoader;
 use Atoolo\Resource\ResourceLocation;
 use Atoolo\Resource\ResourceTenant;
+use Atoolo\Search\Dto\Search\Query\Filter\IdFilter;
+use Atoolo\Search\Dto\Search\Query\SearchQuery;
+use Atoolo\Search\Dto\Search\Query\SearchQueryBuilder;
+use Atoolo\Search\Dto\Search\Result\SearchResult;
+use Atoolo\Search\Search;
+use Exception;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
+use Symfony\Component\Serializer\SerializerInterface;
 
 use function PHPUnit\Framework\once;
 
@@ -32,6 +41,10 @@ class ICalControllerTest extends TestCase
 
     private ICalFactory&MockObject $iCalFactory;
 
+    private Search&MockObject $search;
+
+    private SerializerInterface&MockObject $serializer;
+
     public function setUp(): void
     {
         $this->resourceLoader = $this->createMock(
@@ -39,6 +52,12 @@ class ICalControllerTest extends TestCase
         );
         $this->iCalFactory = $this->createMock(
             ICalFactory::class,
+        );
+        $this->search = $this->createMock(
+            Search::class,
+        );
+        $this->serializer = $this->createMock(
+            SerializerInterface::class,
         );
         $resourceChannel = $this->createResourceChannel([
             'locale' => 'de_DE',
@@ -48,6 +67,8 @@ class ICalControllerTest extends TestCase
             $resourceChannel,
             $this->resourceLoader,
             $this->iCalFactory,
+            $this->search,
+            $this->serializer,
         );
     }
 
@@ -238,6 +259,94 @@ class ICalControllerTest extends TestCase
             );
         $this->expectException(HttpException::class);
         $this->controller->iCalByLangAndLocation('de', $location);
+    }
+
+    public function testICalBySearch(): void
+    {
+        $resource = $this->createResource([
+            'name' => '-?some()cr4zy=?"file-name9&&',
+        ]);
+        $query = json_encode([
+            'filter' => [[
+                'type' => 'id',
+                'values' => ['someid'],
+            ]],
+        ]);
+        $searchQuery =
+            (new SearchQueryBuilder())
+            ->filter(new IdFilter(['someid']))
+            ->build();
+        $searchResult = new SearchResult(1, 1, 1, [$resource], [], 1);
+        $this->serializer
+            ->expects(once())
+            ->method('deserialize')
+            ->with($query, SearchQuery::class, 'json')
+            ->willReturn($searchQuery);
+        $this->search
+            ->expects(once())
+            ->method('search')
+            ->with($searchQuery)
+            ->willReturn($searchResult);
+        $this->iCalFactory
+            ->expects(once())
+            ->method('createCalendarAsString')
+            ->with($resource)
+            ->willReturn('Totally valid calendar data');
+        $response = $this->controller->iCalBySearch($query);
+        $this->assertEquals(
+            200,
+            $response->getStatusCode(),
+        );
+        $this->assertEquals(
+            'text/calendar',
+            $response->headers->get('Content-Type'),
+        );
+        $this->assertEquals(
+            'attachment; filename="some_cr4zy_file-name9.ics"',
+            $response->headers->get('Content-Disposition'),
+        );
+        $this->assertEquals(
+            'Totally valid calendar data',
+            $response->getContent(),
+        );
+    }
+
+    public function testICalBySearchWithInvalidQueryString(): void
+    {
+        $this->expectException(BadRequestHttpException::class);
+        $query = 'invalid_query';
+        $this->serializer
+            ->expects(once())
+            ->method('deserialize')
+            ->with($query, SearchQuery::class, 'json')
+            ->willThrowException(new NotNormalizableValueException());
+        $this->controller->iCalBySearch($query);
+    }
+
+    public function testICalBySearchWithInvalidSearchQuery(): void
+    {
+        $this->expectException(HttpException::class);
+        $query = json_encode([
+            'filter' => [[
+                'type' => 'id',
+                'values' => ['someid'],
+            ]],
+        ]);
+        $searchQuery =
+            (new SearchQueryBuilder())
+            ->filter(new IdFilter(['someid']))
+            ->build();
+        $this->serializer
+            ->expects(once())
+            ->method('deserialize')
+            ->with($query, SearchQuery::class, 'json')
+            ->willReturn($searchQuery);
+        $this->search
+            ->expects(once())
+            ->method('search')
+            ->with($searchQuery)
+            ->willThrowException(new Exception());
+        $this->controller->iCalBySearch($query);
     }
 
     /**
