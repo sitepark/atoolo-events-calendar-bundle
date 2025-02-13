@@ -115,6 +115,18 @@ class SchedulingFactoryTest extends TestCase
         $this->assertNull($endDateTime);
     }
 
+    public function testGetEndDateTimeFromRawSchedulingInvalid()
+    {
+        $rawScheduling = [
+            "endDate" => '1640991600',
+            "endTime" => "invalid:time",
+        ];
+        $endDateTime = $this->factory->getEndDateTimeFromRawScheduling(
+            $rawScheduling,
+        );
+        $this->assertNull($endDateTime);
+    }
+
     public function testGetRRuleFromRawSchedulingEmtpy()
     {
         $this->assertNull(
