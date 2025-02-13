@@ -263,7 +263,9 @@ class ICalControllerTest extends TestCase
 
     public function testICalBySearch(): void
     {
-        $resource = $this->createResource([]);
+        $resource = $this->createResource([
+            'name' => '-?some()cr4zy=?"file-name9&&',
+        ]);
         $query = json_encode([
             'filter' => [[
                 'type' => 'id',
@@ -298,6 +300,10 @@ class ICalControllerTest extends TestCase
         $this->assertEquals(
             'text/calendar',
             $response->headers->get('Content-Type'),
+        );
+        $this->assertEquals(
+            'attachment; filename="some_cr4zy_file-name9.ics"',
+            $response->headers->get('Content-Disposition'),
         );
         $this->assertEquals(
             'Totally valid calendar data',

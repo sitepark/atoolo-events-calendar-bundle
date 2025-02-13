@@ -140,12 +140,26 @@ final class ICalController extends AbstractController implements LoggerAwareInte
     private function createICalResponeByResources(Resource ...$resources): Response
     {
         $res = new Response($this->iCalFactory->createCalendarAsString(...$resources));
-        $filename = isset($resources[0])
-            ? trim($resources[0]->data->getString('base.title', $resources[0]->name))
-            : 'ical';
+        $filename = 'ical';
+        if (isset($resources[0])) {
+            $sanitizedName = $this->sanitizeFilename($resources[0]->name);
+            $filename = !empty($sanitizedName) ? $sanitizedName : $filename;
+        }
         $res->headers->set('Content-Type', 'text/calendar');
         $res->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '.ics"');
         return $res;
+    }
+
+    /**
+     * Cuts off all sequences of non-alphanumeric characters at the beginning and the end of a string.
+     * Replaces all remaining sequences of non-alphanumeric characters except '-' with '_'.
+     *
+     * Example: -?some()cr4zy=?"file-name9&& becomes some_cr4zy_file-name9
+     */
+    private function sanitizeFilename(string $originalName): string
+    {
+        $filename = preg_replace('/^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$/', '', $originalName);
+        return preg_replace('/[^a-zA-Z0-9-]+/', '_', $filename ?? '') ?? '';
     }
 
     private function toResourceLocation(string $lang, string $path): ResourceLocation
