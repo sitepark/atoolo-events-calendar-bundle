@@ -24,6 +24,7 @@ use Exception;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -292,7 +293,7 @@ class ICalControllerTest extends TestCase
             ->method('createCalendarAsString')
             ->with($resource)
             ->willReturn('Totally valid calendar data');
-        $response = $this->controller->iCalBySearch($query);
+        $response = $this->controller->iCalBySearch(new Request(['query' => $query]));
         $this->assertEquals(
             200,
             $response->getStatusCode(),
@@ -311,6 +312,12 @@ class ICalControllerTest extends TestCase
         );
     }
 
+    public function testICalBySearchWithMissingQueryString(): void
+    {
+        $this->expectException(BadRequestHttpException::class);
+        $this->controller->iCalBySearch(new Request());
+    }
+
     public function testICalBySearchWithInvalidQueryString(): void
     {
         $this->expectException(BadRequestHttpException::class);
@@ -320,7 +327,7 @@ class ICalControllerTest extends TestCase
             ->method('deserialize')
             ->with($query, SearchQuery::class, 'json')
             ->willThrowException(new NotNormalizableValueException());
-        $this->controller->iCalBySearch($query);
+        $this->controller->iCalBySearch(new Request(['query' => $query]));
     }
 
     public function testICalBySearchWithInvalidSearchQuery(): void
@@ -346,7 +353,7 @@ class ICalControllerTest extends TestCase
             ->method('search')
             ->with($searchQuery)
             ->willThrowException(new Exception());
-        $this->controller->iCalBySearch($query);
+        $this->controller->iCalBySearch(new Request(['query' => $query]));
     }
 
     /**
