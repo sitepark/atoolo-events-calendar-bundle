@@ -18,6 +18,7 @@ use JsonException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -75,14 +76,17 @@ final class ICalController extends AbstractController implements LoggerAwareInte
      * @throws JsonException
      */
     #[Route(
-        '/api/ical/search/{query}',
+        '/api/ical/search',
         name: 'atoolo_events_calendar_ical_search',
         methods: ['GET'],
-        requirements: ['query' => '.+'],
         format: 'json',
     )]
-    public function iCalBySearch(string $query): Response
+    public function iCalBySearch(Request $request): Response
     {
+        $query = $request->query->getString('query');
+        if (empty($query)) {
+            throw new BadRequestHttpException('query parameter \'query\' is empty');
+        }
         $searchQuery = $this->deserializeSearchQuery($query);
         return $this->createICalResponseBySearchQuery($searchQuery);
     }
