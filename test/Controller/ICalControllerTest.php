@@ -277,7 +277,7 @@ class ICalControllerTest extends TestCase
             (new SearchQueryBuilder())
             ->filter(new IdFilter(['someid']))
             ->build();
-        $searchResult = new SearchResult(1, 1, 1, [$resource], [], null,1);
+        $searchResult = new SearchResult(1, 1, 1, [$resource], [], null, 1);
         $this->serializer
             ->expects(once())
             ->method('deserialize')
