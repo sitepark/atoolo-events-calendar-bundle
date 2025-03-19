@@ -251,6 +251,9 @@ class SchedulingManager
             (new RRule($scheduling->rRule, $scheduling->start))->isInfinite();
     }
 
+    /**
+     * @phpstan-assert-if-true !null $this->end
+     */
     public function isMultiDay(Scheduling $scheduling): ?bool
     {
         if ($scheduling->end === null) {
