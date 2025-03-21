@@ -49,10 +49,11 @@ final class ICalController extends AbstractController implements LoggerAwareInte
         format: 'json',
         priority: 1,
     )]
-    public function iCalByLocation(string $location): Response
+    public function iCalByLocation(string $location, Request $request): Response
     {
         $resourceLocation = $this->toResourceLocation('', $location);
-        return $this->createICalResponseByLocation($resourceLocation);
+        $atOccurrence = $this->optParseOccurrence($request);
+        return $this->createICalResponseByLocation($resourceLocation, $atOccurrence);
     }
 
     /**
@@ -66,10 +67,11 @@ final class ICalController extends AbstractController implements LoggerAwareInte
         format: 'json',
         priority: 2,
     )]
-    public function iCalByLangAndLocation(string $lang, string $location): Response
+    public function iCalByLangAndLocation(string $lang, string $location, Request $request): Response
     {
         $resourceLocation = $this->toResourceLocation($lang, $location);
-        return $this->createICalResponseByLocation($resourceLocation);
+        $atOccurrence = $this->optParseOccurrence($request);
+        return $this->createICalResponseByLocation($resourceLocation, $atOccurrence);
     }
 
     /**
@@ -87,14 +89,31 @@ final class ICalController extends AbstractController implements LoggerAwareInte
         if (empty($query)) {
             throw new BadRequestHttpException('query parameter \'query\' is empty');
         }
+        $atOccurrence = $this->optParseOccurrence($request);
         $searchQuery = $this->deserializeSearchQuery($query);
-        return $this->createICalResponseBySearchQuery($searchQuery);
+        return $this->createICalResponseBySearchQuery($searchQuery, $atOccurrence);
     }
 
-    private function createICalResponseBySearchQuery(SearchQuery $searchQuery): Response
+    private function optParseOccurrence(Request $request): ?\DateTime
+    {
+        $occurrenceRaw = $request->query->getString('occurrence');
+        if (!empty($occurrenceRaw)) {
+            try {
+                return new \DateTime($occurrenceRaw);
+            } catch (\Throwable $th) {
+                throw new BadRequestHttpException(
+                    'optional parameter \'occurrence\' could not be parsed to a DateTime object',
+                    $th,
+                );
+            }
+        }
+        return null;
+    }
+
+    private function createICalResponseBySearchQuery(SearchQuery $searchQuery, ?\DateTime $atOccurrence = null): Response
     {
         try {
-            $resources = $this->search->search($searchQuery);
+            $searchResult = $this->search->search($searchQuery);
         } catch (\Throwable $th) {
             $this->logger?->warning(
                 'Something went wrong while exectuing the search query',
@@ -105,7 +124,7 @@ final class ICalController extends AbstractController implements LoggerAwareInte
             );
             throw new HttpException(500, 'Something went wrong while processing the search query', $th);
         }
-        return $this->createICalResponeByResources(...$resources);
+        return $this->createICalResponeByResources($searchResult->results, $atOccurrence);
     }
 
     private function deserializeSearchQuery(string $query): SearchQuery
@@ -129,7 +148,7 @@ final class ICalController extends AbstractController implements LoggerAwareInte
         }
     }
 
-    private function createICalResponseByLocation(ResourceLocation $location): Response
+    private function createICalResponseByLocation(ResourceLocation $location, ?\DateTime $atOccurrence = null): Response
     {
         try {
             $resource = $this->loader->load($location);
@@ -138,14 +157,17 @@ final class ICalController extends AbstractController implements LoggerAwareInte
         } catch (InvalidResourceException $e) {
             throw new HttpException(500, 'Resource at \'' . $location . '\' is invalid', $e);
         }
-        return $this->createICalResponeByResources($resource);
+        return $this->createICalResponeByResources([$resource], $atOccurrence);
     }
 
-    private function createICalResponeByResources(Resource ...$resources): Response
+    /**
+     * @param Resource[] $resources
+     */
+    private function createICalResponeByResources(array $resources, ?\DateTime $atOccurrence = null): Response
     {
-        $res = new Response($this->iCalFactory->createCalendarAsString(...$resources));
+        $res = new Response($this->iCalFactory->createCalendarFromResourcesAsString($resources, $atOccurrence));
         $filename = 'ical';
-        if (isset($resources[0])) {
+        if (count($resources) === 1) {
             $sanitizedName = $this->sanitizeFilename($resources[0]->name);
             $filename = !empty($sanitizedName) ? $sanitizedName : $filename;
         }

@@ -45,7 +45,7 @@ class SchedulingBuilder
 
     /**
      * @param bool $keepRelativeEnd if true, the end date is changed such that the
-     * previous time difference between start and end is preservces. If false, the end
+     * previous time difference between start and end is preserved. If false, the end
      * date remains unchanged
      */
     public function setStart(DateTime $start, bool $keepRelativeEnd = false): self
@@ -53,9 +53,7 @@ class SchedulingBuilder
         if ($this->end !== null && $keepRelativeEnd) {
             $prevStartEndDiff =  $this->end->getTimestamp() - $this->start->getTimestamp();
             $this->setEnd(
-                (new \DateTime())->setTimestamp(
-                    $start->getTimestamp() + $prevStartEndDiff,
-                ),
+                (clone $start)->setTimestamp($start->getTimestamp() + $prevStartEndDiff),
             );
         }
         $this->start = $start;
