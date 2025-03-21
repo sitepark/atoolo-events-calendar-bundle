@@ -49,10 +49,10 @@ final class ICalController extends AbstractController implements LoggerAwareInte
         format: 'json',
         priority: 1,
     )]
-    public function iCalByLocation(string $location, ?Request $request = null): Response
+    public function iCalByLocation(string $location, Request $request): Response
     {
         $resourceLocation = $this->toResourceLocation('', $location);
-        $atOccurrence = $request !== null ? $this->optParseOccurrence($request) : null;
+        $atOccurrence = $this->optParseOccurrence($request);
         return $this->createICalResponseByLocation($resourceLocation, $atOccurrence);
     }
 
@@ -67,10 +67,10 @@ final class ICalController extends AbstractController implements LoggerAwareInte
         format: 'json',
         priority: 2,
     )]
-    public function iCalByLangAndLocation(string $lang, string $location, ?Request $request = null): Response
+    public function iCalByLangAndLocation(string $lang, string $location, Request $request): Response
     {
         $resourceLocation = $this->toResourceLocation($lang, $location);
-        $atOccurrence = $request !== null ? $this->optParseOccurrence($request) : null;
+        $atOccurrence = $this->optParseOccurrence($request);
         return $this->createICalResponseByLocation($resourceLocation, $atOccurrence);
     }
 

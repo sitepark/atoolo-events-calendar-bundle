@@ -160,7 +160,7 @@ class ICalControllerTest extends TestCase
             ->method('createCalendarFromResourcesAsString')
             ->with([$resource])
             ->willReturn('Totally valid calendar data');
-        $response = $this->controller->iCalByLangAndLocation($lang, $location);
+        $response = $this->controller->iCalByLangAndLocation($lang, $location, new Request());
         $this->assertEquals(
             200,
             $response->getStatusCode(),
@@ -193,7 +193,7 @@ class ICalControllerTest extends TestCase
             ->method('createCalendarFromResourcesAsString')
             ->with([$resource])
             ->willReturn('Totally valid calendar data');
-        $response = $this->controller->iCalByLangAndLocation($locationA, $locationB);
+        $response = $this->controller->iCalByLangAndLocation($locationA, $locationB, new Request());
         $this->assertEquals(
             200,
             $response->getStatusCode(),
@@ -226,7 +226,7 @@ class ICalControllerTest extends TestCase
             ->method('createCalendarFromResourcesAsString')
             ->with([$resource])
             ->willReturn('Totally valid calendar data');
-        $response = $this->controller->iCalByLangAndLocation($locationA, $locationB);
+        $response = $this->controller->iCalByLangAndLocation($locationA, $locationB, new Request());
         $this->assertEquals(
             200,
             $response->getStatusCode(),
@@ -252,7 +252,7 @@ class ICalControllerTest extends TestCase
                 new ResourceNotFoundException(ResourceLocation::of($location)),
             );
         $this->expectException(NotFoundHttpException::class);
-        $this->controller->iCalByLangAndLocation('de', $location);
+        $this->controller->iCalByLangAndLocation('de', $location, new Request());
     }
 
     public function testICalByLangAndLocationInvalidResource(): void
@@ -266,7 +266,7 @@ class ICalControllerTest extends TestCase
                 new InvalidResourceException(ResourceLocation::of($location)),
             );
         $this->expectException(HttpException::class);
-        $this->controller->iCalByLangAndLocation('de', $location);
+        $this->controller->iCalByLangAndLocation('de', $location, new Request());
     }
 
     public function testICalBySearch(): void
