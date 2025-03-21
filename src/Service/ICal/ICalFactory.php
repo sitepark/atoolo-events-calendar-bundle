@@ -29,22 +29,39 @@ class ICalFactory
     public function __construct(
         protected readonly SchedulingFactory $schedulingFactory,
         protected readonly ResourceChannelFactory $resourceChannelFactory,
+        protected readonly SchedulingManager $schedulingManager = new SchedulingManager(),
     ) {}
 
-    public function createCalendarAsString(
-        Resource ...$resources,
+    /**
+     * @param Resource[] $resources
+     */
+    public function createCalendarFromResourcesAsString(
+        array $resources,
+        ?\DateTime $atOccurrence = null,
     ): string {
         return (string) (new CalendarFactory(new CustomEventFactory()))
-            ->createCalendar($this->createCalendar(...$resources));
+            ->createCalendar($this->createCalendarFromResources($resources, $atOccurrence));
     }
 
-    public function createCalendar(
-        Resource ...$resources,
+    /**
+     * @param Resource[] $resources
+     */
+    public function createCalendarFromResources(
+        array $resources,
+        ?\DateTime $atOccurrence = null,
     ): Calendar {
         $resourceChannel = $this->resourceChannelFactory->create();
         $events = [];
         foreach ($resources as $resource) {
             $schedulings = $this->schedulingFactory->create($resource);
+            // if occurnce is set, search for it. If not, iterate over all
+            if ($atOccurrence !== null) {
+                $occurrenceFound = $this->schedulingManager->findOccurrenceOfSchedulings(
+                    $schedulings,
+                    $atOccurrence,
+                );
+                $schedulings = $occurrenceFound !== null ? [$occurrenceFound] : [];
+            }
             if (!empty($schedulings)) {
                 $summary = $resource->data->getString(
                     'metadata.headline',
@@ -74,7 +91,7 @@ class ICalFactory
                     }
                     $event->setUrl(new Uri($url));
                     $event->setOccurrence(
-                        $this->createOccurenceFromScheduling($scheduling),
+                        $this->createOccurrenceFromScheduling($scheduling),
                     );
                     $event->setRRule($scheduling->rRule);
                     $events[] = $event;
@@ -86,11 +103,11 @@ class ICalFactory
         return $calendar;
     }
 
-    public function createOccurenceFromScheduling(
+    public function createOccurrenceFromScheduling(
         Scheduling $scheduling,
     ): Occurrence {
         if ($scheduling->isFullDay) {
-            return (new SchedulingManager())->isMultiDay($scheduling)
+            return $this->schedulingManager->isMultiDay($scheduling)
                 ? new MultiDay(
                     new Date($scheduling->start),
                     new Date($scheduling->end),

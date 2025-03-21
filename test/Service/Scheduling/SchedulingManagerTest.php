@@ -516,4 +516,100 @@ class SchedulingManagerTest extends TestCase
         $this->expectException(\LogicException::class);
         $this->schedulingManager->getAllOccurrencesOfSchedulings($schedulings);
     }
+
+    public function testFindOccurrenceSingleScheduling(): void
+    {
+        $scheduling = new Scheduling(
+            new \DateTime('02.02.2025 12:00'),
+            new \DateTime('02.02.2025 22:00'),
+            false,
+            true,
+            true,
+            'FREQ=WEEKLY;INTERVAL=1;COUNT=2',
+        );
+        $this->assertEquals(
+            new Scheduling(
+                new \DateTime('09.02.2025 12:00'),
+                new \DateTime('09.02.2025 22:00'),
+                false,
+                true,
+                true,
+                null,
+            ),
+            $this->schedulingManager->findOccurrenceOfScheduling($scheduling, new \DateTime('09.02.2025 12:00')),
+        );
+    }
+
+    public function testFindOccurrenceSingleSchedulingNotFound(): void
+    {
+        $scheduling = new Scheduling(
+            new \DateTime('02.02.2025 12:00'),
+            new \DateTime('02.02.2025 22:00'),
+            false,
+            true,
+            true,
+            'FREQ=WEEKLY;INTERVAL=1;COUNT=2',
+        );
+        $this->assertNull(
+            $this->schedulingManager->findOccurrenceOfScheduling($scheduling, new \DateTime('06.02.2025 12:00')),
+        );
+    }
+
+    public function testFindOccurrenceMultipleSchedulings(): void
+    {
+        $schedulings = [
+            new Scheduling(
+                new \DateTime('02.02.2025 12:00'),
+                new \DateTime('02.02.2025 22:00'),
+                false,
+                true,
+                true,
+                'FREQ=WEEKLY;INTERVAL=1;COUNT=2',
+            ),
+            new Scheduling(
+                new \DateTime('17.03.2025 14:00'),
+                new \DateTime('17.03.2025 20:00'),
+                false,
+                true,
+                true,
+                'FREQ=DAILY;INTERVAL=1;COUNT=10',
+            ),
+        ];
+        $this->assertEquals(
+            new Scheduling(
+                new \DateTime('20.03.2025 14:00'),
+                new \DateTime('20.03.2025 20:00'),
+                false,
+                true,
+                true,
+                null,
+            ),
+            $this->schedulingManager->findOccurrenceOfSchedulings($schedulings, new \DateTime('20.03.2025 14:00')),
+        );
+    }
+
+    public function testFindOccurrenceMultipleSchedulingsNotFound(): void
+    {
+        $schedulings = [
+            new Scheduling(
+                new \DateTime('02.02.2025 12:00'),
+                new \DateTime('02.02.2025 22:00'),
+                false,
+                true,
+                true,
+                'FREQ=WEEKLY;INTERVAL=1;COUNT=2',
+            ),
+            new Scheduling(
+                new \DateTime('17.03.2025 14:00'),
+                new \DateTime('17.03.2025 20:00'),
+                false,
+                true,
+                true,
+                'FREQ=DAILY;INTERVAL=1;COUNT=10',
+            ),
+        ];
+        $this->assertNull(
+            $this->schedulingManager->findOccurrenceOfSchedulings($schedulings, new \DateTime('04.10.2024 12:00')),
+        );
+    }
 }

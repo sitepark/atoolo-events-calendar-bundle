@@ -87,7 +87,7 @@ class ICalFactoryTest extends TestCase
                     null,
                 ),
             ]);
-        $result = $this->iCalFactory->createCalendarAsString($resource);
+        $result = $this->iCalFactory->createCalendarFromResourcesAsString([$resource]);
         $resultLines = array_values(
             array_filter(
                 explode("\r\n", $result),
@@ -137,6 +137,85 @@ class ICalFactoryTest extends TestCase
         $this->assertEquals($expectedLines, $resultLines);
     }
 
+    public function testCreateCalendarAsStringAtOccurrence(): void
+    {
+        $resource = $this->createResource([
+            'id' => '1',
+            'url' => '/some/location',
+            'metadata' => [
+                'headline' => 'Event',
+                'description' => 'Amazing event',
+            ],
+        ]);
+        $resourceChannel = $this->createResourceChannel([
+            'serverName' => 'www.test.de',
+        ]);
+        $this->resourceChannelFactory
+            ->method('create')
+            ->willReturn($resourceChannel);
+        $this->schedulingFactory
+            ->method('create')
+            ->with($resource)
+            ->willReturn([
+                // every monday, 3 times
+                new Scheduling(
+                    new \DateTime('01.01.2024 12:00', new DateTimeZone('Europe/Berlin')),
+                    new \DateTime('01.01.2024 22:30', new DateTimeZone('Europe/Berlin')),
+                    false,
+                    true,
+                    true,
+                    'FREQ=WEEKLY;INTERVAL=1;BYDAY=MO;COUNT=3',
+                ),
+                new Scheduling(
+                    new \DateTime('01.02.2024', new DateTimeZone('Europe/Berlin')),
+                    new \DateTime('04.02.2024', new DateTimeZone('Europe/Berlin')),
+                    true,
+                    false,
+                    false,
+                    null,
+                ),
+                new Scheduling(
+                    new \DateTime('11.02.2024', new DateTimeZone('Europe/Berlin')),
+                    new \DateTime('14.02.2024', new DateTimeZone('Europe/Berlin')),
+                    false,
+                    false,
+                    false,
+                    null,
+                ),
+            ]);
+        $result = $this->iCalFactory->createCalendarFromResourcesAsString(
+            [$resource],
+            new \DateTime('08.01.2024 12:00', new DateTimeZone('Europe/Berlin')),
+        );
+        $resultLines = array_values(
+            array_filter(
+                explode("\r\n", $result),
+                function ($row) {
+                    return !str_starts_with($row, 'DTSTAMP'); // Ignore timestamp
+                },
+            ),
+        );
+        $expectedLines = [
+            'BEGIN:VCALENDAR',
+            'PRODID:-//atoolo/events-calendar-bundle//1.0/EN',
+            'VERSION:2.0',
+            'CALSCALE:GREGORIAN',
+            'BEGIN:VEVENT',
+            'UID:1-0@www.test.de',
+            // 'DTSTAMP:20241212T131535Z', Ignore timestamp
+            'SUMMARY:Event',
+            'DESCRIPTION:Amazing event',
+            'URL:https://www.test.de/some/location',
+            'DTSTART;TZID=Europe/Berlin:20240108T120000',
+            'DTEND;TZID=Europe/Berlin:20240108T223000',
+            'END:VEVENT',
+            'END:VCALENDAR',
+            '',
+        ];
+        $this->assertEquals($expectedLines, $resultLines);
+    }
+
+
     public function testCreateCalendarAsStringExternal(): void
     {
         $resource = $this->createResource([
@@ -166,7 +245,7 @@ class ICalFactoryTest extends TestCase
                     null,
                 ),
             ]);
-        $result = $this->iCalFactory->createCalendarAsString($resource);
+        $result = $this->iCalFactory->createCalendarFromResourcesAsString([$resource]);
         $resultLines = array_values(
             array_filter(
                 explode("\r\n", $result),

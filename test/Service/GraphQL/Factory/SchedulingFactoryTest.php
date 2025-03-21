@@ -231,7 +231,7 @@ class SchedulingFactoryTest extends TestCase
     /**
      * Alle 6 Monate, jeden 2. Freitag, bis 01.01.2025 00:00
      */
-    public function testGetRRuleFromRawSchedulingMonthlyByOccurenceUntil()
+    public function testGetRRuleFromRawSchedulingMonthlyByOccurrenceUntil()
     {
         $actual = $this->factory->getRRuleFromRawScheduling([
             "type" => "monthlyByOccurrence",
@@ -269,7 +269,7 @@ class SchedulingFactoryTest extends TestCase
     /**
      * Jedes 2. Jahr, jeden 3. Sonntag im März, bis 01.01.2025 00:00
      */
-    public function testGetRRuleFromRawSchedulingYearlyByOccurenceUntil()
+    public function testGetRRuleFromRawSchedulingYearlyByOccurrenceUntil()
     {
         $actual = $this->factory->getRRuleFromRawScheduling([
             "type" => "yearlyByOccurrence",

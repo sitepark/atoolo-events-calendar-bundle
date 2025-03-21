@@ -86,10 +86,13 @@ class ICalControllerTest extends TestCase
             ->willReturn($resource);
         $this->iCalFactory
             ->expects(once())
-            ->method('createCalendarAsString')
-            ->with($resource)
+            ->method('createCalendarFromResourcesAsString')
+            ->with([$resource])
             ->willReturn('Totally valid calendar data');
-        $response = $this->controller->iCalByLocation($location);
+        $response = $this->controller->iCalByLocation(
+            $location,
+            new Request(['occurrence' => '21.03.2025 12:00']),
+        );
         $this->assertEquals(
             200,
             $response->getStatusCode(),
@@ -117,10 +120,14 @@ class ICalControllerTest extends TestCase
             ->willReturn($resource);
         $this->iCalFactory
             ->expects(once())
-            ->method('createCalendarAsString')
-            ->with($resource)
+            ->method('createCalendarFromResourcesAsString')
+            ->with([$resource])
             ->willReturn('Totally valid calendar data');
-        $response = $this->controller->iCalByLangAndLocation('de', $location);
+        $response = $this->controller->iCalByLangAndLocation(
+            'de',
+            $location,
+            new Request(['occurrence' => '21.03.2025 12:00']),
+        );
         $this->assertEquals(
             200,
             $response->getStatusCode(),
@@ -150,8 +157,8 @@ class ICalControllerTest extends TestCase
             ->willReturn($resource);
         $this->iCalFactory
             ->expects(once())
-            ->method('createCalendarAsString')
-            ->with($resource)
+            ->method('createCalendarFromResourcesAsString')
+            ->with([$resource])
             ->willReturn('Totally valid calendar data');
         $response = $this->controller->iCalByLangAndLocation($lang, $location);
         $this->assertEquals(
@@ -183,8 +190,8 @@ class ICalControllerTest extends TestCase
             ->willReturn($resource);
         $this->iCalFactory
             ->expects(once())
-            ->method('createCalendarAsString')
-            ->with($resource)
+            ->method('createCalendarFromResourcesAsString')
+            ->with([$resource])
             ->willReturn('Totally valid calendar data');
         $response = $this->controller->iCalByLangAndLocation($locationA, $locationB);
         $this->assertEquals(
@@ -216,8 +223,8 @@ class ICalControllerTest extends TestCase
             ->willReturn($resource);
         $this->iCalFactory
             ->expects(once())
-            ->method('createCalendarAsString')
-            ->with($resource)
+            ->method('createCalendarFromResourcesAsString')
+            ->with([$resource])
             ->willReturn('Totally valid calendar data');
         $response = $this->controller->iCalByLangAndLocation($locationA, $locationB);
         $this->assertEquals(
@@ -277,7 +284,7 @@ class ICalControllerTest extends TestCase
             (new SearchQueryBuilder())
             ->filter(new IdFilter(['someid']))
             ->build();
-        $searchResult = new SearchResult(1, 1, 1, [$resource], [], null, 1);
+        $searchResult = new SearchResult(1, 1, 1, [$resource], [], 1);
         $this->serializer
             ->expects(once())
             ->method('deserialize')
@@ -290,10 +297,12 @@ class ICalControllerTest extends TestCase
             ->willReturn($searchResult);
         $this->iCalFactory
             ->expects(once())
-            ->method('createCalendarAsString')
-            ->with($resource)
+            ->method('createCalendarFromResourcesAsString')
+            ->with([$resource])
             ->willReturn('Totally valid calendar data');
-        $response = $this->controller->iCalBySearch(new Request(['query' => $query]));
+        $response = $this->controller->iCalBySearch(
+            new Request(['query' => $query, 'occurrence' => '21.03.2025 12:00']),
+        );
         $this->assertEquals(
             200,
             $response->getStatusCode(),
@@ -316,6 +325,13 @@ class ICalControllerTest extends TestCase
     {
         $this->expectException(BadRequestHttpException::class);
         $this->controller->iCalBySearch(new Request());
+    }
+
+    public function testICalBySearchWithInvalidOccurrenceDate(): void
+    {
+        $this->expectException(BadRequestHttpException::class);
+        $query = json_encode(['text' => 'valid_query']);
+        $this->controller->iCalBySearch(new Request(['query' => $query, 'occurrence' => 'inv4l1d_da7e']));
     }
 
     public function testICalBySearchWithInvalidQueryString(): void

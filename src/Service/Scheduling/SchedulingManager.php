@@ -11,19 +11,19 @@ use RRule\RRule;
 class SchedulingManager
 {
     /**
-     * Generates all occurences of a Scheduling by resolving the RRule and/or, optionally,
+     * Generates all occurrences of a Scheduling by resolving the RRule and/or, optionally,
      * splitting multi-day-schedulings into several single-day-schedulings.
-     * An occurence is itself a `Scheduling`-object, that, however,
+     * An occurrence is itself a `Scheduling`-object, that, however,
      * is guaranteed to have no rrule.
      *
-     * @param Scheduling $scheduling scheduling from which the occurences will be
+     * @param Scheduling $scheduling scheduling from which the occurrences will be
      *  generated
      * @param bool $splitMultidayDates if true, schedulings that span over
      *  multiple days will be split into multiple Schedulings that span over a single
      *  day each
-     * @param ?\DateTime $from return all occurences after $from (inclusive)
-     * @param ?\DateTime $to return all occurences until $to (inclusive)
-     * @param null|int<1,max> $limit limit number of returned occurences
+     * @param ?\DateTime $from return all occurrences after $from (inclusive)
+     * @param ?\DateTime $to return all occurrences until $to (inclusive)
+     * @param null|int<1,max> $limit limit number of returned occurrences
      * @throws \InvalidArgumentException if $limit is negative
      * @return \Generator<int,Scheduling>
      */
@@ -35,20 +35,21 @@ class SchedulingManager
         ?int $limit = null,
     ): \Generator {
         $numberOfDaysPerSchedule = ($this->getNumberOfMidnights($scheduling) ?? 0) + 1;
-        $dateOccurenceIterable = $scheduling->rRule === null
+        $dateOccurrenceIterable = $scheduling->rRule === null
             ? [clone $scheduling->start]
             : new RRule($scheduling->rRule, $scheduling->start);
         $n = 0;
-        foreach ($dateOccurenceIterable as $dateOccurence) {
-            if ($from !== null && $dateOccurence < $from) {
+
+        foreach ($dateOccurrenceIterable as $dateOccurrence) {
+            if ($from !== null && $dateOccurrence < $from) {
                 continue;
             }
-            if ($to !== null && $dateOccurence > $to) {
+            if ($to !== null && $dateOccurrence > $to) {
                 return;
             }
             $currentScheduling = (new SchedulingBuilder())
                 ->fromScheduling($scheduling)
-                ->setStart($dateOccurence, true)
+                ->setStart($dateOccurrence, true)
                 ->setRRule(null)
                 ->build();
 
@@ -104,18 +105,18 @@ class SchedulingManager
     }
 
     /**
-     * Generates the occurences of all given schedulings in  chronological order. An occurence
+     * Generates the occurrences of all given schedulings in  chronological order. An occurrence
      * is itself a `Scheduling`-object, that, however, is guaranteed to have no rrule.
      * @see self::generateOccurrencesOfScheduling()
      *
-     * @param Scheduling[] $schedulings schedulings from which the occurences will be
+     * @param Scheduling[] $schedulings schedulings from which the occurrences will be
      *  generated
      * @param bool $splitMultidayDates if true, schedulings that span over
      *  multiple days will be split into multiple Schedulings that span over a single
      *  day each
-     * @param ?\DateTime $from return all occurences after $from (inclusive)
-     * @param ?\DateTime $to return all occurences until $to (inclusive)
-     * @param null|int<1,max> $limit limit number of returned occurences
+     * @param ?\DateTime $from return all occurrences after $from (inclusive)
+     * @param ?\DateTime $to return all occurrences until $to (inclusive)
+     * @param null|int<1,max> $limit limit number of returned occurrences
      * @throws \InvalidArgumentException if $limit is negative
      * @return \Generator<int,Scheduling>
      */
@@ -146,6 +147,9 @@ class SchedulingManager
                     $to,
                     $limit,
                 );
+                if (!$generator->valid()) {
+                    continue;
+                }
                 $priorityQueue->insert(
                     ['generator' => $generator, 'value' => $generator->current()],
                     -$generator->current()->start->getTimestamp(),
@@ -170,17 +174,17 @@ class SchedulingManager
     }
 
     /**
-     * Copies all occurences of `generateOccurrencesOfScheduling` into an array
+     * Copies all occurrences of `generateOccurrencesOfScheduling` into an array
      * @see self::generateOccurrencesOfScheduling()
      *
      * @param Scheduling $scheduling
      * @param bool $splitMultidayDates if true, schedulings that span over
      *  multiple days will be split into multiple Schedulings that span over a single
      *  day each
-     * @param ?\DateTime $from return all occurences after $from (inclusive)
-     * @param ?\DateTime $to return all occurences until $to (inclusive)
-     * @param null|int<1,max> $limit limit number of returned occurences
-     * @throws \LogicException if $limit/$to is not set and there are infinite occurences
+     * @param ?\DateTime $from return all occurrences after $from (inclusive)
+     * @param ?\DateTime $to return all occurrences until $to (inclusive)
+     * @param null|int<1,max> $limit limit number of returned occurrences
+     * @throws \LogicException if $limit/$to is not set and there are infinite occurrences
      * @throws \InvalidArgumentException if $limit is negative
      * @return Scheduling[]
      */
@@ -206,17 +210,17 @@ class SchedulingManager
     }
 
     /**
-     * Copies all occurences of `generateOccurrencesOfSchedulings` into an array
+     * Copies all occurrences of `generateOccurrencesOfSchedulings` into an array
      * @see self::generateOccurrencesOfSchedulings()
      *
      * @param Scheduling[] $schedulings
      * @param bool $splitMultidayDates if true, schedulings that span over
      *  multiple days will be split into multiple Schedulings that span over a single
      *  day each
-     * @param ?\DateTime $from return all occurences after $from (inclusive)
-     * @param ?\DateTime $to return all occurences until $to (inclusive)
-     * @param null|int<1,max> $limit limit number of returned occurences
-     * @throws \LogicException if $limit/$to is not set and there are infinite occurences
+     * @param ?\DateTime $from return all occurrences after $from (inclusive)
+     * @param ?\DateTime $to return all occurrences until $to (inclusive)
+     * @param null|int<1,max> $limit limit number of returned occurrences
+     * @throws \LogicException if $limit/$to is not set and there are infinite occurrences
      * @throws \InvalidArgumentException if $limit is negative
      * @return Scheduling[]
      */
@@ -243,6 +247,62 @@ class SchedulingManager
                 $limit,
             ),
         );
+    }
+
+    /**
+     * Finds an occurrence in a scheduling
+     *
+     * @param Scheduling $scheduling
+     * @param \DateTime $occurrenceToFind occurrence to find
+     * @param bool $splitMultidayDates if true, schedulings that span over
+     *  multiple days will be split into multiple Schedulings that span over a single
+     *  day each
+     * @return ?Scheduling
+     */
+    public function findOccurrenceOfScheduling(
+        Scheduling $scheduling,
+        \DateTime $occurrenceToFind,
+        bool $splitMultidayDates = false,
+    ): ?Scheduling {
+        // set search boundary from 1 minute before to 1 minute after to avoid unnecessary overhead
+        $from = (clone $occurrenceToFind)->sub(new \DateInterval('PT1M'));
+        $to = (clone $occurrenceToFind)->add(new \DateInterval('PT1M'));
+        foreach (
+            $this->generateOccurrencesOfScheduling($scheduling, $splitMultidayDates, $from, $to, 1) as $scheduling
+        ) {
+            if ($scheduling->start->getTimestamp() === $occurrenceToFind->getTimestamp()) {
+                return $scheduling;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Finds an occurrence in an array of scheduling
+     *
+     * @param Scheduling[] $schedulings
+     * @param \DateTime $occurrenceToFind occurrence to find
+     * @param bool $splitMultidayDates if true, schedulings that span over
+     *  multiple days will be split into multiple Schedulings that span over a single
+     *  day each
+     * @return ?Scheduling
+     */
+    public function findOccurrenceOfSchedulings(
+        array $schedulings,
+        \DateTime $occurrenceToFind,
+        bool $splitMultidayDates = false,
+    ): ?Scheduling {
+        // set search boundary from 1 minute before to 1 minute after to avoid unnecessary overhead
+        $from = (clone $occurrenceToFind)->sub(new \DateInterval('PT1M'));
+        $to = (clone $occurrenceToFind)->add(new \DateInterval('PT1M'));
+        foreach (
+            $this->generateOccurrencesOfSchedulings($schedulings, $splitMultidayDates, $from, $to, 1) as $scheduling
+        ) {
+            if ($scheduling->start->getTimestamp() === $occurrenceToFind->getTimestamp()) {
+                return $scheduling;
+            }
+        }
+        return null;
     }
 
     public function isInfinite(Scheduling $scheduling): bool
