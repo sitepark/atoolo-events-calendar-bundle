@@ -15,7 +15,7 @@
         "ext-zip": "*",
         "atoolo/graphql-search-bundle": "^1.2",
         "dragonmantank/cron-expression": "^3.3",
-        "eluceo/ical": "^2.14",
+        "eluceo/ical": "^2.15",
         "phpro/api-problem-bundle": "^1.9",
         "rlanvin/php-rrule": "^2.5",
         "soundasleep/html2text": "^2.1",
