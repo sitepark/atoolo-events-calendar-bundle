@@ -200,7 +200,7 @@ final class ICalController extends AbstractController implements LoggerAwareInte
         // strip path separators and %, replace chars to ascii in filename fallback
         $filenameFallback = preg_replace('/[\\\\\/%]+/', '', $original) ?? '';
         $filenameFallback = transliterator_transliterate('Any-Latin; Latin-ASCII; Lower()', $filenameFallback);
-        ;
+
         return [$filename, $filenameFallback];
     }
 
