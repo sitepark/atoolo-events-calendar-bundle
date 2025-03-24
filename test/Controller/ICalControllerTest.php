@@ -272,7 +272,7 @@ class ICalControllerTest extends TestCase
     public function testICalBySearch(): void
     {
         $resource = $this->createResource([
-            'name' => '-?some()cr4zy=?"file-name9&&',
+            'name' => '-?some()cr4zy=?"file\\-name/9&&',
         ]);
         $query = json_encode([
             'filter' => [[
@@ -312,7 +312,7 @@ class ICalControllerTest extends TestCase
             $response->headers->get('Content-Type'),
         );
         $this->assertEquals(
-            'attachment; filename="some_cr4zy_file-name9.ics"',
+            'attachment; filename="-?some()cr4zy=?\"file-name9&&.ics"',
             $response->headers->get('Content-Disposition'),
         );
         $this->assertEquals(
