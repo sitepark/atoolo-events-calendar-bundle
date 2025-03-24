@@ -188,7 +188,8 @@ final class ICalController extends AbstractController implements LoggerAwareInte
 
     /**
      * Returns a filename and a filename fallback as expected by
-     * `\Symfony\Component\HttpFoundation\ResponseHeaderBag::makeDisposition`
+     * `\Symfony\Component\HttpFoundation\HeaderUtils::makeDisposition`
+     *
      * @return array{string, string}
      */
     private function toFilenameAndFilenameFallback(string $original): array
@@ -196,14 +197,10 @@ final class ICalController extends AbstractController implements LoggerAwareInte
         // strip path separators
         $filename = preg_replace('/[\\\\\/]+/', '', $original) ?? '';
 
-        // strip path separators , replace umlaute and ß, strip non-ascii and % in filename fallback
-        $filenameFallback = preg_replace('/[\\\\\/]+/', '', $original) ?? '';
-        $filenameFallback = str_replace(
-            ['ä', 'ö', 'ü', 'Ä', 'Ö', 'Ü', 'ß'],
-            ['ae', 'oe', 'ue', 'Ae', 'Oe', 'Ue', 'ss'],
-            $filenameFallback,
-        );
-        $filenameFallback = preg_replace('/[^[:ascii:]]+|%+/', '', $filenameFallback) ?? '';
+        // strip path separators and %, replace chars to ascii in filename fallback
+        $filenameFallback = preg_replace('/[\\\\\/%]+/', '', $original) ?? '';
+        $filenameFallback = transliterator_transliterate('Any-Latin; Latin-ASCII; Lower()', $filenameFallback);
+        ;
         return [$filename, $filenameFallback];
     }
 
