@@ -18,6 +18,7 @@ use JsonException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -163,29 +164,50 @@ final class ICalController extends AbstractController implements LoggerAwareInte
     /**
      * @param Resource[] $resources
      */
+    /**
+     * @param Resource[] $resources
+     */
     private function createICalResponeByResources(array $resources, ?\DateTime $atOccurrence = null): Response
     {
         $res = new Response($this->iCalFactory->createCalendarFromResourcesAsString($resources, $atOccurrence));
         $filename = 'ical';
+        $filenameFallback = $filename;
+        $suffix = '.ics';
         if (count($resources) === 1) {
-            $sanitizedName = $this->sanitizeFilename($resources[0]->name);
-            $filename = !empty($sanitizedName) ? $sanitizedName : $filename;
+            [$filename, $filenameFallback] = $this->toFilenameAndFilenameFallback($resources[0]->name);
         }
         $res->headers->set('Content-Type', 'text/calendar');
-        $res->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '.ics"');
+        $res->headers->set(
+            'Content-Disposition',
+            $res->headers->makeDisposition(
+                HeaderUtils::DISPOSITION_ATTACHMENT,
+                $filename . $suffix,
+                $filenameFallback . $suffix,
+            ),
+        );
+        ;
         return $res;
     }
 
     /**
-     * Cuts off all sequences of non-alphanumeric characters at the beginning and the end of a string.
-     * Replaces all remaining sequences of non-alphanumeric characters except '-' with '_'.
-     *
-     * Example: -?some()cr4zy=?"file-name9&& becomes some_cr4zy_file-name9
+     * Returns a filename and a filename fallback as expected by
+     * `\Symfony\Component\HttpFoundation\ResponseHeaderBag::makeDisposition`
+     * @return array{string, string}
      */
-    private function sanitizeFilename(string $originalName): string
+    private function toFilenameAndFilenameFallback(string $original): array
     {
-        $filename = preg_replace('/^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$/', '', $originalName);
-        return preg_replace('/[^a-zA-Z0-9-]+/', '_', $filename ?? '') ?? '';
+        // strip path separators
+        $filename = preg_replace('/[\\\\\/]+/', '', $original) ?? '';
+
+        // strip path separators , replace umlaute and ß, strip non-ascii and % in filename fallback
+        $filenameFallback = preg_replace('/[\\\\\/]+/', '', $original) ?? '';
+        $filenameFallback = str_replace(
+            ['ä', 'ö', 'ü', 'Ä', 'Ö', 'Ü', 'ß'],
+            ['ae', 'oe', 'ue', 'Ae', 'Oe', 'Ue', 'ss'],
+            $filenameFallback,
+        );
+        $filenameFallback = preg_replace('/[^[:ascii:]]+|%+/', '', $filenameFallback) ?? '';
+        return [$filename, $filenameFallback];
     }
 
     private function toResourceLocation(string $lang, string $path): ResourceLocation
