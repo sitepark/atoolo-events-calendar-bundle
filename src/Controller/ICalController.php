@@ -164,9 +164,6 @@ final class ICalController extends AbstractController implements LoggerAwareInte
     /**
      * @param Resource[] $resources
      */
-    /**
-     * @param Resource[] $resources
-     */
     private function createICalResponeByResources(array $resources, ?\DateTime $atOccurrence = null): Response
     {
         $res = new Response($this->iCalFactory->createCalendarFromResourcesAsString($resources, $atOccurrence));
