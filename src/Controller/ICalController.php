@@ -198,10 +198,10 @@ final class ICalController extends AbstractController implements LoggerAwareInte
         $filename = preg_replace('/[\\\\\/]+/', '', $original) ?? '';
 
         // strip path separators and %, replace chars to ascii in filename fallback
-        $filenameFallback = preg_replace('/[\\\\\/%]+/', '', $original) ?? '';
-        $filenameFallback = transliterator_transliterate('Any-Latin; Latin-ASCII; Lower()', $filenameFallback);
+        $filenameCleanup = preg_replace('/[\\\\\/%]+/', '', $original) ?? '';
+        $filenameFallback = transliterator_transliterate('Any-Latin; Latin-ASCII; Lower()', $filenameCleanup);
 
-        return [$filename, $filenameFallback];
+        return [$filename, $filenameFallback !== false ? $filenameFallback : $filenameCleanup];
     }
 
     private function toResourceLocation(string $lang, string $path): ResourceLocation
