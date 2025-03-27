@@ -260,7 +260,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
 
         $resource = $this->findCategoryByAnchor(
             $preset->categoryRootResourceLocations,
-            'rce.type.' . $theme->id,
+            'rce.type.' . $theme->getKey(),
         );
 
         if ($resource === null) {
@@ -301,11 +301,11 @@ class DefaultSchema2xRceEventDocumentEnricher implements
 
         $themeResource = $this->findCategoryByAnchor(
             $preset->categoryRootResourceLocations,
-            'rce.type.' . $theme->id,
+            'rce.type.' . $theme->getKey(),
         );
         $subThemeResource = $this->findCategoryByAnchor(
             $preset->categoryRootResourceLocations,
-            'rce.type.' . $subTheme->id,
+            'rce.type.' . $subTheme->getKey(),
         );
 
         if ($subThemeResource === null) {
