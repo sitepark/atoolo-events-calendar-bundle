@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Atoolo\EventsCalendar\Test\Service\Scheduling;
+namespace Atoolo\EventsCalendar\Test\Controller;
 
 use Atoolo\EventsCalendar\Controller\ICalController;
 use Atoolo\EventsCalendar\Service\ICal\ICalFactory;

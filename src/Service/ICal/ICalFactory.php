@@ -10,7 +10,7 @@ use Atoolo\EventsCalendar\Service\ICal\Eluceo\CustomEvent;
 use Atoolo\EventsCalendar\Service\ICal\Eluceo\CustomEventFactory;
 use Atoolo\EventsCalendar\Service\Scheduling\SchedulingManager;
 use Atoolo\Resource\Resource;
-use Atoolo\Resource\ResourceChannelFactory;
+use Atoolo\Resource\Factory\ResourceChannelFactory;
 use Eluceo\iCal\Domain\Entity\Calendar;
 use Eluceo\iCal\Domain\ValueObject\Date;
 use Eluceo\iCal\Domain\ValueObject\DateTime;

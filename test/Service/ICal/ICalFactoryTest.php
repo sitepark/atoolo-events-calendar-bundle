@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Atoolo\EventsCalendar\Test\Service\Indexer;
+namespace Atoolo\EventsCalendar\Test\Service\ICal;
 
 use Atoolo\EventsCalendar\Dto\Scheduling\Scheduling;
 use Atoolo\EventsCalendar\Service\GraphQL\Factory\SchedulingFactory;
@@ -10,7 +10,7 @@ use Atoolo\EventsCalendar\Service\ICal\ICalFactory;
 use Atoolo\Resource\DataBag;
 use Atoolo\Resource\Resource;
 use Atoolo\Resource\ResourceChannel;
-use Atoolo\Resource\ResourceChannelFactory;
+use Atoolo\Resource\Factory\ResourceChannelFactory;
 use Atoolo\Resource\ResourceLanguage;
 use Atoolo\Resource\ResourceTenant;
 use DateTimeZone;

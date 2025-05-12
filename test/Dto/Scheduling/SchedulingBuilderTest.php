@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Atoolo\EventsCalendar\Test\Service\Scheduling;
+namespace Atoolo\EventsCalendar\Test\Dto\Scheduling;
 
 use Atoolo\EventsCalendar\Dto\Scheduling\Scheduling;
 use Atoolo\EventsCalendar\Dto\Scheduling\SchedulingBuilder;
