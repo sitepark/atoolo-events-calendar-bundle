@@ -10,7 +10,7 @@ use Atoolo\EventsCalendar\Service\ICal\Eluceo\CustomEvent;
 use Atoolo\EventsCalendar\Service\ICal\Eluceo\CustomEventFactory;
 use Atoolo\EventsCalendar\Service\Scheduling\SchedulingManager;
 use Atoolo\Resource\Resource;
-use Atoolo\Resource\ResourceChannelFactory;
+use Atoolo\Resource\ResourceChannel;
 use Eluceo\iCal\Domain\Entity\Calendar;
 use Eluceo\iCal\Domain\ValueObject\Date;
 use Eluceo\iCal\Domain\ValueObject\DateTime;
@@ -28,7 +28,7 @@ class ICalFactory
 
     public function __construct(
         protected readonly SchedulingFactory $schedulingFactory,
-        protected readonly ResourceChannelFactory $resourceChannelFactory,
+        protected readonly ResourceChannel $resourceChannel,
         protected readonly SchedulingManager $schedulingManager = new SchedulingManager(),
     ) {}
 
@@ -50,7 +50,6 @@ class ICalFactory
         array $resources,
         ?\DateTime $atOccurrence = null,
     ): Calendar {
-        $resourceChannel = $this->resourceChannelFactory->create();
         $events = [];
         foreach ($resources as $resource) {
             $schedulings = $this->schedulingFactory->create($resource);
@@ -68,15 +67,14 @@ class ICalFactory
                     $resource->data->getString('metadata.headline'),
                 );
                 $description = $resource->data->getString('metadata.description');
-                $resourceChannel = $this->resourceChannelFactory->create();
                 $isExternal = str_starts_with($resource->location, 'http://')
                     || str_starts_with($resource->location, 'https://');
                 $url = $isExternal
                     ? $resource->location
-                    : 'https://' . $resourceChannel->serverName . $resource->location;
+                    : 'https://' . $this->resourceChannel->serverName . $resource->location;
                 $firstEventUid = null;
                 foreach ($schedulings as $index => $scheduling) {
-                    $uuid = $resource->id . '-' . $index . '@' . $resourceChannel->serverName;
+                    $uuid = $resource->id . '-' . $index . '@' . $this->resourceChannel->serverName;
                     $event = new CustomEvent(new UniqueIdentifier($uuid));
                     if ($firstEventUid === null) {
                         $firstEventUid = $event->getUniqueIdentifier();
