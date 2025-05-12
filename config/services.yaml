@@ -63,7 +63,7 @@ services:
   Atoolo\EventsCalendar\Service\ICal\ICalFactory:
     arguments:
       - '@atoolo_events_calendar.scheduling_factory'
-      - '@atoolo_resource.resource_channel_factory'
+      - '@atoolo_resource.resource_channel'
 
   Atoolo\EventsCalendar\Controller\ICalController:
     arguments:

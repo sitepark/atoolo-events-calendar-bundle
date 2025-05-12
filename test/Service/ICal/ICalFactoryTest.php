@@ -10,7 +10,6 @@ use Atoolo\EventsCalendar\Service\ICal\ICalFactory;
 use Atoolo\Resource\DataBag;
 use Atoolo\Resource\Resource;
 use Atoolo\Resource\ResourceChannel;
-use Atoolo\Resource\Factory\ResourceChannelFactory;
 use Atoolo\Resource\ResourceLanguage;
 use Atoolo\Resource\ResourceTenant;
 use DateTimeZone;
@@ -23,7 +22,7 @@ class ICalFactoryTest extends TestCase
 {
     private SchedulingFactory&MockObject $schedulingFactory;
 
-    private ResourceChannelFactory&MockObject $resourceChannelFactory;
+    private ResourceChannel $resourceChannel;
 
     private ICalFactory $iCalFactory;
 
@@ -32,12 +31,12 @@ class ICalFactoryTest extends TestCase
         $this->schedulingFactory = $this->createMock(
             SchedulingFactory::class,
         );
-        $this->resourceChannelFactory = $this->createMock(
-            ResourceChannelFactory::class,
-        );
+        $this->resourceChannel = $this->createResourceChannel([
+            'serverName' => 'www.test.de',
+        ]);
         $this->iCalFactory = new ICalFactory(
             $this->schedulingFactory,
-            $this->resourceChannelFactory,
+            $this->resourceChannel,
         );
     }
 
@@ -51,12 +50,6 @@ class ICalFactoryTest extends TestCase
                 'description' => 'Amazing event',
             ],
         ]);
-        $resourceChannel = $this->createResourceChannel([
-            'serverName' => 'www.test.de',
-        ]);
-        $this->resourceChannelFactory
-            ->method('create')
-            ->willReturn($resourceChannel);
         $this->schedulingFactory
             ->method('create')
             ->with($resource)
@@ -147,12 +140,6 @@ class ICalFactoryTest extends TestCase
                 'description' => 'Amazing event',
             ],
         ]);
-        $resourceChannel = $this->createResourceChannel([
-            'serverName' => 'www.test.de',
-        ]);
-        $this->resourceChannelFactory
-            ->method('create')
-            ->willReturn($resourceChannel);
         $this->schedulingFactory
             ->method('create')
             ->with($resource)
@@ -226,12 +213,6 @@ class ICalFactoryTest extends TestCase
                 'description' => 'Amazing event',
             ],
         ]);
-        $resourceChannel = $this->createResourceChannel([
-            'serverName' => 'www.test.de',
-        ]);
-        $this->resourceChannelFactory
-            ->method('create')
-            ->willReturn($resourceChannel);
         $this->schedulingFactory
             ->method('create')
             ->with($resource)
