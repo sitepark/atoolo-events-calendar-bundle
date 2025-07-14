@@ -251,7 +251,7 @@ class RceEventIndexerTest extends TestCase
             'https://www.example.com/ticket',
             null,
             null,
-            false,
+            [],
             null,
             $addresses,
             '',

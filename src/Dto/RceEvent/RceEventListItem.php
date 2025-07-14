@@ -12,6 +12,7 @@ class RceEventListItem
     /**
      * @param array<RceEventDate> $dates
      * @param array<RceEventUpload> $uploads
+     * @param array<RceEventSpecialFeature> $specialFeatures
      */
     public function __construct(
         public readonly string $id,
@@ -24,10 +25,15 @@ class RceEventListItem
         public readonly string $ticketLink,
         public readonly ?RceEventTheme $theme,
         public readonly ?RceEventTheme $subTheme,
-        public readonly bool $highlight,
+        public readonly array $specialFeatures,
         public readonly ?RceEventSource $source,
         public readonly RceEventAddresses $addresses,
         public readonly string $keywords,
         public readonly array $uploads,
     ) {}
+
+    public function hasSpecialFeature(RceEventSpecialFeature $feature): bool
+    {
+        return in_array($feature, $this->specialFeatures, true);
+    }
 }

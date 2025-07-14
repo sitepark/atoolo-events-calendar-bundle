@@ -11,6 +11,7 @@ use Atoolo\EventsCalendar\Dto\RceEvent\RceEventAddresses;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventDate;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventListItem;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventSource;
+use Atoolo\EventsCalendar\Dto\RceEvent\RceEventSpecialFeature;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventTheme;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventUpload;
 use Atoolo\EventsCalendar\Service\Indexer\{
@@ -491,7 +492,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
             'https://www.example.com/ticket',
             $theme,
             $subTheme,
-            true,
+            [RceEventSpecialFeature::HIGHLIGHT],
             $source,
             $addresses,
             'keyword',

@@ -8,6 +8,7 @@ use Atoolo\EventsCalendar\Dto\Indexer\RceEventIndexerInstance;
 use Atoolo\EventsCalendar\Dto\Indexer\RceEventIndexerParameter;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventDate;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventListItem;
+use Atoolo\EventsCalendar\Dto\RceEvent\RceEventSpecialFeature;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventTheme;
 use Atoolo\EventsCalendar\Service\Indexer\RceEventDocumentEnricher;
 use Atoolo\Resource\Resource;
@@ -106,12 +107,8 @@ class DefaultSchema2xRceEventDocumentEnricher implements
 
         if ($event->addresses->location !== null) {
             $doc->setMetaString(
-                'event_location',
-                $event->addresses->location->name,
-            );
-            $doc->setMetaText(
-                'event_rce_location',
-                $event->addresses->location->name,
+                'event_rce_location_zip',
+                $event->addresses->location->zip,
             );
         }
 
@@ -203,16 +200,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
             }
         }
 
-        if ($event->highlight && $parameter->highlightCategory > 0) {
-            $doc->sp_category = array_merge(
-                $doc->sp_category ?? [],
-                [(string) $parameter->highlightCategory],
-            );
-            $doc->sp_category_path = array_merge(
-                $doc->sp_category_path ?? [],
-                [(string) $parameter->highlightCategory],
-            );
-        }
+        $doc = $this->enrichSpecialFeatures($parameter, $event, $doc);
 
         if ($event->source !== null) {
             $doc = $this->enrichCategoryByAnchor(
@@ -234,6 +222,19 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         }
 
         if (
+            $event->addresses->location !== null &&
+            $event->addresses->location->name !== null
+        ) {
+            $name = strtolower($event->addresses->location->name);
+            $key = preg_replace('/[^a-z0-9]/', '-', $name);
+            $doc = $this->enrichCategoryByAnchor(
+                $doc,
+                $parameter,
+                'rce.venue.' . $key,
+            );
+        }
+
+        if (
             $event->addresses->organizer !== null &&
             $event->addresses->organizer->gemkey !== null
         ) {
@@ -241,6 +242,31 @@ class DefaultSchema2xRceEventDocumentEnricher implements
                 $doc,
                 $parameter,
                 'rce.gemkey.' . $event->addresses->organizer->gemkey,
+            );
+        }
+
+        return $doc;
+    }
+
+    /**
+     * @template E of IndexSchema2xDocument
+     * @param E $doc
+     * @return E
+     */
+    private function enrichSpecialFeatures(
+        RceEventIndexerParameter $parameter,
+        RceEventListItem $event,
+        IndexDocument $doc,
+    ): IndexDocument {
+
+        if ($event->hasSpecialFeature(RceEventSpecialFeature::HIGHLIGHT) && $parameter->highlightCategory > 0) {
+            $doc->sp_category = array_merge(
+                $doc->sp_category ?? [],
+                [(string) $parameter->highlightCategory],
+            );
+            $doc->sp_category_path = array_merge(
+                $doc->sp_category_path ?? [],
+                [(string) $parameter->highlightCategory],
             );
         }
 

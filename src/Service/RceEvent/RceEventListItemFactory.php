@@ -9,6 +9,7 @@ use Atoolo\EventsCalendar\Dto\RceEvent\RceEventAddresses;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventDate;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventListItem;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventSource;
+use Atoolo\EventsCalendar\Dto\RceEvent\RceEventSpecialFeature;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventTheme;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventUpload;
 use DateTime;
@@ -45,12 +46,48 @@ class RceEventListItemFactory
             $this->createTicketLink($event),
             $this->createTheme($event),
             $this->createSubTheme($event),
-            $this->isHighlight($event),
+            $this->createSpecialFeatures($event),
             $this->createSource($event),
             $this->createAddresses($event),
             $this->createKeywords($event),
             $this->createUploads($event),
         );
+    }
+
+    /**
+     * @return array<RceEventSpecialFeature>
+     */
+    private function createSpecialFeatures(SimpleXMLElement $event): array
+    {
+        $specialFeatures = [];
+        if ($this->isHighlight($event)) {
+            $specialFeatures[] = RceEventSpecialFeature::HIGHLIGHT;
+        }
+        if ($this->isBadWeather($event)) {
+            $specialFeatures[] = RceEventSpecialFeature::BAD_WEATHER;
+        }
+
+        $audiences = $this->getAudiences($event);
+        if (in_array('Kinder', $audiences, true)) {
+            $specialFeatures[] = RceEventSpecialFeature::CHILDREN;
+        }
+        if (in_array('Jugendliche', $audiences, true)) {
+            $specialFeatures[] = RceEventSpecialFeature::TEENAGER;
+        }
+        if (in_array('Erwachsene', $audiences, true)) {
+            $specialFeatures[] = RceEventSpecialFeature::ADULTS;
+        }
+        if (in_array('Familien', $audiences, true)) {
+            $specialFeatures[] = RceEventSpecialFeature::FAMILY;
+        }
+        if (in_array('Senioren', $audiences, true)) {
+            $specialFeatures[] = RceEventSpecialFeature::SENIOR;
+        }
+        if (in_array('Barrierefrei', $audiences, true)) {
+            $specialFeatures[] = RceEventSpecialFeature::BARRIER_FREE;
+        }
+
+        return $specialFeatures;
     }
 
     private function createId(SimpleXMLElement $event): string
@@ -178,6 +215,21 @@ class RceEventListItemFactory
     {
         $highlight = strtolower((string) $event->DESCRIPTION['highlight']);
         return $highlight === self::YES;
+    }
+
+    private function isBadWeather(SimpleXMLElement $event): bool
+    {
+        $badWeather = strtolower((string) $event->WEATHER['bad']);
+        return $badWeather === self::YES;
+    }
+
+    /**
+     * @return array<string>
+     */
+    private function getAudiences(SimpleXMLElement $event): array
+    {
+        $audiences = (string)($event->AUDIENCE['audience'] ?? '');
+        return explode(',', $audiences);
     }
 
     private function createTicketLink(SimpleXMLElement $event): string

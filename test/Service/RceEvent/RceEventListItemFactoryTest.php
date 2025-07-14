@@ -9,6 +9,7 @@ use Atoolo\EventsCalendar\Dto\RceEvent\RceEventAddresses;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventDate;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventListItem;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventSource;
+use Atoolo\EventsCalendar\Dto\RceEvent\RceEventSpecialFeature;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventTheme;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventUpload;
 use Atoolo\EventsCalendar\Service\RceEvent\RceEventListItemFactory;
@@ -47,7 +48,7 @@ class RceEventListItemFactoryTest extends TestCase
             '',
             null,
             null,
-            false,
+            [],
             null,
             new RceEventAddresses(),
             '',
@@ -484,17 +485,32 @@ class RceEventListItemFactoryTest extends TestCase
         $this->assertTrue($event->onsite, 'unexpected onsite');
     }
 
-    public function testIsHighlight(): void
+    public function testSpecialFeatures(): void
     {
         $event = $this->create(
             <<<EOS
             <EVENT>
                 <DESCRIPTION highlight="yes"></DESCRIPTION>
+                <WEATHER good="yes" bad="yes"/>
+                <AUDIENCE audience="Kinder,Jugendliche,Erwachsene,Familien,Senioren,Barrierefrei"/>
             </EVENT>
             EOS,
         );
-        $this->assertTrue($event->highlight, 'unexpected highlight');
+
+        $expected = [
+            RceEventSpecialFeature::HIGHLIGHT,
+            RceEventSpecialFeature::BAD_WEATHER,
+            RceEventSpecialFeature::CHILDREN,
+            RceEventSpecialFeature::TEENAGER,
+            RceEventSpecialFeature::ADULTS,
+            RceEventSpecialFeature::FAMILY,
+            RceEventSpecialFeature::SENIOR,
+            RceEventSpecialFeature::BARRIER_FREE,
+        ];
+
+        $this->assertEquals($expected, $event->specialFeatures, 'unexpected special features');
     }
+
 
     public function testTicketLink(): void
     {
