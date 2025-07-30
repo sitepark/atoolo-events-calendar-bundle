@@ -404,6 +404,7 @@ class ICalControllerTest extends TestCase
             configDir: $args['configDir'] ?? '',
             searchIndex: $args['searchIndex'] ?? '',
             translationLocales: $args['translationLocales'] ?? [],
+            attributes: new DataBag([]),
             tenant: $tenant,
         );
     }

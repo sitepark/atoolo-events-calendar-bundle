@@ -271,6 +271,7 @@ class ICalFactoryTest extends TestCase
             configDir: $args['configDir'] ?? '',
             searchIndex: $args['searchIndex'] ?? '',
             translationLocales: $args['translationLocales'] ?? [],
+            attributes: new DataBag([]),
             tenant: $tenant,
         );
     }
