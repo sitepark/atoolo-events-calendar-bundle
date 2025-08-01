@@ -24,6 +24,6 @@ class RceEventIndexerDateFilter implements RceEventIndexerFilter
         RceEventListItem $event,
         RceEventDate $eventDate,
     ): bool {
-        return $eventDate->startDate >= $this->date;
+        return !$eventDate->blacklisted && $eventDate->startDate >= $this->date;
     }
 }

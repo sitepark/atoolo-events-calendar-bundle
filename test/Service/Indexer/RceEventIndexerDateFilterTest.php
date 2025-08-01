@@ -59,4 +59,26 @@ class RceEventIndexerDateFilterTest extends TestCase
             'Event should be accepted',
         );
     }
+
+    public function testWithBlacklistedtDate(): void
+    {
+        $filter = new RceEventIndexerDateFilter();
+
+        $now = new DateTime();
+        $event = $this->createStub(RceEventListItem::class);
+        $eventDate  = new RceEventDate(
+            hashId: '',
+            startDate: $now,
+            endDate: $now,
+            blacklisted: true,
+            soldOut: false,
+            cancelled: false,
+            postponed: false,
+        );
+
+        $this->assertFalse(
+            $filter->accept($event, $eventDate),
+            'Event should not be accepted',
+        );
+    }
 }
