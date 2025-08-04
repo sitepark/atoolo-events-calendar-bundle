@@ -222,15 +222,21 @@ class DefaultSchema2xRceEventDocumentEnricher implements
             );
         }
 
-        if (
-            $event->addresses->location !== null &&
-            $event->addresses->location->gemkey !== null
-        ) {
-            $doc = $this->enrichCategoryByAnchor(
-                $doc,
-                $parameter,
-                'rce.gemkey.' . $event->addresses->location->gemkey,
-            );
+        if ($event->addresses->location !== null) {
+            if ($event->addresses->location->gemkey !== null) {
+                $doc = $this->enrichCategoryByAnchor(
+                    $doc,
+                    $parameter,
+                    'rce.gemkey.' . $event->addresses->location->gemkey,
+                );
+            }
+            if ($event->addresses->location->name !== null) {
+                $doc = $this->enrichCategoryByAnchor(
+                    $doc,
+                    $parameter,
+                    'rce.venue.' . $this->stringToAnchor($event->addresses->location->name),
+                );
+            }
         }
 
         if (
@@ -245,6 +251,17 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         }
 
         return $doc;
+    }
+
+    private function stringToAnchor(string $s): string
+    {
+        $anchor = strtolower($s);
+        $anchor = str_replace(['ä', 'ö', 'ü'], ['ae', 'oe', 'ue'], $anchor);
+        /** @var string $anchor */
+        $anchor = preg_replace('/[^a-z0-9]+/', '-', $anchor);
+        /** @var string $anchor */
+        $anchor = preg_replace('/-+$|^-+/', '', $anchor);
+        return $anchor;
     }
 
     /**
