@@ -55,7 +55,9 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
             'test',
             [$instance],
             $this->rootResources,
-            111,
+            [
+                'highlight' => [111],
+            ],
             1,
             '',
         );

@@ -203,14 +203,18 @@ class DefaultSchema2xRceEventDocumentEnricher implements
             }
         }
 
-        if ($event->highlight && $parameter->highlightCategory > 0) {
+        if ($event->highlight && !empty($parameter->simpleCategoryMap['highlight'] ?? [])) {
+            $highlightCategoryIdsAsStrings = array_map(
+                fn($id) => (string) $id,
+                $parameter->simpleCategoryMap['highlight'],
+            );
             $doc->sp_category = array_merge(
                 $doc->sp_category ?? [],
-                [(string) $parameter->highlightCategory],
+                $highlightCategoryIdsAsStrings,
             );
             $doc->sp_category_path = array_merge(
                 $doc->sp_category_path ?? [],
-                [(string) $parameter->highlightCategory],
+                $highlightCategoryIdsAsStrings,
             );
         }
 
