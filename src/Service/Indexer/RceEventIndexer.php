@@ -146,11 +146,18 @@ class RceEventIndexer extends AbstractIndexer
             );
         }
 
+        /** @var array<string,array<int,int>> $simpleCategoryMap */
+        $simpleCategoryMap = $data->getAssociativeArray('simpleCategoryMap');
+        // for backward compatibility
+        $highlightCategory = $data->getInt('highlightCategory', -1);
+        if ($highlightCategory !== -1 && !isset($simpleCategoryMap['highlight'])) {
+            $simpleCategoryMap['highlight'] = [$highlightCategory];
+        }
         return new RceEventIndexerParameter(
             source: $this->source,
             instanceList: $instanceList,
             categoryRootResourceLocations: $categoryRootResourceLocations,
-            highlightCategory: $data->getInt('highlightCategory'),
+            simpleCategoryMap: $simpleCategoryMap,
             cleanupThreshold: $data->getInt('cleanupThreshold'),
             exportUrl: $data->getString('exportUrl'),
         );

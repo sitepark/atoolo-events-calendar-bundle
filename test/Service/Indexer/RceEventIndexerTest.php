@@ -274,6 +274,7 @@ class RceEventIndexerTest extends TestCase
                 'categoryRootResourceLocations' => [
                     '/path/to/category/root.php',
                 ],
+                'highlightCategory' => 1234,
                 'cleanupThreshold' => 1,
                 'exportUrl' => 'https://www.example.com/export.zip',
             ],
