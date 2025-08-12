@@ -17,6 +17,12 @@ services:
     tags:
       - { name: 'atoolo_events_calendar.indexer.rceEventDocumentEnricher.schema2x', priority: 100 }
 
+  Atoolo\EventsCalendar\Service\Indexer\SiteKit\DefaultSchema2xRceEventCategoryDocumentEnricher:
+    arguments:
+      - '@atoolo_resource.category_hierarchy_loader'
+    tags:
+      - { name: 'atoolo_events_calendar.indexer.rceEventDocumentEnricher.schema2x', priority: 90 }
+
   atoolo_events_calendar.indexer.rceEventAborter:
     class: Atoolo\Search\Service\Indexer\IndexingAborter
     arguments:

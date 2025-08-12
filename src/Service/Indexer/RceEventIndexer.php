@@ -134,7 +134,8 @@ class RceEventIndexer extends AbstractIndexer
          *     id:int,
          *     detailPageUrl: string,
          *     group:int,
-         *     groupPath: array<int>
+         *     groupPath: array<int>,
+         *     kickerCategoryResourceLocation: ?string
          * } $instance
          */
         foreach ($data->getArray('instanceList') as $instance) {
@@ -143,6 +144,7 @@ class RceEventIndexer extends AbstractIndexer
                 $instance['detailPageUrl'],
                 $instance['group'],
                 $instance['groupPath'],
+                $instance['kickerCategoryResourceLocation'] ?? null,
             );
         }
 
