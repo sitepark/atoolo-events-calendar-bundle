@@ -83,7 +83,6 @@ class DefaultSchema2xRceEventCategoryDocumentEnricher implements
                 },
             );
             $this->collectChildIdNameMapCache[$root->location] = $childIdNameMap;
-            print_r($childIdNameMap);
         }
         return $this->collectChildIdNameMapCache[$root->location];
     }
