@@ -17,5 +17,6 @@ class RceEventIndexerInstance
         public readonly string $detailPageUrl,
         public readonly int $group,
         public readonly array $groupPath,
+        public readonly ?string $kickerCategoryResourceLocation = null,
     ) {}
 }
