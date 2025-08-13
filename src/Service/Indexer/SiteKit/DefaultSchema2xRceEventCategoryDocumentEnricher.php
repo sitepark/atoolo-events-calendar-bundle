@@ -56,7 +56,10 @@ class DefaultSchema2xRceEventCategoryDocumentEnricher implements
                 }
             }
             if (!empty($kickerStrings)) {
-                $doc->setMetaString('kicker', implode(' | ', $kickerStrings));
+                $kicker =  implode(' | ', $kickerStrings);
+                $doc->setMetaString('kicker', $kicker);
+                // also add kicker to content to it's searchable
+                $doc->content = ($doc->content ?? '') . ' ' . $kicker;
             }
         }
 
