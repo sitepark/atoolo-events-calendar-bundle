@@ -164,7 +164,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
     public function testEnrichDocumentWithTheme(): void
     {
-        $theme = new RceEventTheme('1', 'Ausstellung');
+        $theme = new RceEventTheme('12', 'Ausstellung');
         $event = $this->createEvent(
             false,
             $theme,
@@ -196,7 +196,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
     public function testEnrichDocumentWithThemeNotFound(): void
     {
-        $theme = new RceEventTheme('1', 'Abc');
+        $theme = new RceEventTheme('99', 'Abc');
         $event = $this->createEvent(
             false,
             $theme,
@@ -263,7 +263,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
     public function testEnrichDocumentWithThemeAndSubThemeNoParent(): void
     {
         $theme = new RceEventTheme('12', 'Ausstellung');
-        $subTheme = new RceEventTheme('14', 'No Parent');
+        $subTheme = new RceEventTheme('15', 'No Parent');
         $event = $this->createEvent(
             false,
             $theme,
@@ -297,7 +297,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
     public function testEnrichDocumentWithThemeAndSubThemeNotFound(): void
     {
         $theme = new RceEventTheme('12', 'Ausstellung');
-        $subTheme = new RceEventTheme('13', 'Abc');
+        $subTheme = new RceEventTheme('99', 'Abc');
         $event = $this->createEvent(
             false,
             $theme,
@@ -330,7 +330,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
     public function testEnrichDocumentWithThemeNotFoundAndSubTheme(): void
     {
-        $theme = new RceEventTheme('12', 'Abc');
+        $theme = new RceEventTheme('99', 'Abc');
         $subTheme = new RceEventTheme('13', 'Film & Medien');
         $event = $this->createEvent(
             false,
@@ -561,25 +561,25 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
         $ausstellung = $this->createResource(
             '12',
             '/category/type/ausstellung.php',
-            'rce.type.ausstellung',
+            'rce.type.12',
             'Ausstellung',
         );
         $filmMedien = $this->createResource(
             '13',
             '/category/type/film-medien.php',
-            'rce.type.film-medien',
+            'rce.type.13',
             'Film & Medien',
         );
         $konzert = $this->createResource(
             '14',
             '/category/type/konzert.php',
-            'rce.type.konzert',
+            'rce.type.14',
             'Konzert',
         );
         $noParent = $this->createResource(
             '15',
             '/category/type/no-parent.php',
-            'rce.type.no-parent',
+            'rce.type.15',
             'No Parent',
         );
 
