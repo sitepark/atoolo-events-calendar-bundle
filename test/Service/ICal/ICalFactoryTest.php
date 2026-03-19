@@ -7,6 +7,7 @@ namespace Atoolo\EventsCalendar\Test\Service\ICal;
 use Atoolo\EventsCalendar\Dto\Scheduling\Scheduling;
 use Atoolo\EventsCalendar\Service\GraphQL\Factory\SchedulingFactory;
 use Atoolo\EventsCalendar\Service\ICal\ICalFactory;
+use Atoolo\EventsCalendar\Test\TestResourceFactory;
 use Atoolo\Resource\DataBag;
 use Atoolo\Resource\Resource;
 use Atoolo\Resource\ResourceChannel;
@@ -42,7 +43,7 @@ class ICalFactoryTest extends TestCase
 
     public function testCreateCalendarAsString(): void
     {
-        $resource = $this->createResource([
+        $resource = TestResourceFactory::create([
             'id' => '1',
             'url' => '/some/location',
             'metadata' => [
@@ -132,7 +133,7 @@ class ICalFactoryTest extends TestCase
 
     public function testCreateCalendarAsStringAtOccurrence(): void
     {
-        $resource = $this->createResource([
+        $resource = TestResourceFactory::create([
             'id' => '1',
             'url' => '/some/location',
             'metadata' => [
@@ -205,7 +206,7 @@ class ICalFactoryTest extends TestCase
 
     public function testCreateCalendarAsStringExternal(): void
     {
-        $resource = $this->createResource([
+        $resource = TestResourceFactory::create([
             'id' => '1',
             'url' => 'https://www.external.de/some/location',
             'metadata' => [
@@ -273,18 +274,6 @@ class ICalFactoryTest extends TestCase
             translationLocales: $args['translationLocales'] ?? [],
             attributes: new DataBag([]),
             tenant: $tenant,
-        );
-    }
-
-    private function createResource(array $data): Resource
-    {
-        return new Resource(
-            $data['url'] ?? '',
-            $data['id'] ?? '',
-            $data['name'] ?? '',
-            $data['objectType'] ?? '',
-            ResourceLanguage::default(),
-            new DataBag($data),
         );
     }
 }

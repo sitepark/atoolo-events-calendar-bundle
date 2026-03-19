@@ -6,6 +6,7 @@ namespace Atoolo\EventsCalendar\Test\Service\Indexer\SiteKit;
 
 use Atoolo\EventsCalendar\Service\Indexer\SiteKit\DefaultSchema2xEventDocumentEnricher;
 use Atoolo\EventsCalendar\Service\Indexer\SiteKit\DefaultSchema2xRceEventDocumentEnricher;
+use Atoolo\EventsCalendar\Test\TestResourceFactory;
 use Atoolo\Resource\DataBag;
 use Atoolo\Resource\Resource;
 use Atoolo\Resource\ResourceLanguage;
@@ -31,20 +32,21 @@ class DefaultSchema2xEventDocumentEnricherTest extends TestCase
 
     public function testEnrichDocumentWithCategories(): void
     {
-        $resource = new Resource(
-            '',
-            '123',
-            '',
-            '',
-            ResourceLanguage::default(),
-            new DataBag(['content' => ['items' => [
-                ['type' => 'main', 'items' => [
-                    ['id' => 'eventsCalendar-venue', 'model' => ['categories' => [['id' => '1']], 'categoriesPath' => [['id' => '2'],['id' => '1']]]],
-                    ['id' => 'eventsCalendar-ticketAgency', 'model' => ['categories' => [['id' => '3']], 'categoriesPath' => [['id' => '4'],['id' => '3']]]],
-                    ['id' => 'eventsCalendar-organizer', 'model' => ['categories' => [['id' => '5']], 'categoriesPath' => [['id' => '6'],['id' => '5']]]],
-                ]],
-            ]]]),
-        );
+        $resource = TestResourceFactory::create([
+            'id' => '123',
+            'content' => [
+                'items' => [
+                    [
+                        'type' => 'main',
+                        'items' => [
+                            ['id' => 'eventsCalendar-venue', 'model' => ['categories' => [['id' => '1']], 'categoriesPath' => [['id' => '2'],['id' => '1']]]],
+                            ['id' => 'eventsCalendar-ticketAgency', 'model' => ['categories' => [['id' => '3']], 'categoriesPath' => [['id' => '4'],['id' => '3']]]],
+                            ['id' => 'eventsCalendar-organizer', 'model' => ['categories' => [['id' => '5']], 'categoriesPath' => [['id' => '6'],['id' => '5']]]],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
 
         $doc = $this->enricher->enrichDocument(
             $resource,
@@ -61,14 +63,9 @@ class DefaultSchema2xEventDocumentEnricherTest extends TestCase
 
     public function testEnrichDocumentWithoutCategories(): void
     {
-        $resource = new Resource(
-            '',
-            '123',
-            '',
-            '',
-            ResourceLanguage::default(),
-            new DataBag([]),
-        );
+        $resource = TestResourceFactory::create([
+            'id' => '123',
+        ]);
 
         $doc = $this->enricher->enrichDocument(
             $resource,

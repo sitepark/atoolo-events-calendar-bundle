@@ -1,0 +1,1429 @@
+atoolo/graphql-search-bundle 1.8.0 Symfony bundle to extend the graphql interface with a search.
+|--atoolo/resource-bundle ^1.5
+|  |--ext-intl *
+|  |--php >=8.1 <8.5.0
+|  |--symfony/config ^6.3 || ^7.0
+|  |  |--php >=8.2
+|  |  |--symfony/deprecation-contracts ^2.5|^3
+|  |  |  `--php >=8.1
+|  |  |--symfony/filesystem ^7.1
+|  |  |  |--php >=8.2
+|  |  |  |--symfony/polyfill-ctype ~1.8
+|  |  |  |  `--php >=7.2
+|  |  |  `--symfony/polyfill-mbstring ~1.8
+|  |  |     |--ext-iconv *
+|  |  |     `--php >=7.2
+|  |  `--symfony/polyfill-ctype ~1.8
+|  |     `--php >=7.2
+|  |--symfony/dependency-injection ^6.3 || ^7.0
+|  |  |--php >=8.2
+|  |  |--psr/container ^1.1|^2.0
+|  |  |  `--php >=7.4.0
+|  |  |--symfony/deprecation-contracts ^2.5|^3
+|  |  |  `--php >=8.1
+|  |  |--symfony/service-contracts ^3.5
+|  |  |  |--php >=8.1
+|  |  |  |--psr/container ^1.1|^2.0
+|  |  |  |  `--php >=7.4.0
+|  |  |  `--symfony/deprecation-contracts ^2.5|^3
+|  |  |     `--php >=8.1
+|  |  `--symfony/var-exporter ^6.4.20|^7.2.5
+|  |     |--php >=8.2
+|  |     `--symfony/deprecation-contracts ^2.5|^3
+|  |        `--php >=8.1
+|  `--symfony/http-kernel ^6.3 || ^7.0
+|     |--php >=8.2
+|     |--psr/log ^1|^2|^3
+|     |  `--php >=8.0.0
+|     |--symfony/deprecation-contracts ^2.5|^3
+|     |  `--php >=8.1
+|     |--symfony/error-handler ^6.4|^7.0
+|     |  |--php >=8.2
+|     |  |--psr/log ^1|^2|^3
+|     |  |  `--php >=8.0.0
+|     |  `--symfony/var-dumper ^6.4|^7.0
+|     |     |--php >=8.2
+|     |     |--symfony/deprecation-contracts ^2.5|^3
+|     |     |  `--php >=8.1
+|     |     `--symfony/polyfill-mbstring ~1.0
+|     |        |--ext-iconv *
+|     |        `--php >=7.2
+|     |--symfony/event-dispatcher ^7.3
+|     |  |--php >=8.2
+|     |  `--symfony/event-dispatcher-contracts ^2.5|^3
+|     |     |--php >=8.1
+|     |     `--psr/event-dispatcher ^1
+|     |        `--php >=7.2.0
+|     |--symfony/http-foundation ^7.3
+|     |  |--php >=8.2
+|     |  |--symfony/deprecation-contracts ^2.5|^3.0
+|     |  |  `--php >=8.1
+|     |  |--symfony/polyfill-mbstring ~1.1
+|     |  |  |--ext-iconv *
+|     |  |  `--php >=7.2
+|     |  `--symfony/polyfill-php83 ^1.27
+|     |     `--php >=7.2
+|     `--symfony/polyfill-ctype ^1.8
+|        `--php >=7.2
+|--atoolo/rewrite-bundle ^1.2
+|  |--atoolo/resource-bundle ^1.5
+|  |  |--ext-intl *
+|  |  |--php >=8.1 <8.5.0
+|  |  |--symfony/config ^6.3 || ^7.0
+|  |  |  |--php >=8.2
+|  |  |  |--symfony/deprecation-contracts ^2.5|^3
+|  |  |  |  `--php >=8.1
+|  |  |  |--symfony/filesystem ^7.1
+|  |  |  |  |--php >=8.2
+|  |  |  |  |--symfony/polyfill-ctype ~1.8
+|  |  |  |  |  `--php >=7.2
+|  |  |  |  `--symfony/polyfill-mbstring ~1.8
+|  |  |  |     |--ext-iconv *
+|  |  |  |     `--php >=7.2
+|  |  |  `--symfony/polyfill-ctype ~1.8
+|  |  |     `--php >=7.2
+|  |  |--symfony/dependency-injection ^6.3 || ^7.0
+|  |  |  |--php >=8.2
+|  |  |  |--psr/container ^1.1|^2.0
+|  |  |  |  `--php >=7.4.0
+|  |  |  |--symfony/deprecation-contracts ^2.5|^3
+|  |  |  |  `--php >=8.1
+|  |  |  |--symfony/service-contracts ^3.5
+|  |  |  |  |--php >=8.1
+|  |  |  |  |--psr/container ^1.1|^2.0
+|  |  |  |  |  `--php >=7.4.0
+|  |  |  |  `--symfony/deprecation-contracts ^2.5|^3
+|  |  |  |     `--php >=8.1
+|  |  |  `--symfony/var-exporter ^6.4.20|^7.2.5
+|  |  |     |--php >=8.2
+|  |  |     `--symfony/deprecation-contracts ^2.5|^3
+|  |  |        `--php >=8.1
+|  |  `--symfony/http-kernel ^6.3 || ^7.0
+|  |     |--php >=8.2
+|  |     |--psr/log ^1|^2|^3
+|  |     |  `--php >=8.0.0
+|  |     |--symfony/deprecation-contracts ^2.5|^3
+|  |     |  `--php >=8.1
+|  |     |--symfony/error-handler ^6.4|^7.0
+|  |     |  |--php >=8.2
+|  |     |  |--psr/log ^1|^2|^3
+|  |     |  |  `--php >=8.0.0
+|  |     |  `--symfony/var-dumper ^6.4|^7.0
+|  |     |     |--php >=8.2
+|  |     |     |--symfony/deprecation-contracts ^2.5|^3
+|  |     |     |  `--php >=8.1
+|  |     |     `--symfony/polyfill-mbstring ~1.0
+|  |     |        |--ext-iconv *
+|  |     |        `--php >=7.2
+|  |     |--symfony/event-dispatcher ^7.3
+|  |     |  |--php >=8.2
+|  |     |  `--symfony/event-dispatcher-contracts ^2.5|^3
+|  |     |     |--php >=8.1
+|  |     |     `--psr/event-dispatcher ^1
+|  |     |        `--php >=7.2.0
+|  |     |--symfony/http-foundation ^7.3
+|  |     |  |--php >=8.2
+|  |     |  |--symfony/deprecation-contracts ^2.5|^3.0
+|  |     |  |  `--php >=8.1
+|  |     |  |--symfony/polyfill-mbstring ~1.1
+|  |     |  |  |--ext-iconv *
+|  |     |  |  `--php >=7.2
+|  |     |  `--symfony/polyfill-php83 ^1.27
+|  |     |     `--php >=7.2
+|  |     `--symfony/polyfill-ctype ^1.8
+|  |        `--php >=7.2
+|  |--ext-intl *
+|  |--php >=8.1 <8.5.0
+|  |--symfony/config ^6.3 || ^7.0
+|  |  |--php >=8.2
+|  |  |--symfony/deprecation-contracts ^2.5|^3
+|  |  |  `--php >=8.1
+|  |  |--symfony/filesystem ^7.1
+|  |  |  |--php >=8.2
+|  |  |  |--symfony/polyfill-ctype ~1.8
+|  |  |  |  `--php >=7.2
+|  |  |  `--symfony/polyfill-mbstring ~1.8
+|  |  |     |--ext-iconv *
+|  |  |     `--php >=7.2
+|  |  `--symfony/polyfill-ctype ~1.8
+|  |     `--php >=7.2
+|  |--symfony/dependency-injection ^6.3 || ^7.0
+|  |  |--php >=8.2
+|  |  |--psr/container ^1.1|^2.0
+|  |  |  `--php >=7.4.0
+|  |  |--symfony/deprecation-contracts ^2.5|^3
+|  |  |  `--php >=8.1
+|  |  |--symfony/service-contracts ^3.5
+|  |  |  |--php >=8.1
+|  |  |  |--psr/container ^1.1|^2.0
+|  |  |  |  `--php >=7.4.0
+|  |  |  `--symfony/deprecation-contracts ^2.5|^3
+|  |  |     `--php >=8.1
+|  |  `--symfony/var-exporter ^6.4.20|^7.2.5
+|  |     |--php >=8.2
+|  |     `--symfony/deprecation-contracts ^2.5|^3
+|  |        `--php >=8.1
+|  |--symfony/framework-bundle ^6.3 || ^7.1
+|  |  |--composer-runtime-api >=2.1
+|  |  |--ext-xml *
+|  |  |--php >=8.2
+|  |  |--symfony/cache ^6.4|^7.0
+|  |  |  |--php >=8.2
+|  |  |  |--psr/cache ^2.0|^3.0
+|  |  |  |  `--php >=8.0.0
+|  |  |  |--psr/log ^1.1|^2|^3
+|  |  |  |  `--php >=8.0.0
+|  |  |  |--symfony/cache-contracts ^3.6
+|  |  |  |  |--php >=8.1
+|  |  |  |  `--psr/cache ^3.0
+|  |  |  |     `--php >=8.0.0
+|  |  |  |--symfony/deprecation-contracts ^2.5|^3.0
+|  |  |  |  `--php >=8.1
+|  |  |  |--symfony/service-contracts ^2.5|^3
+|  |  |  |  |--php >=8.1
+|  |  |  |  |--psr/container ^1.1|^2.0
+|  |  |  |  |  `--php >=7.4.0
+|  |  |  |  `--symfony/deprecation-contracts ^2.5|^3
+|  |  |  |     `--php >=8.1
+|  |  |  `--symfony/var-exporter ^6.4|^7.0
+|  |  |     |--php >=8.2
+|  |  |     `--symfony/deprecation-contracts ^2.5|^3
+|  |  |        `--php >=8.1
+|  |  |--symfony/config ^7.3
+|  |  |  |--php >=8.2
+|  |  |  |--symfony/deprecation-contracts ^2.5|^3
+|  |  |  |  `--php >=8.1
+|  |  |  |--symfony/filesystem ^7.1
+|  |  |  |  |--php >=8.2
+|  |  |  |  |--symfony/polyfill-ctype ~1.8
+|  |  |  |  |  `--php >=7.2
+|  |  |  |  `--symfony/polyfill-mbstring ~1.8
+|  |  |  |     |--ext-iconv *
+|  |  |  |     `--php >=7.2
+|  |  |  `--symfony/polyfill-ctype ~1.8
+|  |  |     `--php >=7.2
+|  |  |--symfony/dependency-injection ^7.2
+|  |  |  |--php >=8.2
+|  |  |  |--psr/container ^1.1|^2.0
+|  |  |  |  `--php >=7.4.0
+|  |  |  |--symfony/deprecation-contracts ^2.5|^3
+|  |  |  |  `--php >=8.1
+|  |  |  |--symfony/service-contracts ^3.5
+|  |  |  |  |--php >=8.1
+|  |  |  |  |--psr/container ^1.1|^2.0
+|  |  |  |  |  `--php >=7.4.0
+|  |  |  |  `--symfony/deprecation-contracts ^2.5|^3
+|  |  |  |     `--php >=8.1
+|  |  |  `--symfony/var-exporter ^6.4.20|^7.2.5
+|  |  |     |--php >=8.2
+|  |  |     `--symfony/deprecation-contracts ^2.5|^3
+|  |  |        `--php >=8.1
+|  |  |--symfony/deprecation-contracts ^2.5|^3
+|  |  |  `--php >=8.1
+|  |  |--symfony/error-handler ^7.3
+|  |  |  |--php >=8.2
+|  |  |  |--psr/log ^1|^2|^3
+|  |  |  |  `--php >=8.0.0
+|  |  |  `--symfony/var-dumper ^6.4|^7.0
+|  |  |     |--php >=8.2
+|  |  |     |--symfony/deprecation-contracts ^2.5|^3
+|  |  |     |  `--php >=8.1
+|  |  |     `--symfony/polyfill-mbstring ~1.0
+|  |  |        |--ext-iconv *
+|  |  |        `--php >=7.2
+|  |  |--symfony/event-dispatcher ^6.4|^7.0
+|  |  |  |--php >=8.2
+|  |  |  `--symfony/event-dispatcher-contracts ^2.5|^3
+|  |  |     |--php >=8.1
+|  |  |     `--psr/event-dispatcher ^1
+|  |  |        `--php >=7.2.0
+|  |  |--symfony/filesystem ^7.1
+|  |  |  |--php >=8.2
+|  |  |  |--symfony/polyfill-ctype ~1.8
+|  |  |  |  `--php >=7.2
+|  |  |  `--symfony/polyfill-mbstring ~1.8
+|  |  |     |--ext-iconv *
+|  |  |     `--php >=7.2
+|  |  |--symfony/finder ^6.4|^7.0
+|  |  |  `--php >=8.2
+|  |  |--symfony/http-foundation ^7.3
+|  |  |  |--php >=8.2
+|  |  |  |--symfony/deprecation-contracts ^2.5|^3.0
+|  |  |  |  `--php >=8.1
+|  |  |  |--symfony/polyfill-mbstring ~1.1
+|  |  |  |  |--ext-iconv *
+|  |  |  |  `--php >=7.2
+|  |  |  `--symfony/polyfill-php83 ^1.27
+|  |  |     `--php >=7.2
+|  |  |--symfony/http-kernel ^7.2
+|  |  |  |--php >=8.2
+|  |  |  |--psr/log ^1|^2|^3
+|  |  |  |  `--php >=8.0.0
+|  |  |  |--symfony/deprecation-contracts ^2.5|^3
+|  |  |  |  `--php >=8.1
+|  |  |  |--symfony/error-handler ^6.4|^7.0
+|  |  |  |  |--php >=8.2
+|  |  |  |  |--psr/log ^1|^2|^3
+|  |  |  |  |  `--php >=8.0.0
+|  |  |  |  `--symfony/var-dumper ^6.4|^7.0
+|  |  |  |     |--php >=8.2
+|  |  |  |     |--symfony/deprecation-contracts ^2.5|^3
+|  |  |  |     |  `--php >=8.1
+|  |  |  |     `--symfony/polyfill-mbstring ~1.0
+|  |  |  |        |--ext-iconv *
+|  |  |  |        `--php >=7.2
+|  |  |  |--symfony/event-dispatcher ^7.3
+|  |  |  |  |--php >=8.2
+|  |  |  |  `--symfony/event-dispatcher-contracts ^2.5|^3
+|  |  |  |     |--php >=8.1
+|  |  |  |     `--psr/event-dispatcher ^1
+|  |  |  |        `--php >=7.2.0
+|  |  |  |--symfony/http-foundation ^7.3
+|  |  |  |  |--php >=8.2
+|  |  |  |  |--symfony/deprecation-contracts ^2.5|^3.0
+|  |  |  |  |  `--php >=8.1
+|  |  |  |  |--symfony/polyfill-mbstring ~1.1
+|  |  |  |  |  |--ext-iconv *
+|  |  |  |  |  `--php >=7.2
+|  |  |  |  `--symfony/polyfill-php83 ^1.27
+|  |  |  |     `--php >=7.2
+|  |  |  `--symfony/polyfill-ctype ^1.8
+|  |  |     `--php >=7.2
+|  |  |--symfony/polyfill-mbstring ~1.0
+|  |  |  |--ext-iconv *
+|  |  |  `--php >=7.2
+|  |  `--symfony/routing ^6.4|^7.0
+|  |     |--php >=8.2
+|  |     `--symfony/deprecation-contracts ^2.5|^3
+|  |        `--php >=8.1
+|  |--symfony/http-kernel ^6.3 || ^7.0
+|  |  |--php >=8.2
+|  |  |--psr/log ^1|^2|^3
+|  |  |  `--php >=8.0.0
+|  |  |--symfony/deprecation-contracts ^2.5|^3
+|  |  |  `--php >=8.1
+|  |  |--symfony/error-handler ^6.4|^7.0
+|  |  |  |--php >=8.2
+|  |  |  |--psr/log ^1|^2|^3
+|  |  |  |  `--php >=8.0.0
+|  |  |  `--symfony/var-dumper ^6.4|^7.0
+|  |  |     |--php >=8.2
+|  |  |     |--symfony/deprecation-contracts ^2.5|^3
+|  |  |     |  `--php >=8.1
+|  |  |     `--symfony/polyfill-mbstring ~1.0
+|  |  |        |--ext-iconv *
+|  |  |        `--php >=7.2
+|  |  |--symfony/event-dispatcher ^7.3
+|  |  |  |--php >=8.2
+|  |  |  `--symfony/event-dispatcher-contracts ^2.5|^3
+|  |  |     |--php >=8.1
+|  |  |     `--psr/event-dispatcher ^1
+|  |  |        `--php >=7.2.0
+|  |  |--symfony/http-foundation ^7.3
+|  |  |  |--php >=8.2
+|  |  |  |--symfony/deprecation-contracts ^2.5|^3.0
+|  |  |  |  `--php >=8.1
+|  |  |  |--symfony/polyfill-mbstring ~1.1
+|  |  |  |  |--ext-iconv *
+|  |  |  |  `--php >=7.2
+|  |  |  `--symfony/polyfill-php83 ^1.27
+|  |  |     `--php >=7.2
+|  |  `--symfony/polyfill-ctype ^1.8
+|  |     `--php >=7.2
+|  `--symfony/yaml ^6.3 || ^7.0
+|     |--php >=8.2
+|     |--symfony/deprecation-contracts ^2.5|^3.0
+|     |  `--php >=8.1
+|     `--symfony/polyfill-ctype ^1.8
+|        `--php >=7.2
+|--atoolo/search-bundle ^1.8
+|  |--atoolo/resource-bundle ^1.0
+|  |  |--ext-intl *
+|  |  |--php >=8.1 <8.5.0
+|  |  |--symfony/config ^6.3 || ^7.0
+|  |  |  |--php >=8.2
+|  |  |  |--symfony/deprecation-contracts ^2.5|^3
+|  |  |  |  `--php >=8.1
+|  |  |  |--symfony/filesystem ^7.1
+|  |  |  |  |--php >=8.2
+|  |  |  |  |--symfony/polyfill-ctype ~1.8
+|  |  |  |  |  `--php >=7.2
+|  |  |  |  `--symfony/polyfill-mbstring ~1.8
+|  |  |  |     |--ext-iconv *
+|  |  |  |     `--php >=7.2
+|  |  |  `--symfony/polyfill-ctype ~1.8
+|  |  |     `--php >=7.2
+|  |  |--symfony/dependency-injection ^6.3 || ^7.0
+|  |  |  |--php >=8.2
+|  |  |  |--psr/container ^1.1|^2.0
+|  |  |  |  `--php >=7.4.0
+|  |  |  |--symfony/deprecation-contracts ^2.5|^3
+|  |  |  |  `--php >=8.1
+|  |  |  |--symfony/service-contracts ^3.5
+|  |  |  |  |--php >=8.1
+|  |  |  |  |--psr/container ^1.1|^2.0
+|  |  |  |  |  `--php >=7.4.0
+|  |  |  |  `--symfony/deprecation-contracts ^2.5|^3
+|  |  |  |     `--php >=8.1
+|  |  |  `--symfony/var-exporter ^6.4.20|^7.2.5
+|  |  |     |--php >=8.2
+|  |  |     `--symfony/deprecation-contracts ^2.5|^3
+|  |  |        `--php >=8.1
+|  |  `--symfony/http-kernel ^6.3 || ^7.0
+|  |     |--php >=8.2
+|  |     |--psr/log ^1|^2|^3
+|  |     |  `--php >=8.0.0
+|  |     |--symfony/deprecation-contracts ^2.5|^3
+|  |     |  `--php >=8.1
+|  |     |--symfony/error-handler ^6.4|^7.0
+|  |     |  |--php >=8.2
+|  |     |  |--psr/log ^1|^2|^3
+|  |     |  |  `--php >=8.0.0
+|  |     |  `--symfony/var-dumper ^6.4|^7.0
+|  |     |     |--php >=8.2
+|  |     |     |--symfony/deprecation-contracts ^2.5|^3
+|  |     |     |  `--php >=8.1
+|  |     |     `--symfony/polyfill-mbstring ~1.0
+|  |     |        |--ext-iconv *
+|  |     |        `--php >=7.2
+|  |     |--symfony/event-dispatcher ^7.3
+|  |     |  |--php >=8.2
+|  |     |  `--symfony/event-dispatcher-contracts ^2.5|^3
+|  |     |     |--php >=8.1
+|  |     |     `--psr/event-dispatcher ^1
+|  |     |        `--php >=7.2.0
+|  |     |--symfony/http-foundation ^7.3
+|  |     |  |--php >=8.2
+|  |     |  |--symfony/deprecation-contracts ^2.5|^3.0
+|  |     |  |  `--php >=8.1
+|  |     |  |--symfony/polyfill-mbstring ~1.1
+|  |     |  |  |--ext-iconv *
+|  |     |  |  `--php >=7.2
+|  |     |  `--symfony/polyfill-php83 ^1.27
+|  |     |     `--php >=7.2
+|  |     `--symfony/polyfill-ctype ^1.8
+|  |        `--php >=7.2
+|  |--dragonmantank/cron-expression ^3.3
+|  |  |--php ^7.2|^8.0
+|  |  `--webmozart/assert ^1.0
+|  |     |--ext-ctype *
+|  |     |  `--php >=7.2
+|  |     `--php ^7.2 || ^8.0
+|  |--ext-intl *
+|  |--ext-xmlreader *
+|  |--php >=8.1 <8.5.0
+|  |--solarium/solarium ^6.3
+|  |  |--composer-runtime-api >=2.0
+|  |  |--ext-json *
+|  |  |--halaxa/json-machine ^1.1
+|  |  |  `--php 7.2 - 8.4
+|  |  |--php ^8.1
+|  |  |--psr/event-dispatcher ^1.0
+|  |  |  `--php >=7.2.0
+|  |  |--psr/http-client ^1.0
+|  |  |  |--php ^7.0 || ^8.0
+|  |  |  `--psr/http-message ^1.0 || ^2.0
+|  |  |     `--php ^7.2 || ^8.0
+|  |  |--psr/http-factory ^1.0
+|  |  |  |--php >=7.1
+|  |  |  `--psr/http-message ^1.0 || ^2.0
+|  |  |     `--php ^7.2 || ^8.0
+|  |  `--symfony/event-dispatcher-contracts ^2.0 || ^3.0
+|  |     |--php >=8.1
+|  |     `--psr/event-dispatcher ^1
+|  |        `--php >=7.2.0
+|  |--soundasleep/html2text ^2.1
+|  |  |--ext-dom *
+|  |  |--ext-libxml *
+|  |  `--php ^7.3|^8.0
+|  |--symfony/config ^6.3 || ^7.0
+|  |  |--php >=8.2
+|  |  |--symfony/deprecation-contracts ^2.5|^3
+|  |  |  `--php >=8.1
+|  |  |--symfony/filesystem ^7.1
+|  |  |  |--php >=8.2
+|  |  |  |--symfony/polyfill-ctype ~1.8
+|  |  |  |  `--php >=7.2
+|  |  |  `--symfony/polyfill-mbstring ~1.8
+|  |  |     |--ext-iconv *
+|  |  |     `--php >=7.2
+|  |  `--symfony/polyfill-ctype ~1.8
+|  |     `--php >=7.2
+|  |--symfony/console ^6.3 || ^7.0
+|  |  |--php >=8.2
+|  |  |--symfony/deprecation-contracts ^2.5|^3
+|  |  |  `--php >=8.1
+|  |  |--symfony/polyfill-mbstring ~1.0
+|  |  |  |--ext-iconv *
+|  |  |  `--php >=7.2
+|  |  |--symfony/service-contracts ^2.5|^3
+|  |  |  |--php >=8.1
+|  |  |  |--psr/container ^1.1|^2.0
+|  |  |  |  `--php >=7.4.0
+|  |  |  `--symfony/deprecation-contracts ^2.5|^3
+|  |  |     `--php >=8.1
+|  |  `--symfony/string ^7.2
+|  |     |--php >=8.2
+|  |     |--symfony/polyfill-ctype ~1.8
+|  |     |  `--php >=7.2
+|  |     |--symfony/polyfill-intl-grapheme ~1.0
+|  |     |  `--php >=7.2
+|  |     |--symfony/polyfill-intl-normalizer ~1.0
+|  |     |  `--php >=7.2
+|  |     `--symfony/polyfill-mbstring ~1.0
+|  |        |--ext-iconv *
+|  |        `--php >=7.2
+|  |--symfony/dependency-injection ^6.3 || ^7.0
+|  |  |--php >=8.2
+|  |  |--psr/container ^1.1|^2.0
+|  |  |  `--php >=7.4.0
+|  |  |--symfony/deprecation-contracts ^2.5|^3
+|  |  |  `--php >=8.1
+|  |  |--symfony/service-contracts ^3.5
+|  |  |  |--php >=8.1
+|  |  |  |--psr/container ^1.1|^2.0
+|  |  |  |  `--php >=7.4.0
+|  |  |  `--symfony/deprecation-contracts ^2.5|^3
+|  |  |     `--php >=8.1
+|  |  `--symfony/var-exporter ^6.4.20|^7.2.5
+|  |     |--php >=8.2
+|  |     `--symfony/deprecation-contracts ^2.5|^3
+|  |        `--php >=8.1
+|  |--symfony/dotenv ^6.3 || ^7.0
+|  |  `--php >=8.2
+|  |--symfony/event-dispatcher ^6.3 || ^7.0
+|  |  |--php >=8.2
+|  |  `--symfony/event-dispatcher-contracts ^2.5|^3
+|  |     |--php >=8.1
+|  |     `--psr/event-dispatcher ^1
+|  |        `--php >=7.2.0
+|  |--symfony/finder ^6.3 || ^7.0
+|  |  `--php >=8.2
+|  |--symfony/http-kernel ^6.3 || ^7.0
+|  |  |--php >=8.2
+|  |  |--psr/log ^1|^2|^3
+|  |  |  `--php >=8.0.0
+|  |  |--symfony/deprecation-contracts ^2.5|^3
+|  |  |  `--php >=8.1
+|  |  |--symfony/error-handler ^6.4|^7.0
+|  |  |  |--php >=8.2
+|  |  |  |--psr/log ^1|^2|^3
+|  |  |  |  `--php >=8.0.0
+|  |  |  `--symfony/var-dumper ^6.4|^7.0
+|  |  |     |--php >=8.2
+|  |  |     |--symfony/deprecation-contracts ^2.5|^3
+|  |  |     |  `--php >=8.1
+|  |  |     `--symfony/polyfill-mbstring ~1.0
+|  |  |        |--ext-iconv *
+|  |  |        `--php >=7.2
+|  |  |--symfony/event-dispatcher ^7.3
+|  |  |  |--php >=8.2
+|  |  |  `--symfony/event-dispatcher-contracts ^2.5|^3
+|  |  |     |--php >=8.1
+|  |  |     `--psr/event-dispatcher ^1
+|  |  |        `--php >=7.2.0
+|  |  |--symfony/http-foundation ^7.3
+|  |  |  |--php >=8.2
+|  |  |  |--symfony/deprecation-contracts ^2.5|^3.0
+|  |  |  |  `--php >=8.1
+|  |  |  |--symfony/polyfill-mbstring ~1.1
+|  |  |  |  |--ext-iconv *
+|  |  |  |  `--php >=7.2
+|  |  |  `--symfony/polyfill-php83 ^1.27
+|  |  |     `--php >=7.2
+|  |  `--symfony/polyfill-ctype ^1.8
+|  |     `--php >=7.2
+|  |--symfony/lock ^6.3 || ^7.0
+|  |  |--php >=8.2
+|  |  `--psr/log ^1|^2|^3
+|  |     `--php >=8.0.0
+|  |--symfony/messenger ^6.3 || ^7.0
+|  |  |--php >=8.2
+|  |  |--psr/log ^1|^2|^3
+|  |  |  `--php >=8.0.0
+|  |  |--symfony/clock ^6.4|^7.0
+|  |  |  |--php >=8.2
+|  |  |  |--psr/clock ^1.0
+|  |  |  |  `--php ^7.0 || ^8.0
+|  |  |  `--symfony/polyfill-php83 ^1.28
+|  |  |     `--php >=7.2
+|  |  `--symfony/deprecation-contracts ^2.5|^3
+|  |     `--php >=8.1
+|  |--symfony/property-access ^6.3 || ^7.0
+|  |  |--php >=8.2
+|  |  `--symfony/property-info ^6.4|^7.0
+|  |     |--php >=8.2
+|  |     |--symfony/deprecation-contracts ^2.5|^3
+|  |     |  `--php >=8.1
+|  |     |--symfony/string ^6.4|^7.0
+|  |     |  |--php >=8.2
+|  |     |  |--symfony/polyfill-ctype ~1.8
+|  |     |  |  `--php >=7.2
+|  |     |  |--symfony/polyfill-intl-grapheme ~1.0
+|  |     |  |  `--php >=7.2
+|  |     |  |--symfony/polyfill-intl-normalizer ~1.0
+|  |     |  |  `--php >=7.2
+|  |     |  `--symfony/polyfill-mbstring ~1.0
+|  |     |     |--ext-iconv *
+|  |     |     `--php >=7.2
+|  |     `--symfony/type-info ~7.2.8|^7.3.1
+|  |        |--php >=8.2
+|  |        |--psr/container ^1.1|^2.0
+|  |        |  `--php >=7.4.0
+|  |        `--symfony/deprecation-contracts ^2.5|^3
+|  |           `--php >=8.1
+|  |--symfony/scheduler ^6.3 || ^7.0
+|  |  |--php >=8.2
+|  |  `--symfony/clock ^6.4|^7.0
+|  |     |--php >=8.2
+|  |     |--psr/clock ^1.0
+|  |     |  `--php ^7.0 || ^8.0
+|  |     `--symfony/polyfill-php83 ^1.28
+|  |        `--php >=7.2
+|  |--symfony/serializer ^6.3 || ^7.0
+|  |  |--php >=8.2
+|  |  |--symfony/deprecation-contracts ^2.5|^3
+|  |  |  `--php >=8.1
+|  |  `--symfony/polyfill-ctype ~1.8
+|  |     `--php >=7.2
+|  `--symfony/yaml ^6.3 || ^7.0
+|     |--php >=8.2
+|     |--symfony/deprecation-contracts ^2.5|^3.0
+|     |  `--php >=8.1
+|     `--symfony/polyfill-ctype ^1.8
+|        `--php >=7.2
+|--ext-sysvsem *
+|--overblog/graphql-bundle ^1.0
+|  |--ext-json *
+|  |--murtukov/php-code-generator ^0.1.5
+|  |  |--ext-json *
+|  |  `--php >=7.4
+|  |--php ^8.0
+|  |--phpdocumentor/reflection-docblock ^5.2
+|  |  |--doctrine/deprecations ^1.1
+|  |  |  `--php ^7.1 || ^8.0
+|  |  |--ext-filter *
+|  |  |--php ^7.4 || ^8.0
+|  |  |--phpdocumentor/reflection-common ^2.2
+|  |  |  `--php ^7.2 || ^8.0
+|  |  |--phpdocumentor/type-resolver ^1.7
+|  |  |  |--doctrine/deprecations ^1.0
+|  |  |  |  `--php ^7.1 || ^8.0
+|  |  |  |--php ^7.3 || ^8.0
+|  |  |  |--phpdocumentor/reflection-common ^2.0
+|  |  |  |  `--php ^7.2 || ^8.0
+|  |  |  `--phpstan/phpdoc-parser ^1.18|^2.0
+|  |  |     `--php ^7.4 || ^8.0
+|  |  |--phpstan/phpdoc-parser ^1.7|^2.0
+|  |  |  `--php ^7.4 || ^8.0
+|  |  `--webmozart/assert ^1.9.1
+|  |     |--ext-ctype *
+|  |     |  `--php >=7.2
+|  |     `--php ^7.2 || ^8.0
+|  |--phpdocumentor/type-resolver ^1.6.1
+|  |  |--doctrine/deprecations ^1.0
+|  |  |  `--php ^7.1 || ^8.0
+|  |  |--php ^7.3 || ^8.0
+|  |  |--phpdocumentor/reflection-common ^2.0
+|  |  |  `--php ^7.2 || ^8.0
+|  |  `--phpstan/phpdoc-parser ^1.18|^2.0
+|  |     `--php ^7.4 || ^8.0
+|  |--psr/log ^1.0 || ^2.0 || ^3.0
+|  |  `--php >=8.0.0
+|  |--symfony/config ^5.4 || ^6.0 || ^7.0
+|  |  |--php >=8.2
+|  |  |--symfony/deprecation-contracts ^2.5|^3
+|  |  |  `--php >=8.1
+|  |  |--symfony/filesystem ^7.1
+|  |  |  |--php >=8.2
+|  |  |  |--symfony/polyfill-ctype ~1.8
+|  |  |  |  `--php >=7.2
+|  |  |  `--symfony/polyfill-mbstring ~1.8
+|  |  |     |--ext-iconv *
+|  |  |     `--php >=7.2
+|  |  `--symfony/polyfill-ctype ~1.8
+|  |     `--php >=7.2
+|  |--symfony/dependency-injection ^5.4 || ^6.0 || ^7.0
+|  |  |--php >=8.2
+|  |  |--psr/container ^1.1|^2.0
+|  |  |  `--php >=7.4.0
+|  |  |--symfony/deprecation-contracts ^2.5|^3
+|  |  |  `--php >=8.1
+|  |  |--symfony/service-contracts ^3.5
+|  |  |  |--php >=8.1
+|  |  |  |--psr/container ^1.1|^2.0
+|  |  |  |  `--php >=7.4.0
+|  |  |  `--symfony/deprecation-contracts ^2.5|^3
+|  |  |     `--php >=8.1
+|  |  `--symfony/var-exporter ^6.4.20|^7.2.5
+|  |     |--php >=8.2
+|  |     `--symfony/deprecation-contracts ^2.5|^3
+|  |        `--php >=8.1
+|  |--symfony/event-dispatcher ^5.4 || ^6.0 || ^7.0
+|  |  |--php >=8.2
+|  |  `--symfony/event-dispatcher-contracts ^2.5|^3
+|  |     |--php >=8.1
+|  |     `--psr/event-dispatcher ^1
+|  |        `--php >=7.2.0
+|  |--symfony/expression-language ^5.4 || ^6.0 || ^7.0
+|  |  |--php >=8.2
+|  |  |--symfony/cache ^6.4|^7.0
+|  |  |  |--php >=8.2
+|  |  |  |--psr/cache ^2.0|^3.0
+|  |  |  |  `--php >=8.0.0
+|  |  |  |--psr/log ^1.1|^2|^3
+|  |  |  |  `--php >=8.0.0
+|  |  |  |--symfony/cache-contracts ^3.6
+|  |  |  |  |--php >=8.1
+|  |  |  |  `--psr/cache ^3.0
+|  |  |  |     `--php >=8.0.0
+|  |  |  |--symfony/deprecation-contracts ^2.5|^3.0
+|  |  |  |  `--php >=8.1
+|  |  |  |--symfony/service-contracts ^2.5|^3
+|  |  |  |  |--php >=8.1
+|  |  |  |  |--psr/container ^1.1|^2.0
+|  |  |  |  |  `--php >=7.4.0
+|  |  |  |  `--symfony/deprecation-contracts ^2.5|^3
+|  |  |  |     `--php >=8.1
+|  |  |  `--symfony/var-exporter ^6.4|^7.0
+|  |  |     |--php >=8.2
+|  |  |     `--symfony/deprecation-contracts ^2.5|^3
+|  |  |        `--php >=8.1
+|  |  |--symfony/deprecation-contracts ^2.5|^3
+|  |  |  `--php >=8.1
+|  |  `--symfony/service-contracts ^2.5|^3
+|  |     |--php >=8.1
+|  |     |--psr/container ^1.1|^2.0
+|  |     |  `--php >=7.4.0
+|  |     `--symfony/deprecation-contracts ^2.5|^3
+|  |        `--php >=8.1
+|  |--symfony/framework-bundle ^5.4 || ^6.0 || ^7.0
+|  |  |--composer-runtime-api >=2.1
+|  |  |--ext-xml *
+|  |  |--php >=8.2
+|  |  |--symfony/cache ^6.4|^7.0
+|  |  |  |--php >=8.2
+|  |  |  |--psr/cache ^2.0|^3.0
+|  |  |  |  `--php >=8.0.0
+|  |  |  |--psr/log ^1.1|^2|^3
+|  |  |  |  `--php >=8.0.0
+|  |  |  |--symfony/cache-contracts ^3.6
+|  |  |  |  |--php >=8.1
+|  |  |  |  `--psr/cache ^3.0
+|  |  |  |     `--php >=8.0.0
+|  |  |  |--symfony/deprecation-contracts ^2.5|^3.0
+|  |  |  |  `--php >=8.1
+|  |  |  |--symfony/service-contracts ^2.5|^3
+|  |  |  |  |--php >=8.1
+|  |  |  |  |--psr/container ^1.1|^2.0
+|  |  |  |  |  `--php >=7.4.0
+|  |  |  |  `--symfony/deprecation-contracts ^2.5|^3
+|  |  |  |     `--php >=8.1
+|  |  |  `--symfony/var-exporter ^6.4|^7.0
+|  |  |     |--php >=8.2
+|  |  |     `--symfony/deprecation-contracts ^2.5|^3
+|  |  |        `--php >=8.1
+|  |  |--symfony/config ^7.3
+|  |  |  |--php >=8.2
+|  |  |  |--symfony/deprecation-contracts ^2.5|^3
+|  |  |  |  `--php >=8.1
+|  |  |  |--symfony/filesystem ^7.1
+|  |  |  |  |--php >=8.2
+|  |  |  |  |--symfony/polyfill-ctype ~1.8
+|  |  |  |  |  `--php >=7.2
+|  |  |  |  `--symfony/polyfill-mbstring ~1.8
+|  |  |  |     |--ext-iconv *
+|  |  |  |     `--php >=7.2
+|  |  |  `--symfony/polyfill-ctype ~1.8
+|  |  |     `--php >=7.2
+|  |  |--symfony/dependency-injection ^7.2
+|  |  |  |--php >=8.2
+|  |  |  |--psr/container ^1.1|^2.0
+|  |  |  |  `--php >=7.4.0
+|  |  |  |--symfony/deprecation-contracts ^2.5|^3
+|  |  |  |  `--php >=8.1
+|  |  |  |--symfony/service-contracts ^3.5
+|  |  |  |  |--php >=8.1
+|  |  |  |  |--psr/container ^1.1|^2.0
+|  |  |  |  |  `--php >=7.4.0
+|  |  |  |  `--symfony/deprecation-contracts ^2.5|^3
+|  |  |  |     `--php >=8.1
+|  |  |  `--symfony/var-exporter ^6.4.20|^7.2.5
+|  |  |     |--php >=8.2
+|  |  |     `--symfony/deprecation-contracts ^2.5|^3
+|  |  |        `--php >=8.1
+|  |  |--symfony/deprecation-contracts ^2.5|^3
+|  |  |  `--php >=8.1
+|  |  |--symfony/error-handler ^7.3
+|  |  |  |--php >=8.2
+|  |  |  |--psr/log ^1|^2|^3
+|  |  |  |  `--php >=8.0.0
+|  |  |  `--symfony/var-dumper ^6.4|^7.0
+|  |  |     |--php >=8.2
+|  |  |     |--symfony/deprecation-contracts ^2.5|^3
+|  |  |     |  `--php >=8.1
+|  |  |     `--symfony/polyfill-mbstring ~1.0
+|  |  |        |--ext-iconv *
+|  |  |        `--php >=7.2
+|  |  |--symfony/event-dispatcher ^6.4|^7.0
+|  |  |  |--php >=8.2
+|  |  |  `--symfony/event-dispatcher-contracts ^2.5|^3
+|  |  |     |--php >=8.1
+|  |  |     `--psr/event-dispatcher ^1
+|  |  |        `--php >=7.2.0
+|  |  |--symfony/filesystem ^7.1
+|  |  |  |--php >=8.2
+|  |  |  |--symfony/polyfill-ctype ~1.8
+|  |  |  |  `--php >=7.2
+|  |  |  `--symfony/polyfill-mbstring ~1.8
+|  |  |     |--ext-iconv *
+|  |  |     `--php >=7.2
+|  |  |--symfony/finder ^6.4|^7.0
+|  |  |  `--php >=8.2
+|  |  |--symfony/http-foundation ^7.3
+|  |  |  |--php >=8.2
+|  |  |  |--symfony/deprecation-contracts ^2.5|^3.0
+|  |  |  |  `--php >=8.1
+|  |  |  |--symfony/polyfill-mbstring ~1.1
+|  |  |  |  |--ext-iconv *
+|  |  |  |  `--php >=7.2
+|  |  |  `--symfony/polyfill-php83 ^1.27
+|  |  |     `--php >=7.2
+|  |  |--symfony/http-kernel ^7.2
+|  |  |  |--php >=8.2
+|  |  |  |--psr/log ^1|^2|^3
+|  |  |  |  `--php >=8.0.0
+|  |  |  |--symfony/deprecation-contracts ^2.5|^3
+|  |  |  |  `--php >=8.1
+|  |  |  |--symfony/error-handler ^6.4|^7.0
+|  |  |  |  |--php >=8.2
+|  |  |  |  |--psr/log ^1|^2|^3
+|  |  |  |  |  `--php >=8.0.0
+|  |  |  |  `--symfony/var-dumper ^6.4|^7.0
+|  |  |  |     |--php >=8.2
+|  |  |  |     |--symfony/deprecation-contracts ^2.5|^3
+|  |  |  |     |  `--php >=8.1
+|  |  |  |     `--symfony/polyfill-mbstring ~1.0
+|  |  |  |        |--ext-iconv *
+|  |  |  |        `--php >=7.2
+|  |  |  |--symfony/event-dispatcher ^7.3
+|  |  |  |  |--php >=8.2
+|  |  |  |  `--symfony/event-dispatcher-contracts ^2.5|^3
+|  |  |  |     |--php >=8.1
+|  |  |  |     `--psr/event-dispatcher ^1
+|  |  |  |        `--php >=7.2.0
+|  |  |  |--symfony/http-foundation ^7.3
+|  |  |  |  |--php >=8.2
+|  |  |  |  |--symfony/deprecation-contracts ^2.5|^3.0
+|  |  |  |  |  `--php >=8.1
+|  |  |  |  |--symfony/polyfill-mbstring ~1.1
+|  |  |  |  |  |--ext-iconv *
+|  |  |  |  |  `--php >=7.2
+|  |  |  |  `--symfony/polyfill-php83 ^1.27
+|  |  |  |     `--php >=7.2
+|  |  |  `--symfony/polyfill-ctype ^1.8
+|  |  |     `--php >=7.2
+|  |  |--symfony/polyfill-mbstring ~1.0
+|  |  |  |--ext-iconv *
+|  |  |  `--php >=7.2
+|  |  `--symfony/routing ^6.4|^7.0
+|  |     |--php >=8.2
+|  |     `--symfony/deprecation-contracts ^2.5|^3
+|  |        `--php >=8.1
+|  |--symfony/http-foundation ^5.4 || ^6.0 || ^7.0
+|  |  |--php >=8.2
+|  |  |--symfony/deprecation-contracts ^2.5|^3.0
+|  |  |  `--php >=8.1
+|  |  |--symfony/polyfill-mbstring ~1.1
+|  |  |  |--ext-iconv *
+|  |  |  `--php >=7.2
+|  |  `--symfony/polyfill-php83 ^1.27
+|  |     `--php >=7.2
+|  |--symfony/http-kernel ^5.4 || ^6.0 || ^7.0
+|  |  |--php >=8.2
+|  |  |--psr/log ^1|^2|^3
+|  |  |  `--php >=8.0.0
+|  |  |--symfony/deprecation-contracts ^2.5|^3
+|  |  |  `--php >=8.1
+|  |  |--symfony/error-handler ^6.4|^7.0
+|  |  |  |--php >=8.2
+|  |  |  |--psr/log ^1|^2|^3
+|  |  |  |  `--php >=8.0.0
+|  |  |  `--symfony/var-dumper ^6.4|^7.0
+|  |  |     |--php >=8.2
+|  |  |     |--symfony/deprecation-contracts ^2.5|^3
+|  |  |     |  `--php >=8.1
+|  |  |     `--symfony/polyfill-mbstring ~1.0
+|  |  |        |--ext-iconv *
+|  |  |        `--php >=7.2
+|  |  |--symfony/event-dispatcher ^7.3
+|  |  |  |--php >=8.2
+|  |  |  `--symfony/event-dispatcher-contracts ^2.5|^3
+|  |  |     |--php >=8.1
+|  |  |     `--psr/event-dispatcher ^1
+|  |  |        `--php >=7.2.0
+|  |  |--symfony/http-foundation ^7.3
+|  |  |  |--php >=8.2
+|  |  |  |--symfony/deprecation-contracts ^2.5|^3.0
+|  |  |  |  `--php >=8.1
+|  |  |  |--symfony/polyfill-mbstring ~1.1
+|  |  |  |  |--ext-iconv *
+|  |  |  |  `--php >=7.2
+|  |  |  `--symfony/polyfill-php83 ^1.27
+|  |  |     `--php >=7.2
+|  |  `--symfony/polyfill-ctype ^1.8
+|  |     `--php >=7.2
+|  |--symfony/options-resolver ^5.4 || ^6.0 || ^7.0
+|  |  |--php >=8.2
+|  |  `--symfony/deprecation-contracts ^2.5|^3
+|  |     `--php >=8.1
+|  |--symfony/property-access ^5.4 || ^6.0 || ^7.0
+|  |  |--php >=8.2
+|  |  `--symfony/property-info ^6.4|^7.0
+|  |     |--php >=8.2
+|  |     |--symfony/deprecation-contracts ^2.5|^3
+|  |     |  `--php >=8.1
+|  |     |--symfony/string ^6.4|^7.0
+|  |     |  |--php >=8.2
+|  |     |  |--symfony/polyfill-ctype ~1.8
+|  |     |  |  `--php >=7.2
+|  |     |  |--symfony/polyfill-intl-grapheme ~1.0
+|  |     |  |  `--php >=7.2
+|  |     |  |--symfony/polyfill-intl-normalizer ~1.0
+|  |     |  |  `--php >=7.2
+|  |     |  `--symfony/polyfill-mbstring ~1.0
+|  |     |     |--ext-iconv *
+|  |     |     `--php >=7.2
+|  |     `--symfony/type-info ~7.2.8|^7.3.1
+|  |        |--php >=8.2
+|  |        |--psr/container ^1.1|^2.0
+|  |        |  `--php >=7.4.0
+|  |        `--symfony/deprecation-contracts ^2.5|^3
+|  |           `--php >=8.1
+|  `--webonyx/graphql-php ^15.4
+|     |--ext-json *
+|     |--ext-mbstring *
+|     |  |--ext-iconv *
+|     |  `--php >=7.2
+|     `--php ^7.4 || ^8
+|--php >=8.1 <8.5.0
+|--symfony/config ^6.3 || ^7.0
+|  |--php >=8.2
+|  |--symfony/deprecation-contracts ^2.5|^3
+|  |  `--php >=8.1
+|  |--symfony/filesystem ^7.1
+|  |  |--php >=8.2
+|  |  |--symfony/polyfill-ctype ~1.8
+|  |  |  `--php >=7.2
+|  |  `--symfony/polyfill-mbstring ~1.8
+|  |     |--ext-iconv *
+|  |     `--php >=7.2
+|  `--symfony/polyfill-ctype ~1.8
+|     `--php >=7.2
+|--symfony/dependency-injection ^6.3 || ^7.0
+|  |--php >=8.2
+|  |--psr/container ^1.1|^2.0
+|  |  `--php >=7.4.0
+|  |--symfony/deprecation-contracts ^2.5|^3
+|  |  `--php >=8.1
+|  |--symfony/service-contracts ^3.5
+|  |  |--php >=8.1
+|  |  |--psr/container ^1.1|^2.0
+|  |  |  `--php >=7.4.0
+|  |  `--symfony/deprecation-contracts ^2.5|^3
+|  |     `--php >=8.1
+|  `--symfony/var-exporter ^6.4.20|^7.2.5
+|     |--php >=8.2
+|     `--symfony/deprecation-contracts ^2.5|^3
+|        `--php >=8.1
+|--symfony/dotenv ^6.3 || ^7.0
+|  `--php >=8.2
+|--symfony/http-kernel ^6.3 || ^7.0
+|  |--php >=8.2
+|  |--psr/log ^1|^2|^3
+|  |  `--php >=8.0.0
+|  |--symfony/deprecation-contracts ^2.5|^3
+|  |  `--php >=8.1
+|  |--symfony/error-handler ^6.4|^7.0
+|  |  |--php >=8.2
+|  |  |--psr/log ^1|^2|^3
+|  |  |  `--php >=8.0.0
+|  |  `--symfony/var-dumper ^6.4|^7.0
+|  |     |--php >=8.2
+|  |     |--symfony/deprecation-contracts ^2.5|^3
+|  |     |  `--php >=8.1
+|  |     `--symfony/polyfill-mbstring ~1.0
+|  |        |--ext-iconv *
+|  |        `--php >=7.2
+|  |--symfony/event-dispatcher ^7.3
+|  |  |--php >=8.2
+|  |  `--symfony/event-dispatcher-contracts ^2.5|^3
+|  |     |--php >=8.1
+|  |     `--psr/event-dispatcher ^1
+|  |        `--php >=7.2.0
+|  |--symfony/http-foundation ^7.3
+|  |  |--php >=8.2
+|  |  |--symfony/deprecation-contracts ^2.5|^3.0
+|  |  |  `--php >=8.1
+|  |  |--symfony/polyfill-mbstring ~1.1
+|  |  |  |--ext-iconv *
+|  |  |  `--php >=7.2
+|  |  `--symfony/polyfill-php83 ^1.27
+|  |     `--php >=7.2
+|  `--symfony/polyfill-ctype ^1.8
+|     `--php >=7.2
+`--symfony/yaml ^6.3 || ^7.0
+   |--php >=8.2
+   |--symfony/deprecation-contracts ^2.5|^3.0
+   |  `--php >=8.1
+   `--symfony/polyfill-ctype ^1.8
+      `--php >=7.2
+atoolo/resource-bundle 1.6.0 Handle pre-produced data
+|--ext-intl *
+|--php >=8.1 <8.5.0
+|--symfony/config ^6.3 || ^7.0
+|  |--php >=8.2
+|  |--symfony/deprecation-contracts ^2.5|^3
+|  |  `--php >=8.1
+|  |--symfony/filesystem ^7.1
+|  |  |--php >=8.2
+|  |  |--symfony/polyfill-ctype ~1.8
+|  |  |  `--php >=7.2
+|  |  `--symfony/polyfill-mbstring ~1.8
+|  |     |--ext-iconv *
+|  |     `--php >=7.2
+|  `--symfony/polyfill-ctype ~1.8
+|     `--php >=7.2
+|--symfony/dependency-injection ^6.3 || ^7.0
+|  |--php >=8.2
+|  |--psr/container ^1.1|^2.0
+|  |  `--php >=7.4.0
+|  |--symfony/deprecation-contracts ^2.5|^3
+|  |  `--php >=8.1
+|  |--symfony/service-contracts ^3.5
+|  |  |--php >=8.1
+|  |  |--psr/container ^1.1|^2.0
+|  |  |  `--php >=7.4.0
+|  |  `--symfony/deprecation-contracts ^2.5|^3
+|  |     `--php >=8.1
+|  `--symfony/var-exporter ^6.4.20|^7.2.5
+|     |--php >=8.2
+|     `--symfony/deprecation-contracts ^2.5|^3
+|        `--php >=8.1
+`--symfony/http-kernel ^6.3 || ^7.0
+   |--php >=8.2
+   |--psr/log ^1|^2|^3
+   |  `--php >=8.0.0
+   |--symfony/deprecation-contracts ^2.5|^3
+   |  `--php >=8.1
+   |--symfony/error-handler ^6.4|^7.0
+   |  |--php >=8.2
+   |  |--psr/log ^1|^2|^3
+   |  |  `--php >=8.0.0
+   |  `--symfony/var-dumper ^6.4|^7.0
+   |     |--php >=8.2
+   |     |--symfony/deprecation-contracts ^2.5|^3
+   |     |  `--php >=8.1
+   |     `--symfony/polyfill-mbstring ~1.0
+   |        |--ext-iconv *
+   |        `--php >=7.2
+   |--symfony/event-dispatcher ^7.3
+   |  |--php >=8.2
+   |  `--symfony/event-dispatcher-contracts ^2.5|^3
+   |     |--php >=8.1
+   |     `--psr/event-dispatcher ^1
+   |        `--php >=7.2.0
+   |--symfony/http-foundation ^7.3
+   |  |--php >=8.2
+   |  |--symfony/deprecation-contracts ^2.5|^3.0
+   |  |  `--php >=8.1
+   |  |--symfony/polyfill-mbstring ~1.1
+   |  |  |--ext-iconv *
+   |  |  `--php >=7.2
+   |  `--symfony/polyfill-php83 ^1.27
+   |     `--php >=7.2
+   `--symfony/polyfill-ctype ^1.8
+      `--php >=7.2
+dealerdirect/phpcodesniffer-composer-installer v1.1.2 PHP_CodeSniffer Standards Composer Installer Plugin
+|--composer-plugin-api ^2.2
+|--php >=5.4
+`--squizlabs/php_codesniffer ^2.0 || ^3.1.0 || ^4.0
+   |--ext-simplexml *
+   |--ext-tokenizer *
+   |--ext-xmlwriter *
+   `--php >=5.4.0
+dragonmantank/cron-expression v3.4.0 CRON for PHP: Calculate the next or previous run date and determine if a CRON expression is due
+|--php ^7.2|^8.0
+`--webmozart/assert ^1.0
+   |--ext-ctype *
+   |  `--php >=7.2
+   `--php ^7.2 || ^8.0
+eluceo/ical 2.14.0 The eluceo/iCal package offers an abstraction layer for creating iCalendars. You can easily create iCal files by using PHP objects instead of typing your *.ics file by hand. The output will follow RFC 5545 as best as possible.
+|--ext-mbstring *
+|  |--ext-iconv *
+|  `--php >=7.2
+|--php >=7.4 || ~8.0.0 || ~8.1.0 || ~8.2.0 || ~8.3.0
+`--symfony/deprecation-contracts ^2.1 || ^3.0
+   `--php >=8.1
+infection/infection 0.27.11 Infection is a Mutation Testing framework for PHP. The mutation adequacy score can be used to measure the effectiveness of a test set in terms of its ability to detect faults.
+|--colinodell/json5 ^2.2
+|  |--ext-json *
+|  |--ext-mbstring *
+|  |  |--ext-iconv *
+|  |  `--php >=7.2
+|  `--php ^7.1.3|^8.0
+|--composer-runtime-api ^2.0
+|--composer/xdebug-handler ^2.0 || ^3.0
+|  |--composer/pcre ^1 || ^2 || ^3
+|  |  `--php ^7.4 || ^8.0
+|  |--php ^7.2.5 || ^8.0
+|  `--psr/log ^1 || ^2 || ^3
+|     `--php >=8.0.0
+|--ext-dom *
+|--ext-json *
+|--ext-libxml *
+|--ext-mbstring *
+|  |--ext-iconv *
+|  `--php >=7.2
+|--fidry/cpu-core-counter ^0.4.0 || ^0.5.0 || ^1.0
+|  `--php ^7.2 || ^8.0
+|--infection/abstract-testframework-adapter ^0.5.0
+|  `--php ^7.4 || ^8.0
+|--infection/extension-installer ^0.1.0
+|  `--composer-plugin-api ^1.1 || ^2.0
+|--infection/include-interceptor ^0.2.5
+|--justinrainbow/json-schema ^5.2.10
+|  `--php >=7.1
+|--nikic/php-parser ^4.15.1
+|  |--ext-tokenizer *
+|  `--php >=7.1
+|--ondram/ci-detector ^4.1.0
+|  `--php ^7.4 || ^8.0
+|--php ^8.1
+|--sanmai/later ^0.1.1
+|  `--php >=8.2
+|--sanmai/pipeline ^5.1 || ^6
+|  `--php >=8.2
+|--sebastian/diff ^3.0.2 || ^4.0 || ^5.0 || ^6.0
+|  `--php >=8.1
+|--symfony/console ^5.4 || ^6.0 || ^7.0
+|  |--php >=8.2
+|  |--symfony/deprecation-contracts ^2.5|^3
+|  |  `--php >=8.1
+|  |--symfony/polyfill-mbstring ~1.0
+|  |  |--ext-iconv *
+|  |  `--php >=7.2
+|  |--symfony/service-contracts ^2.5|^3
+|  |  |--php >=8.1
+|  |  |--psr/container ^1.1|^2.0
+|  |  |  `--php >=7.4.0
+|  |  `--symfony/deprecation-contracts ^2.5|^3
+|  |     `--php >=8.1
+|  `--symfony/string ^7.2
+|     |--php >=8.2
+|     |--symfony/polyfill-ctype ~1.8
+|     |  `--php >=7.2
+|     |--symfony/polyfill-intl-grapheme ~1.0
+|     |  `--php >=7.2
+|     |--symfony/polyfill-intl-normalizer ~1.0
+|     |  `--php >=7.2
+|     `--symfony/polyfill-mbstring ~1.0
+|        |--ext-iconv *
+|        `--php >=7.2
+|--symfony/filesystem ^5.4 || ^6.0 || ^7.0
+|  |--php >=8.2
+|  |--symfony/polyfill-ctype ~1.8
+|  |  `--php >=7.2
+|  `--symfony/polyfill-mbstring ~1.8
+|     |--ext-iconv *
+|     `--php >=7.2
+|--symfony/finder ^5.4 || ^6.0 || ^7.0
+|  `--php >=8.2
+|--symfony/process ^5.4 || ^6.0 || ^7.0
+|  `--php >=8.2
+|--thecodingmachine/safe ^2.1.2
+|  `--php ^8.0
+`--webmozart/assert ^1.11
+   |--ext-ctype *
+   |  `--php >=7.2
+   `--php ^7.2 || ^8.0
+phpcompatibility/php-compatibility 9.3.5 A set of sniffs for PHP_CodeSniffer that checks for PHP cross-version compatibility.
+|--php >=5.3
+`--squizlabs/php_codesniffer ^2.3 || ^3.0.2
+   |--ext-simplexml *
+   |--ext-tokenizer *
+   |--ext-xmlwriter *
+   `--php >=5.4.0
+phpro/api-problem-bundle 1.10.0 RFC7807 Problem details integration for Symfony
+|--php ~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0
+|--phpro/api-problem ^1.0
+|  `--php ~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0
+|--symfony/dependency-injection ^5.4 || ^6.0 || ^7.0
+|  |--php >=8.2
+|  |--psr/container ^1.1|^2.0
+|  |  `--php >=7.4.0
+|  |--symfony/deprecation-contracts ^2.5|^3
+|  |  `--php >=8.1
+|  |--symfony/service-contracts ^3.5
+|  |  |--php >=8.1
+|  |  |--psr/container ^1.1|^2.0
+|  |  |  `--php >=7.4.0
+|  |  `--symfony/deprecation-contracts ^2.5|^3
+|  |     `--php >=8.1
+|  `--symfony/var-exporter ^6.4.20|^7.2.5
+|     |--php >=8.2
+|     `--symfony/deprecation-contracts ^2.5|^3
+|        `--php >=8.1
+|--symfony/event-dispatcher ^5.4 || ^6.0 || ^7.0
+|  |--php >=8.2
+|  `--symfony/event-dispatcher-contracts ^2.5|^3
+|     |--php >=8.1
+|     `--psr/event-dispatcher ^1
+|        `--php >=7.2.0
+`--symfony/http-kernel ^6.4 || ^7.0
+   |--php >=8.2
+   |--psr/log ^1|^2|^3
+   |  `--php >=8.0.0
+   |--symfony/deprecation-contracts ^2.5|^3
+   |  `--php >=8.1
+   |--symfony/error-handler ^6.4|^7.0
+   |  |--php >=8.2
+   |  |--psr/log ^1|^2|^3
+   |  |  `--php >=8.0.0
+   |  `--symfony/var-dumper ^6.4|^7.0
+   |     |--php >=8.2
+   |     |--symfony/deprecation-contracts ^2.5|^3
+   |     |  `--php >=8.1
+   |     `--symfony/polyfill-mbstring ~1.0
+   |        |--ext-iconv *
+   |        `--php >=7.2
+   |--symfony/event-dispatcher ^7.3
+   |  |--php >=8.2
+   |  `--symfony/event-dispatcher-contracts ^2.5|^3
+   |     |--php >=8.1
+   |     `--psr/event-dispatcher ^1
+   |        `--php >=7.2.0
+   |--symfony/http-foundation ^7.3
+   |  |--php >=8.2
+   |  |--symfony/deprecation-contracts ^2.5|^3.0
+   |  |  `--php >=8.1
+   |  |--symfony/polyfill-mbstring ~1.1
+   |  |  |--ext-iconv *
+   |  |  `--php >=7.2
+   |  `--symfony/polyfill-php83 ^1.27
+   |     `--php >=7.2
+   `--symfony/polyfill-ctype ^1.8
+      `--php >=7.2
+phpunit/phpunit 10.5.48 The PHP Unit Testing framework.
+|--ext-dom *
+|--ext-json *
+|--ext-libxml *
+|--ext-mbstring *
+|  |--ext-iconv *
+|  `--php >=7.2
+|--ext-xml *
+|--ext-xmlwriter *
+|--myclabs/deep-copy ^1.13.3
+|  `--php ^7.1 || ^8.0
+|--phar-io/manifest ^2.0.4
+|  |--ext-dom *
+|  |--ext-libxml *
+|  |--ext-phar *
+|  |--ext-xmlwriter *
+|  |--phar-io/version ^3.0.1
+|  |  `--php ^7.2 || ^8.0
+|  `--php ^7.2 || ^8.0
+|--phar-io/version ^3.2.1
+|  `--php ^7.2 || ^8.0
+|--php >=8.1
+|--phpunit/php-code-coverage ^10.1.16
+|  |--ext-dom *
+|  |--ext-libxml *
+|  |--ext-xmlwriter *
+|  |--nikic/php-parser ^4.19.1 || ^5.1.0
+|  |  |--ext-tokenizer *
+|  |  `--php >=7.1
+|  |--php >=8.1
+|  |--phpunit/php-file-iterator ^4.1.0
+|  |  `--php >=8.1
+|  |--phpunit/php-text-template ^3.0.1
+|  |  `--php >=8.1
+|  |--sebastian/code-unit-reverse-lookup ^3.0.0
+|  |  `--php >=8.1
+|  |--sebastian/complexity ^3.2.0
+|  |  |--nikic/php-parser ^4.18 || ^5.0
+|  |  |  |--ext-tokenizer *
+|  |  |  `--php >=7.1
+|  |  `--php >=8.1
+|  |--sebastian/environment ^6.1.0
+|  |  `--php >=8.1
+|  |--sebastian/lines-of-code ^2.0.2
+|  |  |--nikic/php-parser ^4.18 || ^5.0
+|  |  |  |--ext-tokenizer *
+|  |  |  `--php >=7.1
+|  |  `--php >=8.1
+|  |--sebastian/version ^4.0.1
+|  |  `--php >=8.1
+|  `--theseer/tokenizer ^1.2.3
+|     |--ext-dom *
+|     |--ext-tokenizer *
+|     |--ext-xmlwriter *
+|     `--php ^7.2 || ^8.0
+|--phpunit/php-file-iterator ^4.1.0
+|  `--php >=8.1
+|--phpunit/php-invoker ^4.0.0
+|  `--php >=8.1
+|--phpunit/php-text-template ^3.0.1
+|  `--php >=8.1
+|--phpunit/php-timer ^6.0.0
+|  `--php >=8.1
+|--sebastian/cli-parser ^2.0.1
+|  `--php >=8.1
+|--sebastian/code-unit ^2.0.0
+|  `--php >=8.1
+|--sebastian/comparator ^5.0.3
+|  |--ext-dom *
+|  |--ext-mbstring *
+|  |  |--ext-iconv *
+|  |  `--php >=7.2
+|  |--php >=8.1
+|  |--sebastian/diff ^5.0
+|  |  `--php >=8.1
+|  `--sebastian/exporter ^5.0
+|     |--ext-mbstring *
+|     |  |--ext-iconv *
+|     |  `--php >=7.2
+|     |--php >=8.1
+|     `--sebastian/recursion-context ^5.0
+|        `--php >=8.1
+|--sebastian/diff ^5.1.1
+|  `--php >=8.1
+|--sebastian/environment ^6.1.0
+|  `--php >=8.1
+|--sebastian/exporter ^5.1.2
+|  |--ext-mbstring *
+|  |  |--ext-iconv *
+|  |  `--php >=7.2
+|  |--php >=8.1
+|  `--sebastian/recursion-context ^5.0
+|     `--php >=8.1
+|--sebastian/global-state ^6.0.2
+|  |--php >=8.1
+|  |--sebastian/object-reflector ^3.0
+|  |  `--php >=8.1
+|  `--sebastian/recursion-context ^5.0
+|     `--php >=8.1
+|--sebastian/object-enumerator ^5.0.0
+|  |--php >=8.1
+|  |--sebastian/object-reflector ^3.0
+|  |  `--php >=8.1
+|  `--sebastian/recursion-context ^5.0
+|     `--php >=8.1
+|--sebastian/recursion-context ^5.0.0
+|  `--php >=8.1
+|--sebastian/type ^4.0.0
+|  `--php >=8.1
+`--sebastian/version ^4.0.1
+   `--php >=8.1
+rlanvin/php-rrule v2.6.0 Lightweight and fast recurrence rules for PHP (RFC 5545)
+`--php >=5.6.0
+roave/security-advisories 9999999-dev Prevents installation of composer packages with known security vulnerabilities: no API, simply require it
+roave/security-advisories dev-latest Prevents installation of composer packages with known security vulnerabilities: no API, simply require it
+soundasleep/html2text 2.1.0 A PHP script to convert HTML into a plain text format
+|--ext-dom *
+|--ext-libxml *
+`--php ^7.3|^8.0
+squizlabs/php_codesniffer 3.13.2 PHP_CodeSniffer tokenizes PHP, JavaScript and CSS files and detects violations of a defined set of coding standards.
+|--ext-simplexml *
+|--ext-tokenizer *
+|--ext-xmlwriter *
+`--php >=5.4.0
+symfony/config v7.3.2 Helps you find, load, combine, autofill and validate configuration values of any kind
+|--php >=8.2
+|--symfony/deprecation-contracts ^2.5|^3
+|  `--php >=8.1
+|--symfony/filesystem ^7.1
+|  |--php >=8.2
+|  |--symfony/polyfill-ctype ~1.8
+|  |  `--php >=7.2
+|  `--symfony/polyfill-mbstring ~1.8
+|     |--ext-iconv *
+|     `--php >=7.2
+`--symfony/polyfill-ctype ~1.8
+   `--php >=7.2
+symfony/dependency-injection v7.3.2 Allows you to standardize and centralize the way objects are constructed in your application
+|--php >=8.2
+|--psr/container ^1.1|^2.0
+|  `--php >=7.4.0
+|--symfony/deprecation-contracts ^2.5|^3
+|  `--php >=8.1
+|--symfony/service-contracts ^3.5
+|  |--php >=8.1
+|  |--psr/container ^1.1|^2.0
+|  |  `--php >=7.4.0
+|  `--symfony/deprecation-contracts ^2.5|^3
+|     `--php >=8.1
+`--symfony/var-exporter ^6.4.20|^7.2.5
+   |--php >=8.2
+   `--symfony/deprecation-contracts ^2.5|^3
+      `--php >=8.1
+symfony/http-kernel v7.3.2 Provides a structured process for converting a Request into a Response
+|--php >=8.2
+|--psr/log ^1|^2|^3
+|  `--php >=8.0.0
+|--symfony/deprecation-contracts ^2.5|^3
+|  `--php >=8.1
+|--symfony/error-handler ^6.4|^7.0
+|  |--php >=8.2
+|  |--psr/log ^1|^2|^3
+|  |  `--php >=8.0.0
+|  `--symfony/var-dumper ^6.4|^7.0
+|     |--php >=8.2
+|     |--symfony/deprecation-contracts ^2.5|^3
+|     |  `--php >=8.1
+|     `--symfony/polyfill-mbstring ~1.0
+|        |--ext-iconv *
+|        `--php >=7.2
+|--symfony/event-dispatcher ^7.3
+|  |--php >=8.2
+|  `--symfony/event-dispatcher-contracts ^2.5|^3
+|     |--php >=8.1
+|     `--psr/event-dispatcher ^1
+|        `--php >=7.2.0
+|--symfony/http-foundation ^7.3
+|  |--php >=8.2
+|  |--symfony/deprecation-contracts ^2.5|^3.0
+|  |  `--php >=8.1
+|  |--symfony/polyfill-mbstring ~1.1
+|  |  |--ext-iconv *
+|  |  `--php >=7.2
+|  `--symfony/polyfill-php83 ^1.27
+|     `--php >=7.2
+`--symfony/polyfill-ctype ^1.8
+   `--php >=7.2
+symfony/messenger v7.3.2 Helps applications send and receive messages to/from other applications or via message queues
+|--php >=8.2
+|--psr/log ^1|^2|^3
+|  `--php >=8.0.0
+|--symfony/clock ^6.4|^7.0
+|  |--php >=8.2
+|  |--psr/clock ^1.0
+|  |  `--php ^7.0 || ^8.0
+|  `--symfony/polyfill-php83 ^1.28
+|     `--php >=7.2
+`--symfony/deprecation-contracts ^2.5|^3
+   `--php >=8.1
+symfony/scheduler v7.3.2 Provides scheduling through Symfony Messenger
+|--php >=8.2
+`--symfony/clock ^6.4|^7.0
+   |--php >=8.2
+   |--psr/clock ^1.0
+   |  `--php ^7.0 || ^8.0
+   `--symfony/polyfill-php83 ^1.28
+      `--php >=7.2
+symfony/yaml v7.3.2 Loads and dumps YAML files
+|--php >=8.2
+|--symfony/deprecation-contracts ^2.5|^3.0
+|  `--php >=8.1
+`--symfony/polyfill-ctype ^1.8
+   `--php >=7.2

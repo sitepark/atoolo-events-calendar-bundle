@@ -13,6 +13,7 @@ use Atoolo\EventsCalendar\Dto\RceEvent\RceEventListItem;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventSource;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventTheme;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventUpload;
+use Atoolo\EventsCalendar\Test\TestResourceFactory;
 use Atoolo\EventsCalendar\Service\Indexer\{
     SiteKit\DefaultSchema2xRceEventDocumentEnricher
 };
@@ -552,36 +553,36 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
     private function createTypeCategoryTree(): void
     {
-        $root = $this->createResource(
-            '10',
-            '/category/type/root.php',
-            'type-root',
-            'type-root',
-        );
-        $ausstellung = $this->createResource(
-            '12',
-            '/category/type/ausstellung.php',
-            'rce.type.12',
-            'Ausstellung',
-        );
-        $filmMedien = $this->createResource(
-            '13',
-            '/category/type/film-medien.php',
-            'rce.type.13',
-            'Film & Medien',
-        );
-        $konzert = $this->createResource(
-            '14',
-            '/category/type/konzert.php',
-            'rce.type.14',
-            'Konzert',
-        );
-        $noParent = $this->createResource(
-            '15',
-            '/category/type/no-parent.php',
-            'rce.type.15',
-            'No Parent',
-        );
+        $root = TestResourceFactory::create([
+            'id' => '10',
+            'url' => '/category/type/root.php',
+            'anchor' => 'type-root',
+            'name' => 'type-root',
+        ]);
+        $ausstellung = TestResourceFactory::create([
+            'id' => '12',
+            'url' => '/category/type/ausstellung.php',
+            'anchor' => 'rce.type.12',
+            'name' => 'Ausstellung',
+        ]);
+        $filmMedien = TestResourceFactory::create([
+            'id' => '13',
+            'url' => '/category/type/film-medien.php',
+            'anchor' => 'rce.type.13',
+            'name' => 'Film & Medien',
+        ]);
+        $konzert = TestResourceFactory::create([
+            'id' => '14',
+            'url' => '/category/type/konzert.php',
+            'anchor' => 'rce.type.14',
+            'name' => 'Konzert',
+        ]);
+        $noParent = TestResourceFactory::create([
+            'id' => '15',
+            'url' => '/category/type/no-parent.php',
+            'anchor' => 'rce.type.15',
+            'name' => 'No Parent',
+        ]);
 
         $this->rootResources[] = $root->location;
         $this->resourceMap[$root->location] = $root;
@@ -619,18 +620,18 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
     private function createSourceCategoryTree(): void
     {
-        $root = $this->createResource(
-            '20',
-            '/category/source/root.php',
-            'source-root',
-            'source-root',
-        );
-        $staatstheaterKassel = $this->createResource(
-            '21',
-            '/category/source/staatstheater-kassel.php',
-            'rce.source.1361',
-            'Staatstheater Kassel',
-        );
+        $root = TestResourceFactory::create([
+            'id' => '20',
+            'url' => '/category/source/root.php',
+            'anchor' => 'source-root',
+            'name' => 'source-root',
+        ]);
+        $staatstheaterKassel = TestResourceFactory::create([
+            'id' => '21',
+            'url' => '/category/source/staatstheater-kassel.php',
+            'anchor' => 'rce.source.1361',
+            'name' => 'Staatstheater Kassel',
+        ]);
 
         $this->rootResources[] = $root->location;
         $this->resourceMap[$root->location] = $root;
@@ -648,35 +649,17 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
     private function createGemeindeTree(): void
     {
-        $root = $this->createResource(
-            '30',
-            '/category/gem/root.php',
-            'gem-root',
-            'gem-root',
-        );
+        $root = TestResourceFactory::create([
+            'id' => '30',
+            'url' => '/category/gem/root.php',
+            'anchor' => 'gem-root',
+            'name' => 'gem-root',
+        ]);
 
         $this->rootResources[] = $root->location;
         $this->resourceMap[$root->location] = $root;
         $this->childrenResourceMap[$root->location] = [
         ];
         $this->primaryPathMap[$root->location] = [$root];
-    }
-
-    private function createResource(
-        string $id,
-        string $location,
-        string $anchor,
-        string $name,
-    ): Resource {
-        return new Resource(
-            $location,
-            $id,
-            $name,
-            'objectType',
-            ResourceLanguage::default(),
-            new DataBag([
-                'anchor' => $anchor,
-            ]),
-        );
     }
 }

@@ -6,6 +6,7 @@ namespace Atoolo\EventsCalendar\Test\Controller;
 
 use Atoolo\EventsCalendar\Controller\ICalController;
 use Atoolo\EventsCalendar\Service\ICal\ICalFactory;
+use Atoolo\EventsCalendar\Test\TestResourceFactory;
 use Atoolo\Resource\DataBag;
 use Atoolo\Resource\Exception\InvalidResourceException;
 use Atoolo\Resource\Exception\ResourceNotFoundException;
@@ -76,7 +77,7 @@ class ICalControllerTest extends TestCase
     public function testICalLocation(): void
     {
         $location = 'some/location';
-        $resource = $this->createResource([
+        $resource = TestResourceFactory::create([
             'url' => $location,
         ]);
         $this->resourceLoader
@@ -110,7 +111,7 @@ class ICalControllerTest extends TestCase
     public function testICalByLangAndLocation(): void
     {
         $location = 'some/location';
-        $resource = $this->createResource([
+        $resource = TestResourceFactory::create([
             'url' => $location,
         ]);
         $this->resourceLoader
@@ -146,7 +147,7 @@ class ICalControllerTest extends TestCase
     {
         $lang = 'en';
         $location = 'some/location';
-        $resource = $this->createResource([
+        $resource = TestResourceFactory::create([
             'url' => $location,
             'lang' => ResourceLanguage::of($lang),
         ]);
@@ -180,7 +181,7 @@ class ICalControllerTest extends TestCase
         $locationA = 'some';
         $locationB = 'location';
         $location = $locationA . '/' . $locationB;
-        $resource = $this->createResource([
+        $resource = TestResourceFactory::create([
             'url' => $location,
         ]);
         $this->resourceLoader
@@ -213,7 +214,7 @@ class ICalControllerTest extends TestCase
         $locationA = '';
         $locationB = 'location';
         $location = $locationA . '/' . $locationB;
-        $resource = $this->createResource([
+        $resource = TestResourceFactory::create([
             'url' => $location,
         ]);
         $this->resourceLoader
@@ -271,7 +272,7 @@ class ICalControllerTest extends TestCase
 
     public function testICalBySearch(): void
     {
-        $resource = $this->createResource([
+        $resource = TestResourceFactory::create([
             'name' => '-?some()cr4zy=?"file\\-name/9&&',
         ]);
         $query = json_encode([
@@ -370,21 +371,6 @@ class ICalControllerTest extends TestCase
             ->with($searchQuery)
             ->willThrowException(new Exception());
         $this->controller->iCalBySearch(new Request(['query' => $query]));
-    }
-
-    /**
-     * @param array<string,mixed> $data
-     */
-    private function createResource(array $data): Resource
-    {
-        return new Resource(
-            $data['url'] ?? '',
-            $data['id'] ?? '',
-            $data['name'] ?? '',
-            $data['objectType'] ?? '',
-            $data['lang'] ?? ResourceLanguage::default(),
-            new DataBag($data),
-        );
     }
 
     private function createResourceChannel(array $args): ResourceChannel
