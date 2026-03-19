@@ -38,20 +38,20 @@ class DefaultSchema2xEventDocumentEnricherTest extends TestCase
                             ['id' => 'eventsCalendar-venue',
                                 'model' => [
                                     'categories' => [['id' => '1']],
-                                    'categoriesPath' => [['id' => '2'], ['id' => '1']]
-                                ]
+                                    'categoriesPath' => [['id' => '2'], ['id' => '1']],
+                                ],
                             ],
                             ['id' => 'eventsCalendar-ticketAgency',
                                 'model' => [
                                     'categories' => [['id' => '3']],
-                                    'categoriesPath' => [['id' => '4'], ['id' => '3']]
-                                ]
+                                    'categoriesPath' => [['id' => '4'], ['id' => '3']],
+                                ],
                             ],
                             ['id' => 'eventsCalendar-organizer',
                                 'model' => [
                                     'categories' => [['id' => '5']],
-                                    'categoriesPath' => [['id' => '6'], ['id' => '5']]
-                                ]
+                                    'categoriesPath' => [['id' => '6'], ['id' => '5']],
+                                ],
                             ],
                         ],
                     ],
