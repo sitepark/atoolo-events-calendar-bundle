@@ -11,10 +11,8 @@ use Atoolo\EventsCalendar\Dto\RceEvent\RceEventAddresses;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventDate;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventListItem;
 use Atoolo\EventsCalendar\Service\Indexer\SiteKit\DefaultSchema2xRceEventCategoryDocumentEnricher;
-use Atoolo\Resource\DataBag;
 use Atoolo\Resource\Resource;
 use Atoolo\Resource\ResourceHierarchyLoader;
-use Atoolo\Resource\ResourceLanguage;
 use Atoolo\Resource\ResourceLocation;
 use Atoolo\Search\Service\Indexer\IndexSchema2xDocument;
 use DateTime;
@@ -237,18 +235,15 @@ class DefaultSchema2xRceEventCategoryDocumentEnricherTest extends TestCase
         string $anchor,
         string $name,
     ): Resource {
-        return new Resource(
-            $location,
-            $id,
-            $name,
-            'objectType',
-            ResourceLanguage::default(),
-            new DataBag([
-                'anchor' => $anchor,
-                'base' => [
-                    'title' => $name,
-                ],
-            ]),
-        );
+        return Resource::create([
+            'url' => $location,
+            'id' => $id,
+            'name' => $name,
+            'objectType' => 'objectType',
+            'anchor' => $anchor,
+            'base' => [
+                'title' => $name,
+            ],
+        ]);
     }
 }
