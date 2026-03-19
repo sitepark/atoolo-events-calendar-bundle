@@ -7,10 +7,7 @@ namespace Atoolo\EventsCalendar\Test\Service\GraphQL\Resolver\Resource;
 use Atoolo\EventsCalendar\Dto\Scheduling\Scheduling;
 use Atoolo\EventsCalendar\Service\GraphQL\Factory\SchedulingFactory;
 use Atoolo\EventsCalendar\Service\GraphQL\Resolver\Resource\ResourceSchedulingResolver;
-use Atoolo\EventsCalendar\Test\TestResourceFactory;
-use Atoolo\Resource\DataBag;
 use Atoolo\Resource\Resource;
-use Atoolo\Resource\ResourceLanguage;
 use DateTime;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -35,7 +32,7 @@ class ResourceSchedulingResolverTest extends TestCase
 
     public function testGetSchedulings(): void
     {
-        $resource = TestResourceFactory::create([]);
+        $resource = Resource::create([]);
         $schedulingsExpected = [
             new Scheduling(
                 new DateTime(),

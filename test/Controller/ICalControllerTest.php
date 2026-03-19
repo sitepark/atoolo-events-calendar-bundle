@@ -6,7 +6,6 @@ namespace Atoolo\EventsCalendar\Test\Controller;
 
 use Atoolo\EventsCalendar\Controller\ICalController;
 use Atoolo\EventsCalendar\Service\ICal\ICalFactory;
-use Atoolo\EventsCalendar\Test\TestResourceFactory;
 use Atoolo\Resource\DataBag;
 use Atoolo\Resource\Exception\InvalidResourceException;
 use Atoolo\Resource\Exception\ResourceNotFoundException;
@@ -77,7 +76,7 @@ class ICalControllerTest extends TestCase
     public function testICalLocation(): void
     {
         $location = 'some/location';
-        $resource = TestResourceFactory::create([
+        $resource = Resource::create([
             'url' => $location,
         ]);
         $this->resourceLoader
@@ -111,7 +110,7 @@ class ICalControllerTest extends TestCase
     public function testICalByLangAndLocation(): void
     {
         $location = 'some/location';
-        $resource = TestResourceFactory::create([
+        $resource = Resource::create([
             'url' => $location,
         ]);
         $this->resourceLoader
@@ -147,7 +146,7 @@ class ICalControllerTest extends TestCase
     {
         $lang = 'en';
         $location = 'some/location';
-        $resource = TestResourceFactory::create([
+        $resource = Resource::create([
             'url' => $location,
             'lang' => ResourceLanguage::of($lang),
         ]);
@@ -181,7 +180,7 @@ class ICalControllerTest extends TestCase
         $locationA = 'some';
         $locationB = 'location';
         $location = $locationA . '/' . $locationB;
-        $resource = TestResourceFactory::create([
+        $resource = Resource::create([
             'url' => $location,
         ]);
         $this->resourceLoader
@@ -214,7 +213,7 @@ class ICalControllerTest extends TestCase
         $locationA = '';
         $locationB = 'location';
         $location = $locationA . '/' . $locationB;
-        $resource = TestResourceFactory::create([
+        $resource = Resource::create([
             'url' => $location,
         ]);
         $this->resourceLoader
@@ -272,7 +271,7 @@ class ICalControllerTest extends TestCase
 
     public function testICalBySearch(): void
     {
-        $resource = TestResourceFactory::create([
+        $resource = Resource::create([
             'name' => '-?some()cr4zy=?"file\\-name/9&&',
         ]);
         $query = json_encode([

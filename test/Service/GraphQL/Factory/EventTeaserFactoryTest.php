@@ -5,12 +5,9 @@ declare(strict_types=1);
 namespace Atoolo\EventsCalendar\Test\Service\GraphQL\Factory;
 
 use Atoolo\EventsCalendar\Service\GraphQL\Factory\EventTeaserFactory;
-use Atoolo\EventsCalendar\Test\TestResourceFactory;
 use Atoolo\GraphQL\Search\Factory\LinkFactory;
 use Atoolo\GraphQL\Search\Types\Link;
-use Atoolo\Resource\DataBag;
 use Atoolo\Resource\Resource;
-use Atoolo\Resource\ResourceLanguage;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
@@ -31,7 +28,7 @@ class EventTeaserFactoryTest extends TestCase
 
     public function testLink(): void
     {
-        $resource = TestResourceFactory::create([
+        $resource = Resource::create([
             'url' => 'originalUrl',
         ]);
         $link = new Link('url');
@@ -50,7 +47,7 @@ class EventTeaserFactoryTest extends TestCase
     public function testHeadline(): void
     {
 
-        $resource = TestResourceFactory::create([
+        $resource = Resource::create([
             'base' => [
                 'teaser' => [
                     'headline' => 'Headline',
@@ -69,7 +66,7 @@ class EventTeaserFactoryTest extends TestCase
 
     public function testHeadlineFallback(): void
     {
-        $resource = TestResourceFactory::create([
+        $resource = Resource::create([
             'name' => 'ResourceName',
         ]);
 
@@ -84,7 +81,7 @@ class EventTeaserFactoryTest extends TestCase
 
     public function testText(): void
     {
-        $resource = TestResourceFactory::create([
+        $resource = Resource::create([
             'base' => [
                 'teaser' => [
                     'text' => 'Text',

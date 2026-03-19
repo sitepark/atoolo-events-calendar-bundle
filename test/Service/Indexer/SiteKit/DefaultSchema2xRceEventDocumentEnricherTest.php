@@ -13,14 +13,9 @@ use Atoolo\EventsCalendar\Dto\RceEvent\RceEventListItem;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventSource;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventTheme;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventUpload;
-use Atoolo\EventsCalendar\Test\TestResourceFactory;
-use Atoolo\EventsCalendar\Service\Indexer\{
-    SiteKit\DefaultSchema2xRceEventDocumentEnricher
-};
-use Atoolo\Resource\DataBag;
+use Atoolo\EventsCalendar\Service\Indexer\{SiteKit\DefaultSchema2xRceEventDocumentEnricher};
 use Atoolo\Resource\Resource;
 use Atoolo\Resource\ResourceHierarchyLoader;
-use Atoolo\Resource\ResourceLanguage;
 use Atoolo\Resource\ResourceLocation;
 use Atoolo\Search\Service\Indexer\IndexSchema2xDocument;
 use DateTime;
@@ -428,6 +423,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
             @array_intersect_assoc($fields, $expected),
         );
     }
+
     public function createEvent(
         bool $online = false,
         RceEventTheme $theme = null,
@@ -553,31 +549,31 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
     private function createTypeCategoryTree(): void
     {
-        $root = TestResourceFactory::create([
+        $root = Resource::create([
             'id' => '10',
             'url' => '/category/type/root.php',
             'anchor' => 'type-root',
             'name' => 'type-root',
         ]);
-        $ausstellung = TestResourceFactory::create([
+        $ausstellung = Resource::create([
             'id' => '12',
             'url' => '/category/type/ausstellung.php',
             'anchor' => 'rce.type.12',
             'name' => 'Ausstellung',
         ]);
-        $filmMedien = TestResourceFactory::create([
+        $filmMedien = Resource::create([
             'id' => '13',
             'url' => '/category/type/film-medien.php',
             'anchor' => 'rce.type.13',
             'name' => 'Film & Medien',
         ]);
-        $konzert = TestResourceFactory::create([
+        $konzert = Resource::create([
             'id' => '14',
             'url' => '/category/type/konzert.php',
             'anchor' => 'rce.type.14',
             'name' => 'Konzert',
         ]);
-        $noParent = TestResourceFactory::create([
+        $noParent = Resource::create([
             'id' => '15',
             'url' => '/category/type/no-parent.php',
             'anchor' => 'rce.type.15',
@@ -620,13 +616,13 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
     private function createSourceCategoryTree(): void
     {
-        $root = TestResourceFactory::create([
+        $root = Resource::create([
             'id' => '20',
             'url' => '/category/source/root.php',
             'anchor' => 'source-root',
             'name' => 'source-root',
         ]);
-        $staatstheaterKassel = TestResourceFactory::create([
+        $staatstheaterKassel = Resource::create([
             'id' => '21',
             'url' => '/category/source/staatstheater-kassel.php',
             'anchor' => 'rce.source.1361',
@@ -649,7 +645,7 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
     private function createGemeindeTree(): void
     {
-        $root = TestResourceFactory::create([
+        $root = Resource::create([
             'id' => '30',
             'url' => '/category/gem/root.php',
             'anchor' => 'gem-root',

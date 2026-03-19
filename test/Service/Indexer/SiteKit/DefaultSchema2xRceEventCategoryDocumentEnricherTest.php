@@ -10,11 +10,7 @@ use Atoolo\EventsCalendar\Dto\RceEvent\RceEventAddress;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventAddresses;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventDate;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventListItem;
-use Atoolo\EventsCalendar\Dto\RceEvent\RceEventSource;
-use Atoolo\EventsCalendar\Dto\RceEvent\RceEventTheme;
-use Atoolo\EventsCalendar\Dto\RceEvent\RceEventUpload;
 use Atoolo\EventsCalendar\Service\Indexer\SiteKit\DefaultSchema2xRceEventCategoryDocumentEnricher;
-use Atoolo\EventsCalendar\Test\TestResourceFactory;
 use Atoolo\Resource\DataBag;
 use Atoolo\Resource\Resource;
 use Atoolo\Resource\ResourceHierarchyLoader;
@@ -186,7 +182,7 @@ class DefaultSchema2xRceEventCategoryDocumentEnricherTest extends TestCase
 
     private function createCategoryTree(): void
     {
-        $root = TestResourceFactory::create([
+        $root = Resource::create([
             'id' => '10',
             'url' => '/category/root.php',
             'anchor' => 'some-category-root',
@@ -195,7 +191,7 @@ class DefaultSchema2xRceEventCategoryDocumentEnricherTest extends TestCase
                 'title' => 'some-category-root',
             ],
         ]);
-        $childA = TestResourceFactory::create([
+        $childA = Resource::create([
             'id' => '11',
             'url' => '/category/childA.php',
             'anchor' => 'some-category-a',
@@ -204,7 +200,7 @@ class DefaultSchema2xRceEventCategoryDocumentEnricherTest extends TestCase
                 'title' => 'some-category-a',
             ],
         ]);
-        $childB = TestResourceFactory::create([
+        $childB = Resource::create([
             'id' => '12',
             'url' => '/category/childB.php',
             'anchor' => 'some-category-b',
@@ -233,7 +229,6 @@ class DefaultSchema2xRceEventCategoryDocumentEnricherTest extends TestCase
             $childB,
         ];
     }
-
 
 
     private function xcreateResource(

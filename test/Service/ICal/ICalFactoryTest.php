@@ -7,11 +7,9 @@ namespace Atoolo\EventsCalendar\Test\Service\ICal;
 use Atoolo\EventsCalendar\Dto\Scheduling\Scheduling;
 use Atoolo\EventsCalendar\Service\GraphQL\Factory\SchedulingFactory;
 use Atoolo\EventsCalendar\Service\ICal\ICalFactory;
-use Atoolo\EventsCalendar\Test\TestResourceFactory;
 use Atoolo\Resource\DataBag;
 use Atoolo\Resource\Resource;
 use Atoolo\Resource\ResourceChannel;
-use Atoolo\Resource\ResourceLanguage;
 use Atoolo\Resource\ResourceTenant;
 use DateTimeZone;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -43,7 +41,7 @@ class ICalFactoryTest extends TestCase
 
     public function testCreateCalendarAsString(): void
     {
-        $resource = TestResourceFactory::create([
+        $resource = Resource::create([
             'id' => '1',
             'url' => '/some/location',
             'metadata' => [
@@ -133,7 +131,7 @@ class ICalFactoryTest extends TestCase
 
     public function testCreateCalendarAsStringAtOccurrence(): void
     {
-        $resource = TestResourceFactory::create([
+        $resource = Resource::create([
             'id' => '1',
             'url' => '/some/location',
             'metadata' => [
@@ -206,7 +204,7 @@ class ICalFactoryTest extends TestCase
 
     public function testCreateCalendarAsStringExternal(): void
     {
-        $resource = TestResourceFactory::create([
+        $resource = Resource::create([
             'id' => '1',
             'url' => 'https://www.external.de/some/location',
             'metadata' => [

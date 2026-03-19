@@ -7,10 +7,7 @@ namespace Atoolo\EventsCalendar\Test\Service\GraphQL\Factory;
 use Atoolo\EventsCalendar\Service\GraphQL\Factory\SchedulingFactory;
 use Atoolo\EventsCalendar\Test\Constraint\EqualsRRule;
 use Atoolo\EventsCalendar\Test\Constraint\IsRRule;
-use Atoolo\EventsCalendar\Test\TestResourceFactory;
-use Atoolo\Resource\DataBag;
 use Atoolo\Resource\Resource;
-use Atoolo\Resource\ResourceLanguage;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
@@ -29,7 +26,7 @@ class SchedulingFactoryTest extends TestCase
 
     public function testCreate()
     {
-        $resource = TestResourceFactory::create([
+        $resource = Resource::create([
             'metadata' => [
                 'schedulingRaw' => [
                     [
