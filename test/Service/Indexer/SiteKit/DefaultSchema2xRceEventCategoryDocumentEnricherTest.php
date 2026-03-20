@@ -10,14 +10,9 @@ use Atoolo\EventsCalendar\Dto\RceEvent\RceEventAddress;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventAddresses;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventDate;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventListItem;
-use Atoolo\EventsCalendar\Dto\RceEvent\RceEventSource;
-use Atoolo\EventsCalendar\Dto\RceEvent\RceEventTheme;
-use Atoolo\EventsCalendar\Dto\RceEvent\RceEventUpload;
 use Atoolo\EventsCalendar\Service\Indexer\SiteKit\DefaultSchema2xRceEventCategoryDocumentEnricher;
-use Atoolo\Resource\DataBag;
 use Atoolo\Resource\Resource;
 use Atoolo\Resource\ResourceHierarchyLoader;
-use Atoolo\Resource\ResourceLanguage;
 use Atoolo\Resource\ResourceLocation;
 use Atoolo\Search\Service\Indexer\IndexSchema2xDocument;
 use DateTime;
@@ -185,24 +180,33 @@ class DefaultSchema2xRceEventCategoryDocumentEnricherTest extends TestCase
 
     private function createCategoryTree(): void
     {
-        $root = $this->createResource(
-            '10',
-            '/category/root.php',
-            'some-category-root',
-            'some-category-root',
-        );
-        $childA = $this->createResource(
-            '11',
-            '/category/childA.php',
-            'some-category-a',
-            'some-category-a',
-        );
-        $childB = $this->createResource(
-            '12',
-            '/category/childB.php',
-            'some-category-b',
-            'some-category-b',
-        );
+        $root = Resource::create([
+            'id' => '10',
+            'url' => '/category/root.php',
+            'anchor' => 'some-category-root',
+            'name' => 'some-category-root',
+            'base' => [
+                'title' => 'some-category-root',
+            ],
+        ]);
+        $childA = Resource::create([
+            'id' => '11',
+            'url' => '/category/childA.php',
+            'anchor' => 'some-category-a',
+            'name' => 'some-category-a',
+            'base' => [
+                'title' => 'some-category-a',
+            ],
+        ]);
+        $childB = Resource::create([
+            'id' => '12',
+            'url' => '/category/childB.php',
+            'anchor' => 'some-category-b',
+            'name' => 'some-category-b',
+            'base' => [
+                'title' => 'some-category-b',
+            ],
+        ]);
 
         $this->kickerCategoryResourceLocation = $root->location;
         $this->resourceMap[$root->location] = $root;
@@ -225,25 +229,21 @@ class DefaultSchema2xRceEventCategoryDocumentEnricherTest extends TestCase
     }
 
 
-
-    private function createResource(
+    private function xcreateResource(
         string $id,
         string $location,
         string $anchor,
         string $name,
     ): Resource {
-        return new Resource(
-            $location,
-            $id,
-            $name,
-            'objectType',
-            ResourceLanguage::default(),
-            new DataBag([
-                'anchor' => $anchor,
-                'base' => [
-                    'title' => $name,
-                ],
-            ]),
-        );
+        return Resource::create([
+            'url' => $location,
+            'id' => $id,
+            'name' => $name,
+            'objectType' => 'objectType',
+            'anchor' => $anchor,
+            'base' => [
+                'title' => $name,
+            ],
+        ]);
     }
 }

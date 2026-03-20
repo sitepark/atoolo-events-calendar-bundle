@@ -6,7 +6,6 @@ namespace Atoolo\EventsCalendar\Test\Controller;
 
 use Atoolo\EventsCalendar\Controller\ICalController;
 use Atoolo\EventsCalendar\Service\ICal\ICalFactory;
-use Atoolo\Resource\DataBag;
 use Atoolo\Resource\Exception\InvalidResourceException;
 use Atoolo\Resource\Exception\ResourceNotFoundException;
 use Atoolo\Resource\Resource;
@@ -14,7 +13,6 @@ use Atoolo\Resource\ResourceChannel;
 use Atoolo\Resource\ResourceLanguage;
 use Atoolo\Resource\ResourceLoader;
 use Atoolo\Resource\ResourceLocation;
-use Atoolo\Resource\ResourceTenant;
 use Atoolo\Search\Dto\Search\Query\Filter\IdFilter;
 use Atoolo\Search\Dto\Search\Query\SearchQuery;
 use Atoolo\Search\Dto\Search\Query\SearchQueryBuilder;
@@ -60,7 +58,7 @@ class ICalControllerTest extends TestCase
         $this->serializer = $this->createMock(
             SerializerInterface::class,
         );
-        $resourceChannel = $this->createResourceChannel([
+        $resourceChannel = ResourceChannel::create([
             'locale' => 'de_DE',
             'translationLocales' => ['en_US'],
         ]);
@@ -76,7 +74,7 @@ class ICalControllerTest extends TestCase
     public function testICalLocation(): void
     {
         $location = 'some/location';
-        $resource = $this->createResource([
+        $resource = Resource::create([
             'url' => $location,
         ]);
         $this->resourceLoader
@@ -110,7 +108,7 @@ class ICalControllerTest extends TestCase
     public function testICalByLangAndLocation(): void
     {
         $location = 'some/location';
-        $resource = $this->createResource([
+        $resource = Resource::create([
             'url' => $location,
         ]);
         $this->resourceLoader
@@ -146,7 +144,7 @@ class ICalControllerTest extends TestCase
     {
         $lang = 'en';
         $location = 'some/location';
-        $resource = $this->createResource([
+        $resource = Resource::create([
             'url' => $location,
             'lang' => ResourceLanguage::of($lang),
         ]);
@@ -180,7 +178,7 @@ class ICalControllerTest extends TestCase
         $locationA = 'some';
         $locationB = 'location';
         $location = $locationA . '/' . $locationB;
-        $resource = $this->createResource([
+        $resource = Resource::create([
             'url' => $location,
         ]);
         $this->resourceLoader
@@ -213,7 +211,7 @@ class ICalControllerTest extends TestCase
         $locationA = '';
         $locationB = 'location';
         $location = $locationA . '/' . $locationB;
-        $resource = $this->createResource([
+        $resource = Resource::create([
             'url' => $location,
         ]);
         $this->resourceLoader
@@ -271,19 +269,21 @@ class ICalControllerTest extends TestCase
 
     public function testICalBySearch(): void
     {
-        $resource = $this->createResource([
+        $resource = Resource::create([
             'name' => '-?some()cr4zy=?"file\\-name/9&&',
         ]);
         $query = json_encode([
-            'filter' => [[
-                'type' => 'id',
-                'values' => ['someid'],
-            ]],
+            'filter' => [
+                [
+                    'type' => 'id',
+                    'values' => ['someid'],
+                ],
+            ],
         ]);
         $searchQuery =
             (new SearchQueryBuilder())
-            ->filter(new IdFilter(['someid']))
-            ->build();
+                ->filter(new IdFilter(['someid']))
+                ->build();
         $searchResult = new SearchResult(1, 1, 1, [$resource], [], null, 1);
         $this->serializer
             ->expects(once())
@@ -350,15 +350,17 @@ class ICalControllerTest extends TestCase
     {
         $this->expectException(HttpException::class);
         $query = json_encode([
-            'filter' => [[
-                'type' => 'id',
-                'values' => ['someid'],
-            ]],
+            'filter' => [
+                [
+                    'type' => 'id',
+                    'values' => ['someid'],
+                ],
+            ],
         ]);
         $searchQuery =
             (new SearchQueryBuilder())
-            ->filter(new IdFilter(['someid']))
-            ->build();
+                ->filter(new IdFilter(['someid']))
+                ->build();
         $this->serializer
             ->expects(once())
             ->method('deserialize')
@@ -370,42 +372,5 @@ class ICalControllerTest extends TestCase
             ->with($searchQuery)
             ->willThrowException(new Exception());
         $this->controller->iCalBySearch(new Request(['query' => $query]));
-    }
-
-    /**
-     * @param array<string,mixed> $data
-     */
-    private function createResource(array $data): Resource
-    {
-        return new Resource(
-            $data['url'] ?? '',
-            $data['id'] ?? '',
-            $data['name'] ?? '',
-            $data['objectType'] ?? '',
-            $data['lang'] ?? ResourceLanguage::default(),
-            new DataBag($data),
-        );
-    }
-
-    private function createResourceChannel(array $args): ResourceChannel
-    {
-        /** @var ResourceTenant $tenant */
-        $tenant = $this->createStub(ResourceTenant::class);
-        return new ResourceChannel(
-            id: $args['id'] ?? '',
-            name: $args['name'] ?? '',
-            anchor: $args['anchor'] ?? '',
-            serverName: $args['serverName'] ?? '',
-            isPreview: $args['isPreview'] ?? false,
-            nature: $args['nature'] ?? '',
-            locale: $args['locale'] ?? '',
-            baseDir: $args['baseDir'] ?? '',
-            resourceDir: $args['resourceDir'] ?? '',
-            configDir: $args['configDir'] ?? '',
-            searchIndex: $args['searchIndex'] ?? '',
-            translationLocales: $args['translationLocales'] ?? [],
-            attributes: new DataBag([]),
-            tenant: $tenant,
-        );
     }
 }
