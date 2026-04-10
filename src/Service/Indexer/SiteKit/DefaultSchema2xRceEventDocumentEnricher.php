@@ -88,6 +88,7 @@ class DefaultSchema2xRceEventDocumentEnricher implements
             }
         }
 
+        // TODO add nestedDocument for each event-date
         $doc->sp_date = $eventDate->startDate;
         $doc->sp_changed = $eventDate->startDate;
         $doc->sp_date_from = $eventDate->startDate;
