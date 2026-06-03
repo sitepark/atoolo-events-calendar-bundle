@@ -92,19 +92,4 @@ class SearchEventsTest extends TestCase
 
         $this->searchEvents->searchEvents($searchInput);
     }
-
-    /*
-    public function _testFactoryIsInstantiatedInConstructor(): void
-    {
-        $reflection = new \ReflectionClass($this->searchEvents);
-        $factoryProperty = $reflection->getProperty('factory');
-        $factoryProperty->setAccessible(true);
-        $factory = $factoryProperty->getValue($this->searchEvents);
-
-        $this->assertInstanceOf(
-            \Atoolo\EventsCalendar\Service\GraphQL\Query\SearchEventsFactory::class,
-            $factory
-        );
-    }
-    */
 }
