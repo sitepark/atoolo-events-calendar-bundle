@@ -20,6 +20,7 @@ use Atoolo\Search\Service\Indexer\IndexingAborter;
 use Atoolo\Search\Service\Indexer\IndexSchema2xDocument;
 use Atoolo\Search\Service\Indexer\SolrIndexService;
 use Atoolo\Search\Service\Indexer\SolrIndexUpdater;
+use Atoolo\Search\Service\Indexer\SolrUpdateResult;
 use Atoolo\Search\Service\IndexName;
 use DateTime;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -27,7 +28,6 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
-use Solarium\QueryType\Update\Result as UpdateResult;
 
 #[CoversClass(RceEventIndexer::class)]
 class RceEventIndexerTest extends TestCase
@@ -48,7 +48,7 @@ class RceEventIndexerTest extends TestCase
 
     private RceEventDocumentEnricher&Stub $documentEnricher;
 
-    private UpdateResult&Stub $updateResult;
+    private SolrUpdateResult&Stub $updateResult;
 
     /**
      * @throws Exception
@@ -79,7 +79,7 @@ class RceEventIndexerTest extends TestCase
         $updater = $this->createMock(SolrIndexUpdater::class);
         $updater->method('createDocument')
             ->willReturn($doc);
-        $this->updateResult = $this->createStub(UpdateResult::class);
+        $this->updateResult = $this->createStub(SolrUpdateResult::class);
         $updater->method('update')
             ->willReturn($this->updateResult);
         $this->indexService = $this->createMock(SolrIndexService::class);
