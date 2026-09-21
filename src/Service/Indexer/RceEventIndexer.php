@@ -10,16 +10,16 @@ use Atoolo\EventsCalendar\Dto\RceEvent\RceEventDate;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventListItem;
 use Atoolo\EventsCalendar\Service\RceEvent\RceEventListReader;
 use Atoolo\Resource\ResourceLanguage;
-use Atoolo\Search\Dto\Indexer\IndexerStatus;
-use Atoolo\Search\Service\AbstractIndexer;
-use Atoolo\Search\Service\Indexer\IndexDocument;
-use Atoolo\Search\Service\Indexer\IndexerConfigurationLoader;
-use Atoolo\Search\Service\Indexer\IndexerProgressHandler;
-use Atoolo\Search\Service\Indexer\IndexingAborter;
+use Atoolo\Index\Dto\Indexer\IndexerStatus;
+use Atoolo\Index\Service\AbstractIndexer;
+use Atoolo\Index\Service\Indexer\IndexDocument;
+use Atoolo\Index\Service\Indexer\IndexerConfigurationLoader;
+use Atoolo\Index\Service\Indexer\IndexerProgressHandler;
+use Atoolo\Index\Service\Indexer\IndexingAborter;
 use Atoolo\Search\Service\Indexer\IndexSchema2xDocument;
 use Atoolo\Search\Service\Indexer\SolrIndexService;
 use Atoolo\Search\Service\Indexer\SolrIndexUpdater;
-use Atoolo\Search\Service\IndexName;
+use Atoolo\Index\Service\IndexName;
 use Exception;
 use Throwable;
 
@@ -126,8 +126,8 @@ class RceEventIndexer extends AbstractIndexer
         $groupPath = $data->getArray('groupPath');
 
         /** @var array<string> $categoryRootResourceLocations */
-        $categoryRootResourceLocations =
-            $data->getArray('categoryRootResourceLocations');
+        $categoryRootResourceLocations
+            = $data->getArray('categoryRootResourceLocations');
 
         $instanceList = [];
         /** @var array{

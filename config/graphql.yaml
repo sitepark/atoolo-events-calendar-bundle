@@ -9,6 +9,9 @@ overblog_graphql:
       - type: attribute
         dir: "%atoolo_events_calendar.src_dir%/Service/GraphQL/Types"
         suffix: ~
+      - type: attribute
+        dir: "%atoolo_events_calendar.src_dir%/Service/GraphQL/Query"
+        suffix: ~
       - types: [yaml]
         dir: "%atoolo_events_calendar.config_dir%/graphql/decorators"
         suffix: ~

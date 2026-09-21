@@ -136,8 +136,8 @@ class RceEventListItemFactory
 
         $eventType = (string) $event[self::EVENT_TYPE_KEY];
         return
-            $eventType === self::EVENT_TYPE_VALUE_ONLINE ||
-            $eventType === self::EVENT_TYPE_VALUE_HYBRID;
+            $eventType === self::EVENT_TYPE_VALUE_ONLINE
+            || $eventType === self::EVENT_TYPE_VALUE_HYBRID;
     }
 
     private function isOnsite(SimpleXMLElement $event): bool
@@ -302,8 +302,8 @@ class RceEventListItemFactory
 
     private function isBlacklistedEventDate(SimpleXMLElement $date): bool
     {
-        return !empty($date->BLACKLISTLIST[0]->BLACKLIST) &&
-            (string) $date->BLACKLISTLIST[0]->BLACKLIST === self::YES;
+        return !empty($date->BLACKLISTLIST[0]->BLACKLIST)
+            && (string) $date->BLACKLISTLIST[0]->BLACKLIST === self::YES;
     }
 
     private function createDateTime(

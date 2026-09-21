@@ -280,10 +280,10 @@ class ICalControllerTest extends TestCase
                 ],
             ],
         ]);
-        $searchQuery =
-            (new SearchQueryBuilder())
-                ->filter(new IdFilter(['someid']))
-                ->build();
+        $searchQuery
+            = (new SearchQueryBuilder())
+            ->filter(new IdFilter(['someid']))
+            ->build();
         $searchResult = new SearchResult(1, 1, 1, [$resource], [], null, 1);
         $this->serializer
             ->expects(once())
@@ -357,10 +357,10 @@ class ICalControllerTest extends TestCase
                 ],
             ],
         ]);
-        $searchQuery =
-            (new SearchQueryBuilder())
-                ->filter(new IdFilter(['someid']))
-                ->build();
+        $searchQuery
+            = (new SearchQueryBuilder())
+            ->filter(new IdFilter(['someid']))
+            ->build();
         $this->serializer
             ->expects(once())
             ->method('deserialize')

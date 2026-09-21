@@ -307,12 +307,12 @@ class SchedulingManager
 
     public function isInfinite(Scheduling $scheduling): bool
     {
-        return $scheduling->rRule !== null &&
-            (new RRule($scheduling->rRule, $scheduling->start))->isInfinite();
+        return $scheduling->rRule !== null
+            && (new RRule($scheduling->rRule, $scheduling->start))->isInfinite();
     }
 
     /**
-     * @phpstan-assert-if-true !null $this->end
+     * @phpstan-assert-if-true !null $scheduling->end
      */
     public function isMultiDay(Scheduling $scheduling): ?bool
     {
@@ -332,7 +332,6 @@ class SchedulingManager
             ->diff(
                 (clone $scheduling->end)->setTime(23, 59, 59, 999999),
             )->days;
-        $mindnights = $mindnights === false ? 0 : $mindnights;
         return $mindnights;
     }
 }

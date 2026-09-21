@@ -114,8 +114,8 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
         $expected->sp_category = [111];
         $expected->sp_category_path = [111];
         $expected->keywords = ['keyword'];
-        $expected->content =
-            'location-name location-street location-zip location-city';
+        $expected->content
+            = 'location-name location-street location-zip location-city';
         $expected->setMetaString(
             'event_ticketLink',
             'https://www.example.com/ticket',
@@ -631,8 +631,8 @@ class DefaultSchema2xRceEventDocumentEnricherTest extends TestCase
 
         $this->rootResources[] = $root->location;
         $this->resourceMap[$root->location] = $root;
-        $this->resourceMap[$staatstheaterKassel->location] =
-            $staatstheaterKassel;
+        $this->resourceMap[$staatstheaterKassel->location]
+            = $staatstheaterKassel;
         $this->childrenResourceMap[$root->location] = [
             $staatstheaterKassel,
         ];

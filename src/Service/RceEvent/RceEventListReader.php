@@ -71,15 +71,15 @@ class RceEventListReader
 
             if ($zip->numFiles === 0) {
                 throw new RuntimeException(
-                    'The zip file contains no files:' .
-                    $zipUrl,
+                    'The zip file contains no files:'
+                    . $zipUrl,
                 );
             }
 
             if ($zip->numFiles !== 1) {
                 throw new RuntimeException(
-                    'The zip file contains more than one file:' .
-                    $zipUrl,
+                    'The zip file contains more than one file:'
+                    . $zipUrl,
                 );
             }
 
@@ -88,8 +88,8 @@ class RceEventListReader
             // @codeCoverageIgnoreStart
             if ($content === false) {
                 throw new RuntimeException(
-                    'No entry found in zip: ' .
-                    $zipUrl,
+                    'No entry found in zip: '
+                    . $zipUrl,
                 );
             }
             // @codeCoverageIgnoreEnd
@@ -97,8 +97,8 @@ class RceEventListReader
             $xml = @simplexml_load_string($content);
             if ($xml === false) {
                 throw new RuntimeException(
-                    'Unable to parse XML from zip file:' .
-                    $zipUrl,
+                    'Unable to parse XML from zip file:'
+                    . $zipUrl,
                 );
             }
 

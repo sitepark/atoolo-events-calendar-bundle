@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Atoolo\EventsCalendar\Service\Indexer\SiteKit;
 
 use Atoolo\Resource\Resource;
-use Atoolo\Search\Exception\DocumentEnrichingException;
-use Atoolo\Search\Service\Indexer\DocumentEnricher;
-use Atoolo\Search\Service\Indexer\IndexDocument;
+use Atoolo\Index\Exception\DocumentEnrichingException;
+use Atoolo\Index\Service\Indexer\DocumentEnricher;
+use Atoolo\Index\Service\Indexer\IndexDocument;
 use Atoolo\Search\Service\Indexer\IndexSchema2xDocument;
 
 /**
