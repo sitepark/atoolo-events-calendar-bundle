@@ -7,11 +7,8 @@ namespace Atoolo\EventsCalendar\Test\Service\ICal;
 use Atoolo\EventsCalendar\Dto\Scheduling\Scheduling;
 use Atoolo\EventsCalendar\Service\GraphQL\Factory\SchedulingFactory;
 use Atoolo\EventsCalendar\Service\ICal\ICalFactory;
-use Atoolo\Resource\DataBag;
 use Atoolo\Resource\Resource;
 use Atoolo\Resource\ResourceChannel;
-use Atoolo\Resource\ResourceLanguage;
-use Atoolo\Resource\ResourceTenant;
 use DateTimeZone;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -31,7 +28,7 @@ class ICalFactoryTest extends TestCase
         $this->schedulingFactory = $this->createMock(
             SchedulingFactory::class,
         );
-        $this->resourceChannel = $this->createResourceChannel([
+        $this->resourceChannel = ResourceChannel::create([
             'serverName' => 'www.test.de',
         ]);
         $this->iCalFactory = new ICalFactory(
@@ -42,7 +39,7 @@ class ICalFactoryTest extends TestCase
 
     public function testCreateCalendarAsString(): void
     {
-        $resource = $this->createResource([
+        $resource = Resource::create([
             'id' => '1',
             'url' => '/some/location',
             'metadata' => [
@@ -132,7 +129,7 @@ class ICalFactoryTest extends TestCase
 
     public function testCreateCalendarAsStringAtOccurrence(): void
     {
-        $resource = $this->createResource([
+        $resource = Resource::create([
             'id' => '1',
             'url' => '/some/location',
             'metadata' => [
@@ -205,7 +202,7 @@ class ICalFactoryTest extends TestCase
 
     public function testCreateCalendarAsStringExternal(): void
     {
-        $resource = $this->createResource([
+        $resource = Resource::create([
             'id' => '1',
             'url' => 'https://www.external.de/some/location',
             'metadata' => [
@@ -252,39 +249,5 @@ class ICalFactoryTest extends TestCase
             '',
         ];
         $this->assertEquals($expectedLines, $resultLines);
-    }
-
-    private function createResourceChannel(array $args): ResourceChannel
-    {
-        /** @var ResourceTenant $tenant */
-        $tenant = $this->createStub(ResourceTenant::class);
-        return new ResourceChannel(
-            id: $args['id'] ?? '',
-            name: $args['name'] ?? '',
-            anchor: $args['anchor'] ?? '',
-            serverName: $args['serverName'] ?? '',
-            isPreview: $args['isPreview'] ?? false,
-            nature: $args['nature'] ?? '',
-            locale: $args['locale'] ?? '',
-            baseDir: $args['baseDir'] ?? '',
-            resourceDir: $args['resourceDir'] ?? '',
-            configDir: $args['configDir'] ?? '',
-            searchIndex: $args['searchIndex'] ?? '',
-            translationLocales: $args['translationLocales'] ?? [],
-            attributes: new DataBag([]),
-            tenant: $tenant,
-        );
-    }
-
-    private function createResource(array $data): Resource
-    {
-        return new Resource(
-            $data['url'] ?? '',
-            $data['id'] ?? '',
-            $data['name'] ?? '',
-            $data['objectType'] ?? '',
-            ResourceLanguage::default(),
-            new DataBag($data),
-        );
     }
 }
