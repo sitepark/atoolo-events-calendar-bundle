@@ -8,7 +8,7 @@ use Atoolo\EventsCalendar\Dto\Indexer\RceEventIndexerInstance;
 use Atoolo\EventsCalendar\Dto\Indexer\RceEventIndexerParameter;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventDate;
 use Atoolo\EventsCalendar\Dto\RceEvent\RceEventListItem;
-use Atoolo\Search\Service\Indexer\IndexDocument;
+use Atoolo\Index\Service\Indexer\IndexDocument;
 
 /**
  * @template T of IndexDocument

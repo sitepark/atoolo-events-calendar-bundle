@@ -12,7 +12,7 @@ use Atoolo\EventsCalendar\Service\Indexer\RceEventDocumentEnricher;
 use Atoolo\Resource\ResourceHierarchyLoader;
 use Atoolo\Resource\ResourceHierarchyWalker;
 use Atoolo\Resource\ResourceLocation;
-use Atoolo\Search\Service\Indexer\IndexDocument;
+use Atoolo\Index\Service\Indexer\IndexDocument;
 use Atoolo\Search\Service\Indexer\IndexSchema2xDocument;
 
 /**

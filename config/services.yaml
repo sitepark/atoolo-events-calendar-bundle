@@ -24,7 +24,7 @@ services:
       - { name: 'atoolo_events_calendar.indexer.rceEventDocumentEnricher.schema2x', priority: 90 }
 
   atoolo_events_calendar.indexer.rceEventAborter:
-    class: Atoolo\Search\Service\Indexer\IndexingAborter
+    class: Atoolo\Index\Service\Indexer\IndexingAborter
     arguments:
       - '%kernel.project_dir%/var/cache/'
       - 'rce-event'
@@ -43,7 +43,7 @@ services:
       - '@Atoolo\EventsCalendar\Service\Platform'
 
   atoolo_events_calendar.indexer.progressState:
-    class: Atoolo\Search\Service\Indexer\IndexerProgressState
+    class: Atoolo\Index\Service\Indexer\IndexerProgressState
     arguments:
       - '@atoolo_search.index_name'
       - '@atoolo_search.indexer.status_store'

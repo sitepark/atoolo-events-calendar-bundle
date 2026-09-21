@@ -14,7 +14,7 @@ use Atoolo\Resource\Resource;
 use Atoolo\Resource\ResourceHierarchyFinder;
 use Atoolo\Resource\ResourceHierarchyLoader;
 use Atoolo\Resource\ResourceLocation;
-use Atoolo\Search\Service\Indexer\IndexDocument;
+use Atoolo\Index\Service\Indexer\IndexDocument;
 use Atoolo\Search\Service\Indexer\IndexSchema2xDocument;
 
 /**
