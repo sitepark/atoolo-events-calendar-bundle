@@ -227,26 +227,19 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         }
 
         if ($event->addresses->location !== null) {
-            if ($event->addresses->location->gemkey !== null) {
-                $doc = $this->enrichCategoryByAnchor(
-                    $doc,
-                    $parameter,
-                    'rce.gemkey.' . $event->addresses->location->gemkey,
-                );
-            }
-            if ($event->addresses->location->name !== null) {
-                $doc = $this->enrichCategoryByAnchor(
-                    $doc,
-                    $parameter,
-                    'rce.venue.' . $this->stringToAnchor($event->addresses->location->name),
-                );
-            }
+            $doc = $this->enrichCategoryByAnchor(
+                $doc,
+                $parameter,
+                'rce.gemkey.' . $event->addresses->location->gemkey,
+            );
+            $doc = $this->enrichCategoryByAnchor(
+                $doc,
+                $parameter,
+                'rce.venue.' . $this->stringToAnchor($event->addresses->location->name),
+            );
         }
 
-        if (
-            $event->addresses->organizer !== null
-            && $event->addresses->organizer->gemkey !== null
-        ) {
+        if ($event->addresses->organizer !== null) {
             $doc = $this->enrichCategoryByAnchor(
                 $doc,
                 $parameter,
