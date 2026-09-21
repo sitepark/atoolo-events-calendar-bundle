@@ -17,8 +17,8 @@ use ValueError;
 #[CoversClass(RceEventListReader::class)]
 class RceEventListReaderTest extends TestCase
 {
-    private string $workDir =
-        __DIR__ . '/../../../var/test/RceEventListReaderTest';
+    private string $workDir
+        = __DIR__ . '/../../../var/test/RceEventListReaderTest';
 
     private Platform $platform;
 
@@ -70,8 +70,8 @@ class RceEventListReaderTest extends TestCase
         mkdir($this->workDir);
         $this->httpClient->method('get')->willReturnCallback(
             function (string $url): string {
-                $zip = __DIR__ .
-                    '/../../resources/RceEventListReader/rce-xml_neu.zip';
+                $zip = __DIR__
+                    . '/../../resources/RceEventListReader/rce-xml_neu.zip';
                 return file_get_contents($zip);
             },
         );
@@ -118,8 +118,8 @@ class RceEventListReaderTest extends TestCase
     {
         $this->httpClient->method('get')->willReturnCallback(
             function (string $url): string {
-                $zip = __DIR__ .
-                    '/../../resources/RceEventListReader/empty.zip';
+                $zip = __DIR__
+                    . '/../../resources/RceEventListReader/empty.zip';
                 return file_get_contents($zip);
             },
         );
@@ -140,8 +140,8 @@ class RceEventListReaderTest extends TestCase
     {
         $this->httpClient->method('get')->willReturnCallback(
             function (string $url): string {
-                $zip = __DIR__ .
-                    '/../../resources/RceEventListReader/two-files.zip';
+                $zip = __DIR__
+                    . '/../../resources/RceEventListReader/two-files.zip';
                 return file_get_contents($zip);
             },
         );
@@ -162,8 +162,8 @@ class RceEventListReaderTest extends TestCase
     {
         $this->httpClient->method('get')->willReturnCallback(
             function (string $url): string {
-                $zip = __DIR__ .
-                    '/../../resources/RceEventListReader/noxml.zip';
+                $zip = __DIR__
+                    . '/../../resources/RceEventListReader/noxml.zip';
                 return file_get_contents($zip);
             },
         );

@@ -307,8 +307,8 @@ class SchedulingManager
 
     public function isInfinite(Scheduling $scheduling): bool
     {
-        return $scheduling->rRule !== null &&
-            (new RRule($scheduling->rRule, $scheduling->start))->isInfinite();
+        return $scheduling->rRule !== null
+            && (new RRule($scheduling->rRule, $scheduling->start))->isInfinite();
     }
 
     /**

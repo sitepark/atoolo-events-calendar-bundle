@@ -244,8 +244,8 @@ class DefaultSchema2xRceEventDocumentEnricher implements
         }
 
         if (
-            $event->addresses->organizer !== null &&
-            $event->addresses->organizer->gemkey !== null
+            $event->addresses->organizer !== null
+            && $event->addresses->organizer->gemkey !== null
         ) {
             $doc = $this->enrichCategoryByAnchor(
                 $doc,
@@ -440,8 +440,8 @@ class DefaultSchema2xRceEventDocumentEnricher implements
             $resource = $finder->findFirst(
                 $location,
                 function ($resource) use ($anchor) {
-                    $resourceAnchor =
-                        $resource->data->getString('anchor');
+                    $resourceAnchor
+                        = $resource->data->getString('anchor');
                     return $resourceAnchor === $anchor;
                 },
             );

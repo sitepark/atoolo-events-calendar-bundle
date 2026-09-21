@@ -126,8 +126,8 @@ class RceEventIndexer extends AbstractIndexer
         $groupPath = $data->getArray('groupPath');
 
         /** @var array<string> $categoryRootResourceLocations */
-        $categoryRootResourceLocations =
-            $data->getArray('categoryRootResourceLocations');
+        $categoryRootResourceLocations
+            = $data->getArray('categoryRootResourceLocations');
 
         $instanceList = [];
         /** @var array{
