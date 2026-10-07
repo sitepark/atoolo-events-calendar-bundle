@@ -19,6 +19,7 @@ class SearchEventsFactory extends SearchQueryFactory
     public function create(SearchInput $input): SearchQuery
     {
         $builder = new SearchQueryBuilder();
+        $input->searchByDate = true;
         $input->expandByDate = true;
 
         return parent::create($input);
