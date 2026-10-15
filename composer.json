@@ -13,7 +13,9 @@
         "php": ">=8.1 <8.6.0",
         "ext-simplexml": "*",
         "ext-zip": "*",
-        "atoolo/graphql-search-bundle": "^1.11",
+        "atoolo/graphql-search-bundle": "dev-main",
+        "atoolo/index-bundle": "dev-main",
+        "atoolo/resource-bundle": "dev-main",
         "atoolo/search-bundle": "dev-main",
         "dragonmantank/cron-expression": "^3.3",
         "eluceo/ical": "2.14 || 2.15",
@@ -28,7 +30,6 @@
         "symfony/yaml": "^6.3 || ^7.0"
     },
     "require-dev": {
-        "atoolo/resource-bundle": "^1.6",
         "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
         "infection/infection": "^0.27.6",
         "overtrue/phplint": "^9.7.1",

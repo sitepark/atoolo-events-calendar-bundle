@@ -7,9 +7,7 @@ namespace Atoolo\EventsCalendar\Test\Service\GraphQL\Factory;
 use Atoolo\EventsCalendar\Service\GraphQL\Factory\EventTeaserFactory;
 use Atoolo\GraphQL\Search\Factory\LinkFactory;
 use Atoolo\GraphQL\Search\Types\Link;
-use Atoolo\Resource\DataBag;
 use Atoolo\Resource\Resource;
-use Atoolo\Resource\ResourceLanguage;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
@@ -30,14 +28,9 @@ class EventTeaserFactoryTest extends TestCase
 
     public function testLink(): void
     {
-        $resource = new Resource(
-            'originalUrl',
-            '',
-            '',
-            '',
-            ResourceLanguage::default(),
-            new DataBag([]),
-        );
+        $resource = Resource::create([
+            'url' => 'originalUrl',
+        ]);
         $link = new Link('url');
         $this->linkFactory->method('create')
             ->willReturn($link);
@@ -54,15 +47,13 @@ class EventTeaserFactoryTest extends TestCase
     public function testHeadline(): void
     {
 
-        $resource = $this->createResource(
-            [
-                'base' => [
-                    'teaser' => [
-                        'headline' => 'Headline',
-                    ],
+        $resource = Resource::create([
+            'base' => [
+                'teaser' => [
+                    'headline' => 'Headline',
                 ],
             ],
-        );
+        ]);
 
         $teaser = $this->factory->create($resource);
 
@@ -75,14 +66,9 @@ class EventTeaserFactoryTest extends TestCase
 
     public function testHeadlineFallback(): void
     {
-        $resource = new Resource(
-            '',
-            '',
-            'ResourceName',
-            '',
-            ResourceLanguage::default(),
-            new DataBag([]),
-        );
+        $resource = Resource::create([
+            'name' => 'ResourceName',
+        ]);
 
         $teaser = $this->factory->create($resource);
 
@@ -95,15 +81,13 @@ class EventTeaserFactoryTest extends TestCase
 
     public function testText(): void
     {
-        $resource = $this->createResource(
-            [
-                'base' => [
-                    'teaser' => [
-                        'text' => 'Text',
-                    ],
+        $resource = Resource::create([
+            'base' => [
+                'teaser' => [
+                    'text' => 'Text',
                 ],
             ],
-        );
+        ]);
 
         $teaser = $this->factory->create($resource);
 
@@ -111,18 +95,6 @@ class EventTeaserFactoryTest extends TestCase
             'Text',
             $teaser->text,
             'unexpected text',
-        );
-    }
-
-    private function createResource(array $data): Resource
-    {
-        return new Resource(
-            $data['url'] ?? '',
-            $data['id'] ?? '',
-            $data['name'] ?? '',
-            $data['objectType'] ?? '',
-            ResourceLanguage::default(),
-            new DataBag($data),
         );
     }
 }
