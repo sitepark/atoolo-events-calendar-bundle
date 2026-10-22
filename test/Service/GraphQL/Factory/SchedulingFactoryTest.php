@@ -21,9 +21,19 @@ class SchedulingFactoryTest extends TestCase
     // 01.01.2025 00:00 GMT
     private const UNTIL = 1735689600;
 
+    private string $defaultTimezone;
+
     public function setUp(): void
     {
+        // beginDate/endDate are timestamps of local midnight
+        $this->defaultTimezone = date_default_timezone_get();
+        date_default_timezone_set('Europe/Berlin');
         $this->factory = new SchedulingFactory();
+    }
+
+    public function tearDown(): void
+    {
+        date_default_timezone_set($this->defaultTimezone);
     }
 
     public function testCreate()
@@ -88,6 +98,57 @@ class SchedulingFactoryTest extends TestCase
         $this->assertEquals(
             1641063480,
             $startDateTime->getTimestamp(),
+        );
+    }
+
+    /**
+     * 25.10.2026 is the day of the change from CEST to CET (25 hours)
+     */
+    public function testGetStartDateTimeFromRawSchedulingOnDstEnd()
+    {
+        $rawScheduling = [
+            "beginDate" => (new \DateTime('2026-10-25'))->getTimestamp(),
+            "beginTime" => "14:00",
+        ];
+        $startDateTime = $this->factory->getStartDateTimeFromRawScheduling(
+            $rawScheduling,
+        );
+        $this->assertEquals(
+            '2026-10-25T14:00:00+01:00',
+            $startDateTime->format('c'),
+        );
+    }
+
+    /**
+     * 29.03.2026 is the day of the change from CET to CEST (23 hours)
+     */
+    public function testGetStartDateTimeFromRawSchedulingOnDstStart()
+    {
+        $rawScheduling = [
+            "beginDate" => (new \DateTime('2026-03-29'))->getTimestamp(),
+            "beginTime" => "14:00",
+        ];
+        $startDateTime = $this->factory->getStartDateTimeFromRawScheduling(
+            $rawScheduling,
+        );
+        $this->assertEquals(
+            '2026-03-29T14:00:00+02:00',
+            $startDateTime->format('c'),
+        );
+    }
+
+    public function testGetEndDateTimeFromRawSchedulingOnDstEnd()
+    {
+        $rawScheduling = [
+            "beginDate" => (new \DateTime('2026-10-25'))->getTimestamp(),
+            "endTime" => "23:59",
+        ];
+        $endDateTime = $this->factory->getEndDateTimeFromRawScheduling(
+            $rawScheduling,
+        );
+        $this->assertEquals(
+            '2026-10-25T23:59:00+01:00',
+            $endDateTime->format('c'),
         );
     }
 
