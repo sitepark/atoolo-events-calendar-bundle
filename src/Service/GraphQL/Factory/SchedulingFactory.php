@@ -170,15 +170,4 @@ class SchedulingFactory
         }
         return $dateTime;
     }
-
-    protected function timeStringToSeconds(
-        string $time,
-    ): int {
-        $pattern = '/^([0-2]{0,1}[0-9]):([0-5][0-9])$/';
-        if (preg_match($pattern, $time, $matches)) {
-            return intval($matches[1]) * 60 * 60
-                + intval($matches[2]) * 60;
-        }
-        return 0;
-    }
 }
