@@ -78,11 +78,10 @@ class SchedulingFactory
         if (!is_int($beginDateTimestamp)) {
             return null;
         }
-        $beginTimeSeconds = isset($rawScheduling['beginTime'])
-            ? $this->timeStringToSeconds($rawScheduling['beginTime'])
-            : 0;
-        return (new \DateTime())
-            ->setTimestamp($beginDateTimestamp + $beginTimeSeconds);
+        return $this->createDateTime(
+            $beginDateTimestamp,
+            $rawScheduling['beginTime'] ?? null,
+        );
     }
 
     /**
@@ -98,11 +97,10 @@ class SchedulingFactory
         if (!is_int($endDateTimestamp)) {
             return null;
         }
-        $endTimeSeconds = isset($rawScheduling['endTime'])
-            ? $this->timeStringToSeconds($rawScheduling['endTime'])
-            : 0;
-        return (new \DateTime())
-            ->setTimestamp($endDateTimestamp + $endTimeSeconds);
+        return $this->createDateTime(
+            $endDateTimestamp,
+            $rawScheduling['endTime'] ?? null,
+        );
     }
 
     /**
@@ -155,6 +153,22 @@ class SchedulingFactory
             $rrule['BYMONTH'] = $rawScheduling['repetition']['moy'] + 1;
         }
         return join(';', array_map(fn($k, $v) => $k . '=' . $v, array_keys($rrule), $rrule));
+    }
+
+    /**
+     * The time is set via setTime() instead of adding seconds to the
+     * timestamp, as days with a DST change are 23 or 25 hours long.
+     */
+    private function createDateTime(
+        int $dateTimestamp,
+        ?string $time,
+    ): \DateTime {
+        $dateTime = (new \DateTime())->setTimestamp($dateTimestamp);
+        $pattern = '/^([0-2]{0,1}[0-9]):([0-5][0-9])$/';
+        if ($time !== null && preg_match($pattern, $time, $matches)) {
+            $dateTime->setTime(intval($matches[1]), intval($matches[2]));
+        }
+        return $dateTime;
     }
 
     protected function timeStringToSeconds(
