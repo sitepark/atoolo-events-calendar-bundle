@@ -42,6 +42,18 @@ class ResourceICalUrlResolverTest extends TestCase
         );
     }
 
+    public function testGetICalUrlOfDateOccurrence(): void
+    {
+        $resource = Resource::create([
+            'location' => '/event.php',
+            'url' => '/event?date=2858868000',
+        ]);
+        $this->assertEquals(
+            '/api/ical/resource/event.php?occurrence=2060-08-04T18%3A00%3A00%2B00%3A00',
+            $this->resolver->getICalUrl($resource),
+        );
+    }
+
     public function testGetICalUrlExternal(): void
     {
         $resource = Resource::create([
